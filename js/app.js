@@ -47,13 +47,14 @@
     return document.documentElement.classList.contains("theme-dark");
   }
 
-  /* Icon markup: real image if provided, else the inline SVG glyph. */
+  /* Icon markup: real image if provided, else the inline SVG glyph.
+     `icon` = light-mode art, `iconDark` = dark-mode art. */
   function iconInner(app) {
     if (!app.icon) return app.glyph;
-    var light = app.iconLight || app.icon;
-    var src = isDark() ? light : app.icon;
-    return '<img class="ic" src="' + src + '" data-dark="' + app.icon +
-           '" data-light="' + light + '" alt="" draggable="false" />';
+    var darkIcon = app.iconDark || app.icon;
+    var src = isDark() ? darkIcon : app.icon;
+    return '<img class="ic" src="' + src + '" data-light="' + app.icon +
+           '" data-dark="' + darkIcon + '" alt="" draggable="false" />';
   }
   function tileClass(app, base) {
     return base + (app.icon ? " " + base + "--img" : "");
@@ -242,13 +243,7 @@
     ]},
     { label: "Projects", items: ANATHEMA_APPS.map(function (app) {
       return { label: app.name, sub: app.tagline, action: function () { openWindow(app); } };
-    })},
-    { label: "Studio", items: [
-      { label: "About This Studio", action: openAbout },
-      { label: "Get in Touch…", action: function () { location.href = "mailto:" + STUDIO_EMAIL; } },
-      { sep: true },
-      { label: "Available for Work", note: "●" }
-    ]}
+    })}
   ];
   var APP_MENU_ITEMS = [
     { label: "About Anathema Labs", action: openAbout },
@@ -404,7 +399,7 @@
   function refreshIcons() {
     var dark = isDark();
     Array.prototype.forEach.call(document.querySelectorAll("img.ic"), function (im) {
-      im.src = dark ? im.dataset.light : im.dataset.dark;
+      im.src = dark ? im.dataset.dark : im.dataset.light;
     });
   }
   window.AnathemaTheme = {

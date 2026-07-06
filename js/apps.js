@@ -10,9 +10,9 @@
      about   1–2 sentence description (shown in window / sheet)
      glyph   inline SVG fallback icon (24x24 viewBox, uses currentColor)
      icon      path to the real icon image (PNG/SVG), used full-bleed
-               instead of `glyph`. This is the DARK/default variant.
-     iconLight path to the light variant, swapped in automatically when
-               the site is in dark mode (adaptive icons). Optional.
+               instead of `glyph`. This is the LIGHT-MODE (default) variant.
+     iconDark  path to the dark-mode variant, swapped in automatically
+               when the site is in dark mode (adaptive icons). Optional.
      accent  true = orange icon tile, false = monochrome (only affects glyph)
      status  small label (e.g. "Live", "Beta", "Soon")
      features optional array of [title, description] pairs, shown as a
@@ -42,7 +42,7 @@ const ANATHEMA_APPS = [
     ],
     glyph: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="8.8" cy="9.2" r="1.7"/><path d="M4.5 17.5l4.5-4.5 3.5 3 2.5-2 4.5 4.5"/></svg>',
     icon: "assets/icons/resors.png",
-    iconLight: "assets/icons/resors-light.png",
+    iconDark: "assets/icons/resors-dark.png",
     accent: false,
     appStore: "https://apps.apple.com/app/resors/id6748361802",
     url: ""
@@ -61,7 +61,7 @@ const ANATHEMA_APPS = [
     ],
     glyph: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16 6 6 0 0 1 0-16z" fill="currentColor" stroke="none"/></svg>',
     icon: "assets/icons/umbraa.png",
-    iconLight: "assets/icons/umbraa-light.png",
+    iconDark: "assets/icons/umbraa-dark.png",
     accent: true,
     status: "Coming Soon",
     url: ""
