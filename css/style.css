@@ -1,0 +1,694 @@
+/* ============================================================
+   ANATHEMA LABS
+   0. Tokens   1. Base   2. Shared brand
+   3. Desktop (classic macOS)   4. Mobile (iOS)   5. Sheet
+   ============================================================ */
+
+/* ---------- 0. Tokens ---------- */
+:root {
+  --black: #0b0b0c;
+  --ink:   #141416;
+  --white: #f7f6f3;
+  --paper: #fbfaf8;
+  --gray-1: #e7e5e0;
+  --gray-2: #c9c6bf;
+  --gray-3: #8a8880;
+  --orange: #ff5b04;
+  --orange-deep: #e34e00;
+  --ultramarine: #1f2c9c;
+  --grid-line: rgba(26,43,200,0.34);
+
+  --line: 1.5px solid var(--black);
+  --shadow-hard: 4px 4px 0 var(--black);
+  --radius-ios: 24px;
+
+  --font-logo: "EB Garamond", Garamond, "Times New Roman", serif;
+  --font-ui:   "Space Grotesk", -apple-system, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SF Mono", monospace;
+}
+
+/* ---------- 1. Base ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: var(--font-ui);
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+body { overflow: hidden; }
+
+.screen { display: none; }
+
+/* Toggle layouts by viewport. Desktop metaphor >= 900px. */
+@media (min-width: 900px) {
+  #desktop { display: block; }
+}
+@media (max-width: 899px) {
+  #mobile { display: block; }
+}
+
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+/* ---------- 2. Shared brand ---------- */
+.brand {
+  font-family: var(--font-logo);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 0.95;
+  color: var(--orange);
+}
+.brand__thin {
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.78em;
+  letter-spacing: -0.015em;
+  color: var(--black);
+  margin-left: 0.16em;
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-3);
+  margin-top: 10px;
+}
+
+
+/* ============================================================
+   3. DESKTOP — classic macOS
+   ============================================================ */
+#desktop {
+  position: fixed;
+  inset: 0;
+  background-color: var(--white);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    radial-gradient(120% 120% at 100% 0%, #ffffff 0%, var(--white) 42%, #eceae4 100%);
+  background-size: 44px 44px, 44px 44px, 100% 100%;
+  background-position: 0 0, 0 0, 0 0;
+}
+
+/* --- Menu bar --- */
+.menubar {
+  position: relative;
+  z-index: 50;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  background: var(--paper);
+  border-bottom: var(--line);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+}
+.menubar__left { display: flex; align-items: baseline; gap: 22px; }
+.menubar__logo {
+  font-family: var(--font-logo);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.menubar__menus { display: flex; gap: 4px; }
+.menu-item {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 5px;
+  color: var(--ink);
+}
+.menu-item:hover { background: var(--black); color: var(--paper); }
+
+.menubar__right {
+  display: flex; align-items: center; gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+}
+.menubar__status { color: var(--orange); font-size: 14px; }
+
+/* --- Dropdown menus --- */
+.menu { position: relative; }
+.menu-trigger { cursor: pointer; }
+.menubar__logo.menu-trigger { padding: 0; }
+.menu.open > .menu-item { background: var(--black); color: var(--paper); }
+.menu--app.open .menubar__logo { color: var(--orange); }
+.menu-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  z-index: 200;
+  display: none;
+  min-width: 214px;
+  padding: 5px;
+  background: var(--paper);
+  border: var(--line);
+  box-shadow: var(--shadow-hard);
+}
+.menu.open .menu-dropdown { display: block; }
+.menu-opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.menu-opt:hover { background: var(--black); color: var(--paper); }
+.menu-opt__sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--gray-3);
+}
+.menu-opt:hover .menu-opt__sub { color: var(--gray-2); }
+.menu-opt__note { color: var(--orange); font-size: 10px; }
+.menu-sep { height: 1px; background: var(--gray-1); margin: 5px 8px; }
+
+/* --- Desktop surface --- */
+.desktop-surface { position: absolute; inset: 30px 0 0 0; }
+
+/* --- Classic window --- */
+.win {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 110px);
+  background: var(--paper);
+  border: var(--line);
+  box-shadow: var(--shadow-hard);
+  min-width: 260px;
+}
+.win__bar {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 8px;
+  border-bottom: var(--line);
+  cursor: grab;
+  user-select: none;
+}
+.win__bar:active { cursor: grabbing; }
+.win__close {
+  width: 13px; height: 13px;
+  border: var(--line);
+  background: var(--paper);
+  flex: none;
+}
+.win__close:hover { background: var(--orange); }
+.win__title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0 10px;
+  background: var(--paper);
+  z-index: 1;
+}
+/* pinstripe fill behind title */
+.win__lines {
+  position: absolute;
+  inset: 5px 8px 5px 8px;
+  background: repeating-linear-gradient(
+    var(--black) 0 1px, transparent 1px 3px);
+  opacity: 0.55;
+  z-index: 0;
+}
+.win__title, .win__close { position: relative; z-index: 2; }
+
+.win__body { padding: 22px 22px 24px; overflow-y: auto; min-height: 0; }
+.win__body .brand { font-size: 40px; }
+.win__body .tag { margin-bottom: 16px; }
+.copy {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink);
+  max-width: 42ch;
+}
+.win__meta { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.chip {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  padding: 4px 9px;
+  border: var(--line);
+  border-radius: 20px;
+  color: inherit;
+  text-decoration: none;
+}
+a.chip { transition: transform 0.12s; }
+a.chip:hover { transform: translateY(-1px); }
+.chip--accent { background: var(--orange); color: var(--paper); border-color: var(--orange); }
+
+/* primary contact button (opens the mail composer) */
+.btn-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  border: var(--line);
+  border-radius: 22px;
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--paper);
+  text-decoration: none;
+  transition: transform 0.12s, filter 0.12s;
+}
+.btn-contact:hover { transform: translateY(-1px); filter: brightness(1.05); }
+
+/* project window extras */
+.win__body .proj-tagline {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 12px;
+}
+.win__icon {
+  width: 56px; height: 56px; margin-bottom: 14px;
+  display: grid; place-items: center;
+  border: var(--line);
+  overflow: hidden;
+}
+.win__icon svg { width: 32px; height: 32px; }
+
+/* real image icons, full-bleed in any tile container */
+.win__icon--img, .ios-app__icon--img, .sheet__icon--img,
+.dock__tile--img { padding: 0; }
+.win__icon img, .ios-app__icon img, .sheet__icon img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+
+/* project feature list + contact (window + sheet) */
+.proj-features {
+  list-style: none;
+  margin: 16px 0 2px;
+  display: grid;
+  gap: 9px;
+}
+.proj-features li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.proj-features li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 6px;
+  width: 6px; height: 6px;
+  background: var(--orange);
+}
+.feat__t { font-weight: 600; }
+.proj-contact {
+  display: inline-block;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--gray-3);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gray-2);
+}
+.proj-contact:hover { color: var(--orange); border-color: var(--orange); }
+.sheet__meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.sheet__meta .sheet__status { margin-top: 0; }
+.sheet__status--accent {
+  background: var(--orange);
+  color: var(--paper);
+  border-color: var(--orange);
+  text-decoration: none;
+}
+
+/* --- Dock (frosted glass) --- */
+.dock {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 26px;
+  background: rgba(250,249,246,0.3);
+  border: 1px solid rgba(255,255,255,0.55);
+  box-shadow:
+    0 18px 44px -10px rgba(24,18,12,0.34),
+    0 2px 8px -2px rgba(24,18,12,0.16),
+    inset 0 1px 1px rgba(255,255,255,0.9),
+    inset 0 -1px 2px rgba(0,0,0,0.05);
+  backdrop-filter: blur(30px) saturate(1.9);
+  -webkit-backdrop-filter: blur(30px) saturate(1.9);
+}
+/* top specular sheen */
+.dock::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 26px;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.5) 0%,
+    rgba(255,255,255,0.06) 44%,
+    rgba(255,255,255,0) 62%);
+}
+/* faint inner rim light */
+.dock::after {
+  content: "";
+  position: absolute; inset: 1px;
+  border-radius: 25px;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.22);
+}
+
+.dock__item {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+}
+
+/* the icon tile */
+.dock__tile {
+  width: 54px; height: 54px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid; place-items: center;
+  background: var(--orange);
+  border: 1.5px solid var(--black);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 4px 9px -3px rgba(20,15,10,0.4);
+  transition: transform 0.18s cubic-bezier(.2,.8,.2,1), filter 0.18s;
+}
+.dock__item--mono .dock__tile { background: var(--paper); }
+.dock__tile svg { width: 30px; height: 30px; color: var(--paper); }
+.dock__item--mono .dock__tile svg { color: var(--black); }
+
+/* studio "home" tile — off-white with orange Garamond wordmark */
+.dock__tile--word {
+  background: linear-gradient(180deg, #ffffff 0%, var(--paper) 100%);
+  border: 1.5px solid var(--black);
+  padding: 3px;
+}
+.al-word {
+  font-family: var(--font-logo);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: -0.012em;
+  color: var(--orange);
+  white-space: nowrap;
+}
+
+/* studio "home" wordmark tiles on iOS (dock icon + About sheet) */
+.ios-app__icon--word { background: linear-gradient(180deg, #ffffff 0%, var(--paper) 100%); }
+.sheet__icon--word { background: linear-gradient(180deg, #ffffff 0%, var(--paper) 100%); }
+.sheet__icon--word .al-word { font-size: 15px; }
+
+/* dock divider between studio home and the projects */
+.dock__divider {
+  align-self: center;
+  width: 1.5px;
+  height: 44px;
+  margin: 0 3px;
+  background: rgba(11,11,12,0.22);
+  border-radius: 1px;
+}
+.dock__tile--img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* real image icons carry their own shape + shadow — strip the tile chrome */
+.dock__tile--img,
+.ios-app__icon--img,
+.sheet__icon--img,
+.win__icon--img {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+}
+.dock__item:hover .dock__tile { transform: translateY(-6px); filter: brightness(1.05); }
+
+/* reflections removed for the clean glass look */
+.dock__reflect { display: none; }
+
+/* click bounce */
+@keyframes dockBounce {
+  0%   { transform: translateY(-5px); }
+  28%  { transform: translateY(-18px); }
+  55%  { transform: translateY(0); }
+  75%  { transform: translateY(-7px); }
+  100% { transform: translateY(0); }
+}
+.dock__tile.is-bouncing { animation: dockBounce 0.55s ease; }
+
+/* dock tooltip */
+.dock__label {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 4px 10px;
+  background: var(--black);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s, transform 0.12s;
+}
+.dock__item:hover .dock__label { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+
+/* ============================================================
+   4. MOBILE — iOS home screen
+   ============================================================ */
+#mobile {
+  position: fixed;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  background:
+    radial-gradient(140% 100% at 50% -10%, #ffffff 0%, var(--white) 45%, #e8e6e1 100%);
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+@media (max-width: 899px) {
+  #mobile { display: flex; }
+}
+#mobile::before {
+  content: "";
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0;
+}
+
+/* status bar */
+.ios-status {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 44px; padding: 0 26px;
+  font-family: var(--font-mono);
+  font-weight: 700; font-size: 14px;
+}
+.ios-status__icons { display: flex; align-items: center; gap: 6px; }
+.ios-ic { height: 12px; width: auto; fill: var(--black); color: var(--black); }
+
+/* home area */
+.ios-home {
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex; flex-direction: column;
+  padding: 8px 26px 0;
+  min-height: 0;
+}
+.ios-hero { text-align: center; padding: 26px 0 30px; }
+
+/* when there are no grid apps (all pinned to the dock), center the hero */
+.ios-home.is-empty { justify-content: center; padding-bottom: 40px; }
+.ios-home.is-empty .ios-hero { padding: 0; }
+.brand--ios { font-size: 46px; }
+.tag--ios { margin-top: 12px; }
+
+.ios-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px 14px;
+  align-content: start;
+  padding-top: 6px;
+}
+
+.ios-app { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.ios-app__icon {
+  width: 58px; height: 58px;
+  border-radius: 30%; /* squircle-ish */
+  display: grid; place-items: center;
+  background: var(--paper);
+  border: var(--line);
+  box-shadow: 0 3px 0 rgba(0,0,0,0.12);
+  transition: transform 0.12s;
+  overflow: hidden;
+}
+.ios-app:active .ios-app__icon { transform: scale(0.9); }
+.ios-app__icon svg { width: 30px; height: 30px; color: var(--black); }
+.ios-app__icon--accent { background: var(--orange); }
+.ios-app__icon--accent svg { color: var(--paper); }
+.ios-app__label {
+  font-family: var(--font-ui);
+  font-size: 11.5px; font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+/* iOS dock */
+.ios-dock {
+  position: relative; z-index: 2;
+  margin: 14px 14px calc(14px + env(safe-area-inset-bottom));
+  padding: 14px 18px;
+  display: flex; justify-content: center; gap: 30px;
+  background: rgba(251,250,248,0.55);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: var(--line);
+  border-radius: var(--radius-ios);
+}
+.ios-dock .ios-app__label { display: none; }
+
+
+/* ============================================================
+   5. Sheet (mobile app detail)
+   ============================================================ */
+.sheet {
+  position: fixed; inset: 0; z-index: 100;
+  display: none;
+}
+.sheet.is-open { display: block; }
+.sheet__scrim {
+  position: absolute; inset: 0;
+  background: rgba(11,11,12,0.35);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.sheet.is-open .sheet__scrim { opacity: 1; }
+.sheet__panel {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--paper);
+  border-top: var(--line);
+  border-radius: 22px 22px 0 0;
+  padding: 10px 26px calc(30px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(.2,.9,.2,1);
+  max-height: 82vh; overflow: auto;
+}
+.sheet.is-open .sheet__panel { transform: translateY(0); }
+.sheet__grab {
+  width: 40px; height: 5px; border-radius: 3px;
+  background: var(--gray-2);
+  margin: 0 auto 20px;
+}
+.sheet__icon {
+  width: 72px; height: 72px; border-radius: 30%;
+  display: grid; place-items: center;
+  border: var(--line); background: var(--paper);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.sheet__icon--accent { background: var(--orange); }
+.sheet__icon--accent svg { color: var(--paper); }
+.sheet__icon svg { width: 38px; height: 38px; }
+.sheet__name { font-family: var(--font-ui); font-size: 26px; font-weight: 700; }
+.sheet__tagline {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--orange); margin: 6px 0 16px;
+}
+.sheet__about { font-size: 15px; line-height: 1.6; color: var(--ink); }
+.sheet__status {
+  display: inline-block; margin-top: 18px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em;
+  padding: 5px 12px; border: var(--line); border-radius: 20px;
+}
+
+
+/* ============================================================
+   6. DARK THEME — follows the system setting.
+   `html.theme-dark` is toggled from prefers-color-scheme in app.js.
+   Flipping the tokens cascades dark styling almost everywhere;
+   the rules below cover surfaces that hardcode colors.
+   ============================================================ */
+html.theme-dark {
+  --white: #0d0d10;   /* base backdrop */
+  --paper: #17171c;   /* surfaces: windows, menu, dock items, sheets */
+  --black: #ece9e3;   /* primary text + borders (now light) */
+  --ink:   #cfccc5;   /* body copy */
+  --gray-1: #2b2b32;
+  --gray-2: #3c3c45;
+  --gray-3: #8f8d85;
+  --grid-line: rgba(96,116,255,0.24);   /* brightened ultramarine */
+  --shadow-hard: 5px 5px 0 rgba(0,0,0,0.5);
+}
+
+/* backdrops — dark vignette; the grid flips via --grid-line */
+html.theme-dark #desktop {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    radial-gradient(120% 120% at 100% 0%, #20202b 0%, var(--white) 46%, #060608 100%);
+}
+html.theme-dark #mobile {
+  background: radial-gradient(140% 100% at 50% -10%, #20202b 0%, var(--white) 45%, #060608 100%);
+}
+
+/* frosted docks → dark glass */
+html.theme-dark .dock {
+  background: rgba(26,26,32,0.42);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow:
+    0 18px 44px -10px rgba(0,0,0,0.6),
+    0 2px 8px -2px rgba(0,0,0,0.4),
+    inset 0 1px 1px rgba(255,255,255,0.10),
+    inset 0 -1px 2px rgba(0,0,0,0.35);
+}
+html.theme-dark .dock::before {
+  background: linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.03) 44%, rgba(255,255,255,0) 62%);
+}
+html.theme-dark .dock::after { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
+html.theme-dark .ios-dock {
+  background: rgba(26,26,32,0.5);
+  border-color: rgba(255,255,255,0.14);
+}
+
+/* studio "home" wordmark tiles → dark surface (orange text stays) */
+html.theme-dark .dock__tile--word,
+html.theme-dark .ios-app__icon--word,
+html.theme-dark .sheet__icon--word {
+  background: linear-gradient(180deg, #26262e 0%, #17171c 100%);
+}
+html.theme-dark .dock__divider { background: rgba(255,255,255,0.18); }

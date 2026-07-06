@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Anathema Labs</title>
+  <meta name="description" content="Anathema Labs — a software studio crafting tools with intent." />
+
+  <!-- Fonts: EB Garamond (logo/display) + Space Grotesk (UI) + Space Mono (labels/tech) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===================== DESKTOP: Classic macOS ===================== -->
+  <div id="desktop" class="screen" aria-hidden="false">
+
+    <!-- Menu bar -->
+    <div class="menubar">
+      <div class="menubar__left">
+        <div class="menu menu--app">
+          <button class="menubar__logo menu-trigger" aria-label="Anathema Labs">Anathema&nbsp;Labs</button>
+        </div>
+        <nav class="menubar__menus" aria-label="Menu"></nav>
+      </div>
+      <div class="menubar__right">
+        <span class="menubar__status" id="menuStatus">◊</span>
+        <span class="menubar__clock" id="menuClock">--:--</span>
+      </div>
+    </div>
+
+    <!-- Desktop surface: windows get injected here; dock lives at bottom -->
+    <main class="desktop-surface" id="desktopSurface">
+      <!-- Primary "About" window, always present -->
+      <section class="win" id="win-about" style="top: 84px; left: 96px; width: 460px;">
+        <header class="win__bar" data-drag>
+          <button class="win__close" aria-label="Close"></button>
+          <div class="win__title">About This Studio</div>
+          <div class="win__lines" aria-hidden="true"></div>
+        </header>
+        <div class="win__body">
+          <h1 class="brand">Anathema<span class="brand__thin">Labs</span></h1>
+          <p class="tag">A collision of physical &amp; digital</p>
+          <p class="copy">
+            We design where the physical and the digital collide —
+            software made with unusual care, and objects built to last.
+            Click an icon in the dock to open a project.
+          </p>
+          <div class="win__meta">
+            <a class="btn-contact" href="mailto:contact.andriy@icloud.com?subject=Hello%20Anathema%20Labs">Reach&nbsp;out ↗</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Dock -->
+    <div class="dock" id="dock" role="navigation" aria-label="Projects dock"></div>
+  </div>
+
+
+  <!-- ===================== MOBILE: iOS home screen ===================== -->
+  <div id="mobile" class="screen" aria-hidden="true">
+
+    <!-- Status bar -->
+    <div class="ios-status">
+      <span class="ios-status__time" id="iosClock">9:41</span>
+      <span class="ios-status__icons">
+        <svg viewBox="0 0 18 12" class="ios-ic"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="4" width="3" height="8" rx="1"/><rect x="10" y="1" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity="0.35"/></svg>
+        <svg viewBox="0 0 16 12" class="ios-ic"><path d="M8 11.5 1 4.5a10 10 0 0 1 14 0z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="10" r="1.1"/></svg>
+        <svg viewBox="0 0 26 12" class="ios-ic"><rect x="1" y="1" width="21" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.1"/><rect x="3" y="3" width="14" height="6" rx="1.5"/><rect x="23.5" y="4" width="1.5" height="4" rx="0.75"/></svg>
+      </span>
+    </div>
+
+    <!-- Home screen: branding + app grid -->
+    <div class="ios-home">
+      <div class="ios-hero">
+        <h1 class="brand brand--ios">Anathema<span class="brand__thin">Labs</span></h1>
+        <p class="tag tag--ios">A collision of physical &amp; digital</p>
+      </div>
+      <div class="ios-grid" id="iosGrid"></div>
+    </div>
+
+    <!-- iOS dock -->
+    <div class="ios-dock" id="iosDock"></div>
+  </div>
+
+
+  <!-- ===================== Mobile app sheet (opens on tap) ===================== -->
+  <div class="sheet" id="sheet" aria-hidden="true">
+    <div class="sheet__scrim" data-sheet-close></div>
+    <div class="sheet__panel" role="dialog" aria-modal="true">
+      <div class="sheet__grab" data-sheet-close></div>
+      <div class="sheet__content" id="sheetContent"></div>
+    </div>
+  </div>
+
+  <script src="js/apps.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
