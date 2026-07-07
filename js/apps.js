@@ -64,7 +64,7 @@ const ANATHEMA_APPS = [
     iconDark: "assets/icons/umbraa-dark.png",
     accent: true,
     status: "Coming Soon",
-    url: ""
+    url: "umbraa/index.html"
   }
 ];
 
