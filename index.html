@@ -34,6 +34,9 @@
 
     <!-- Desktop surface: windows get injected here; dock lives at bottom -->
     <main class="desktop-surface" id="desktopSurface">
+      <!-- Ambient logo effect: the wordmark draws on/off in a loop, centered -->
+      <div class="logo-fx" id="logoFx" aria-hidden="true"></div>
+
       <!-- Primary "About" window, always present -->
       <section class="win" id="win-about" style="top: 84px; left: 96px; width: 460px;">
         <header class="win__bar" data-drag>
@@ -99,5 +102,6 @@
 
   <script src="js/apps.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/logofx.js"></script>
 </body>
 </html>

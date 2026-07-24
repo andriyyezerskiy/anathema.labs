@@ -692,3 +692,31 @@ html.theme-dark .sheet__icon--word {
   background: linear-gradient(180deg, #26262e 0%, #17171c 100%);
 }
 html.theme-dark .dock__divider { background: rgba(255,255,255,0.18); }
+
+
+/* ============================================================
+   7. LOGO FX — the wordmark draws itself on/off in a loop.
+   Centered on the desktop, behind the windows and non-interactive.
+
+   The real wordmark (Garamond "Anathema" + Grotesk "Labs") is drawn
+   to an offscreen canvas and used as a MASK: a fine grid of small
+   ascii characters fills only the cells that land inside the letter
+   shapes, inheriting the sampled colour. Characters scramble on
+   left-to-right, hold, then scramble off — see js/logofx.js.
+   ============================================================ */
+.logo-fx {
+  position: absolute;
+  inset: 0;
+  z-index: 1;                 /* behind windows (which start at z 10) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;       /* never blocks dragging the desktop */
+  user-select: none;
+  padding: 0 5vw;
+}
+.logo-fx__canvas {
+  display: block;
+  max-width: 90vw;
+  height: auto;
+}
