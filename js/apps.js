@@ -63,7 +63,7 @@ const ANATHEMA_APPS = [
     icon: "assets/icons/umbraa.png",
     iconDark: "assets/icons/umbraa-dark.png",
     accent: true,
-    status: "Coming Soon",
+    appStore: "https://apps.apple.com/app/umbraa/id6786208355",
     url: "umbraa/index.html"
   }
 ];

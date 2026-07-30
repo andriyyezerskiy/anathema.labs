@@ -177,6 +177,7 @@
     var sx, sy, ox, oy, dragging = false;
     bar.addEventListener("mousedown", function (e) {
       if (e.target.classList.contains("win__close")) return;
+      e.preventDefault(); /* stop the browser starting a text selection on drag */
       dragging = true;
       bringFront(win);
       sx = e.clientX; sy = e.clientY;
