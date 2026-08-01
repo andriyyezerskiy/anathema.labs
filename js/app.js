@@ -83,7 +83,7 @@
     var home = el("button", "dock__item dock__item--home");
     home.setAttribute("aria-label", "Anathema Labs — About the studio");
     home.innerHTML =
-      '<span class="dock__tile dock__tile--word"><span class="al-word">Anathema</span></span>' +
+      '<span class="dock__tile dock__tile--img"><img class="ic" src="assets/icons/anathema.svg" alt="" draggable="false" /></span>' +
       '<span class="dock__label">Anathema Labs — About the studio</span>';
     home.addEventListener("click", function () {
       bounceTile(home.querySelector(".dock__tile"));
@@ -334,7 +334,7 @@
     // Studio "home" icon first in the iOS dock — opens the About sheet
     var iosHome = el("button", "ios-app ios-app--home");
     iosHome.innerHTML =
-      '<span class="ios-app__icon ios-app__icon--word"><span class="al-word">Anathema</span></span>' +
+      '<span class="ios-app__icon ios-app__icon--img"><img src="assets/icons/anathema.svg" alt="" draggable="false" /></span>' +
       '<span class="ios-app__label">Anathema</span>';
     iosHome.addEventListener("click", openStudioSheet);
     iosDock.appendChild(iosHome);
@@ -371,7 +371,7 @@
   /* Studio About sheet (the Anathema home icon). */
   function openStudioSheet() {
     sheetContent.innerHTML =
-      '<div class="sheet__icon sheet__icon--word"><span class="al-word">Anathema</span></div>' +
+      '<div class="sheet__icon sheet__icon--img"><img src="assets/icons/anathema.svg" alt="" draggable="false" /></div>' +
       '<h2 class="brand" style="font-size:32px;margin-bottom:6px">Anathema<span class="brand__thin">Labs</span></h2>' +
       '<div class="sheet__tagline">A collision of physical &amp; digital</div>' +
       '<p class="sheet__about">We design where the physical and the digital collide — software made with unusual care, and objects built to last.</p>' +
