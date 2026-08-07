@@ -83,7 +83,7 @@
     var home = el("button", "dock__item dock__item--home");
     home.setAttribute("aria-label", "Anathema Labs — About the studio");
     home.innerHTML =
-      '<span class="dock__tile dock__tile--img"><img class="ic" src="assets/icons/anathema.svg" alt="" draggable="false" /></span>' +
+      '<span class="dock__tile dock__tile--img"><img src="assets/icons/anathema.svg" alt="" draggable="false" /></span>' +
       '<span class="dock__label">Anathema Labs — About the studio</span>';
     home.addEventListener("click", function () {
       bounceTile(home.querySelector(".dock__tile"));
