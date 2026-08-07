@@ -10,6 +10,29 @@
   var darkMQ = window.matchMedia("(prefers-color-scheme: dark)");
   if (darkMQ.matches) document.documentElement.classList.add("theme-dark");
 
+  /* Anathema Labs studio icon, inlined as a data URI so it never depends on
+     a server MIME type, file path, or cache — renders everywhere (incl. Safari
+     and file://). Uses stroke-opacity rather than rgba() for max compatibility. */
+  var ANATHEMA_SVG =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" role="img" aria-label="Anathema Labs">' +
+    '<defs><clipPath id="al-round"><rect width="60" height="60" rx="13"/></clipPath></defs>' +
+    '<g clip-path="url(#al-round)" shape-rendering="crispEdges">' +
+    '<rect width="60" height="60" fill="#fbfaf8"/>' +
+    '<g fill="#ff5b04">' +
+    '<rect x="20" y="10" width="10" height="10"/><rect x="30" y="10" width="10" height="10"/>' +
+    '<rect x="10" y="20" width="10" height="10"/><rect x="40" y="20" width="10" height="10"/>' +
+    '<rect x="10" y="30" width="10" height="10"/><rect x="20" y="30" width="10" height="10"/>' +
+    '<rect x="30" y="30" width="10" height="10"/><rect x="40" y="30" width="10" height="10"/>' +
+    '<rect x="10" y="40" width="10" height="10"/><rect x="40" y="40" width="10" height="10"/>' +
+    '</g>' +
+    '<g stroke="#1a2bc8" stroke-opacity="0.34" stroke-width="1">' +
+    '<path d="M10 0V60M20 0V60M30 0V60M40 0V60M50 0V60"/>' +
+    '<path d="M0 10H60M0 20H60M0 30H60M0 40H60M0 50H60"/>' +
+    '</g></g></svg>';
+  var ANATHEMA_ICON = "data:image/svg+xml," + encodeURIComponent(ANATHEMA_SVG);
+  var favicon = document.querySelector('link[rel="icon"]');
+  if (favicon) favicon.href = ANATHEMA_ICON;
+
   /* ---------- Clocks ---------- */
   function tick() {
     var now = new Date();
@@ -83,7 +106,7 @@
     var home = el("button", "dock__item dock__item--home");
     home.setAttribute("aria-label", "Anathema Labs — About the studio");
     home.innerHTML =
-      '<span class="dock__tile dock__tile--img"><img src="assets/icons/anathema.svg" alt="" draggable="false" /></span>' +
+      '<span class="dock__tile dock__tile--img"><img src="' + ANATHEMA_ICON + '" alt="" draggable="false" /></span>' +
       '<span class="dock__label">Anathema Labs — About the studio</span>';
     home.addEventListener("click", function () {
       bounceTile(home.querySelector(".dock__tile"));
@@ -334,7 +357,7 @@
     // Studio "home" icon first in the iOS dock — opens the About sheet
     var iosHome = el("button", "ios-app ios-app--home");
     iosHome.innerHTML =
-      '<span class="ios-app__icon ios-app__icon--img"><img src="assets/icons/anathema.svg" alt="" draggable="false" /></span>' +
+      '<span class="ios-app__icon ios-app__icon--img"><img src="' + ANATHEMA_ICON + '" alt="" draggable="false" /></span>' +
       '<span class="ios-app__label">Anathema</span>';
     iosHome.addEventListener("click", openStudioSheet);
     iosDock.appendChild(iosHome);
@@ -371,7 +394,7 @@
   /* Studio About sheet (the Anathema home icon). */
   function openStudioSheet() {
     sheetContent.innerHTML =
-      '<div class="sheet__icon sheet__icon--img"><img src="assets/icons/anathema.svg" alt="" draggable="false" /></div>' +
+      '<div class="sheet__icon sheet__icon--img"><img src="' + ANATHEMA_ICON + '" alt="" draggable="false" /></div>' +
       '<h2 class="brand" style="font-size:32px;margin-bottom:6px">Anathema<span class="brand__thin">Labs</span></h2>' +
       '<div class="sheet__tagline">A collision of physical &amp; digital</div>' +
       '<p class="sheet__about">We design where the physical and the digital collide — software made with unusual care, and objects built to last.</p>' +
