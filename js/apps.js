@@ -51,13 +51,13 @@ const ANATHEMA_APPS = [
     id: "umbraa",
     name: "Umbraa",
     tagline: "Made for the hours after dark",
-    about: "Umbraa makes your Mac comfortable to use in the dark. When even the lowest brightness is too bright, it softens every display with an elegant overlay that goes far beyond the system minimum — one slider, immediate, effortless.",
+    about: "Umbraa is a macOS menu bar app that dims your screen well below its normal minimum, so your Mac isn't painful to look at in a dark room. It can also warm the color and black the screen out when you're ready to sleep.",
     features: [
-      ["Dim below the limit", "Soften every connected display past its darkest setting, with smooth, instant preview."],
-      ["Color comfort", "Neutral, Warm, or Red tints ease dark-adapted eyes and keep the screen calm instead of harsh."],
-      ["Sleep timer", "Set a timer and Umbraa fades gently to black, so a bright screen never jolts you awake."],
-      ["Automatic at sunset", "Let it dim on its own from dusk to dawn, based on your location."],
-      ["Built for macOS", "A quiet menu-bar app with external-monitor support, keyboard shortcuts, and launch at login."]
+      ["Screen dimming", "Dims every connected display below the usual minimum, with the change showing right away."],
+      ["Color comfort", "Neutral, Warm, or Red. Warm and red are easier on your eyes at night."],
+      ["Sleep timer", "Set a timer and the screen fades to black when it runs out, so it doesn't wake you up."],
+      ["Sleep now", "One click blacks out every display right away, with no timer to set."],
+      ["Built for macOS", "Lives in the menu bar, works on external monitors, has keyboard shortcuts, and launches at login."]
     ],
     glyph: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16 6 6 0 0 1 0-16z" fill="currentColor" stroke="none"/></svg>',
     icon: "assets/icons/umbraa.png",

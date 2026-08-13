@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Umbraa — Made for the hours after dark</title>
-  <meta name="description" content="Umbraa makes your Mac comfortable to use in the dark. Dim every display below the system minimum, warm the color, and fade to black — all from your menu bar." />
+  <title>Umbraa</title>
+  <meta name="description" content="Umbraa is a macOS menu bar app that dims your screen below its normal minimum, so your Mac is comfortable to use in a dark room. It can warm the color and black the screen out too." />
+  <link rel="icon" href="../assets/icons/umbraa.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="umbraa.css" />
 </head>
-<body>
+<body class="home">
 
   <!-- Nav -->
   <nav class="nav">
@@ -20,117 +21,193 @@
         <span>Umbraa</span>
       </a>
       <div class="nav__links">
-        <a href="#features">Features</a>
+        <a href="#dimming">Features</a>
         <a href="faq.html">FAQ</a>
         <a href="privacy.html">Privacy</a>
-        <a class="btn btn--ghost" href="mailto:contact.andriy@icloud.com?subject=Notify%20me%3A%20Umbraa">Get notified</a>
+        <a class="btn btn--ghost" href="https://apps.apple.com/app/umbraa/id6786208355" target="_blank" rel="noopener">Download ↗</a>
       </div>
     </div>
   </nav>
 
-  <div class="wrap">
+  <!-- Hero -->
+  <header class="hero2">
+    <div class="hero2__inner">
+      <img class="hero2__icon" src="../assets/icons/umbraa.png" alt="Umbraa app icon" />
+      <h1>Umbraa</h1>
+      <p class="hero2__tag">Made for the hours after dark.</p>
+      <p class="hero2__lead">
+        Umbraa is a macOS menu bar app that dims your screen well below its normal
+        minimum, so your Mac isn't painful to look at in a dark room. It can also
+        warm the color and black the screen out when you're ready to sleep.
+      </p>
+      <div class="hero2__cta">
+        <a class="btn btn--primary" href="https://apps.apple.com/app/umbraa/id6786208355" target="_blank" rel="noopener">Download on the App Store ↗</a>
+        <a class="btn btn--ghost" href="#dimming">See how it works ↓</a>
+      </div>
+      <p class="hero2__note">Free on the Mac App Store</p>
+    </div>
+    <a class="hero2__scroll" href="#dimming" aria-label="Scroll to features">↓</a>
+  </header>
 
-    <!-- Hero -->
-    <header class="hero">
-      <div>
-        <div class="hero__icon"><img src="../assets/icons/umbraa.png" alt="Umbraa app icon" /></div>
-        <h1>Umbraa</h1>
-        <p class="hero__tag">Made for the hours after dark.</p>
-        <p class="hero__sub">
-          Umbraa makes your Mac comfortable to use in the dark. When even the
-          lowest brightness is too bright, it softens every display with an
-          elegant overlay that goes far beyond the system minimum.
-        </p>
-        <ul class="hero__list">
-          <li>Dim every display</li>
-          <li>Neutral, warm and red color comfort mode</li>
-          <li>Sleep timer with full screen blackout for late night viewing</li>
-          <li>Configurable automatic dimming from sunset to sunrise</li>
-        </ul>
-        <div class="hero__cta">
-          <a class="btn btn--primary" href="mailto:contact.andriy@icloud.com?subject=Notify%20me%3A%20Umbraa">Get notified ↗</a>
-          <a class="btn btn--ghost" href="#features">See how it works</a>
+  <!-- ===================== Feature: Screen Dimming ===================== -->
+  <section class="feat feat--dim" id="dimming">
+    <div class="feat__inner">
+      <div class="feat__copy">
+        <p class="eyebrow">Screen Dimming</p>
+        <h2>Go darker than your Mac allows.</h2>
+        <p>Your Mac has a lowest brightness, and in a dark room it can still be too
+           bright. Umbraa puts an overlay on top that takes every display much lower.
+           Drag the slider to try it.</p>
+        <div class="control">
+          <span class="control__ico" aria-hidden="true">☀</span>
+          <input class="control__slider" type="range" min="0" max="100" value="35" data-dim-slider aria-label="Screen dimming" />
+          <span class="control__ico" aria-hidden="true">☾</span>
+          <span class="control__val" data-dim-val>35%</span>
         </div>
-        <p class="hero__note">Coming soon to the Mac App Store</p>
       </div>
+      <div class="feat__stage">
+        <div class="laptop">
+          <div class="laptop__lid">
+            <div class="laptop__screen" data-screen data-wall="dim">
+              <div class="screen__wall"></div>
+              <div class="screen__bar"></div>
+              <div class="screen__dock"></div>
+              <div class="screen__tint" data-tint></div>
+              <div class="screen__dim" data-dim></div>
+              <div class="screen__black" data-black><span>☾ Tap to wake</span></div>
+            </div>
+          </div>
+          <div class="laptop__base"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <!-- App panel screenshot -->
-      <div class="hero__shot">
-        <img src="umbraa.png" alt="Umbraa menu-bar panel showing screen dimming, color comfort, and a sleep timer" />
+  <!-- ===================== Feature: Color Comfort ===================== -->
+  <section class="feat feat--color" id="color">
+    <div class="feat__inner feat__inner--rev">
+      <div class="feat__copy">
+        <p class="eyebrow">Color Comfort</p>
+        <h2>Neutral, warm, or red.</h2>
+        <p>Neutral just dims the screen. Warm adds an amber tint that's easier on your
+           eyes at night. Red takes out almost all the blue and green light. Pick one
+           to see it on the screen.</p>
+        <div class="control control--seg" data-color-group>
+          <button class="seg is-on" type="button" data-tint-mode="neutral">Neutral</button>
+          <button class="seg" type="button" data-tint-mode="warm">Warm</button>
+          <button class="seg" type="button" data-tint-mode="red">Red</button>
+        </div>
       </div>
-    </header>
+      <div class="feat__stage">
+        <div class="laptop">
+          <div class="laptop__lid">
+            <div class="laptop__screen" data-screen data-wall="color">
+              <div class="screen__wall"></div>
+              <div class="screen__bar"></div>
+              <div class="screen__dock"></div>
+              <div class="screen__tint" data-tint></div>
+              <div class="screen__dim" data-dim style="opacity:.35"></div>
+              <div class="screen__black" data-black><span>☾ Tap to wake</span></div>
+            </div>
+          </div>
+          <div class="laptop__base"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Features -->
-    <section id="features">
-      <div class="section-head">
-        <p class="eyebrow">What makes Umbraa different</p>
-        <h2>Small, quiet, and exactly enough.</h2>
-      </div>
-      <div class="features">
-        <div class="feature">
-          <div class="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16 6 6 0 0 1 0-16z" fill="currentColor" stroke="none"/></svg></div>
-          <h3>Dim every display</h3>
-          <p>Adjustable dimming with gentle animation. Toggle it easily from the menu bar or with keyboard shortcuts — it works on all connected displays.</p>
-        </div>
-        <div class="feature">
-          <div class="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16" opacity="0.5"/><path d="M12 12l5-5"/></svg></div>
-          <h3>Color comfort</h3>
-          <p>Neutral grayscale is perfect for any occasion. A warm glow is designed for evening use and better sleep, and a red tint reduces blue and green light.</p>
-        </div>
-        <div class="feature">
-          <div class="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></div>
-          <h3>Sleep timer</h3>
-          <p>Set a sleep timer and your screen automatically fades to black with a full-screen blackout for late-night viewing. Easily dismiss it with a tap.</p>
-        </div>
-        <div class="feature">
-          <div class="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M17 18a5 5 0 0 0-10 0M12 3v6M12 9l3-3M12 9L9 6M2 18h20M5 14l1 1M19 14l-1 1"/></svg></div>
-          <h3>Automatic from sunset</h3>
-          <p>Configurable automatic dimming from sunset to sunrise. Umbraa eases on at dusk and off at dawn, automatically.</p>
-        </div>
-        <div class="feature">
-          <div class="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-          <h3>Built for macOS</h3>
-          <p>A native menu-bar app with external-monitor support, keyboard shortcuts, launch at login, and adjustable fade duration.</p>
-        </div>
-        <div class="feature">
-          <div class="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 5.5-7 10-7 10z" opacity="0.55"/><circle cx="12" cy="11" r="2.5"/></svg></div>
-          <h3>Almost invisible</h3>
-          <p>Designed to feel like an Apple utility: calm, refined, and out of the way. No clutter, no learning curve.</p>
+  <!-- ===================== Feature: Sleep Timer ===================== -->
+  <section class="feat feat--timer" id="timer">
+    <div class="feat__inner">
+      <div class="feat__copy">
+        <p class="eyebrow">Sleep Timer</p>
+        <h2>Fades to black while you fall asleep.</h2>
+        <p>Set a timer and the screen fades to black when it runs out. Handy if you
+           fall asleep watching something and don't want the screen waking you up
+           later. Start it to see the fade.</p>
+        <div class="control control--timer">
+          <button class="btn btn--primary" type="button" data-timer-start>Start timer</button>
+          <span class="control__val" data-timer-label>Sets a 45-minute timer</span>
         </div>
       </div>
-    </section>
+      <div class="feat__stage">
+        <div class="laptop">
+          <div class="laptop__lid">
+            <div class="laptop__screen" data-screen data-wall="timer">
+              <div class="screen__wall"></div>
+              <div class="screen__bar"></div>
+              <div class="screen__dock"></div>
+              <div class="screen__tint" data-tint></div>
+              <div class="screen__dim" data-dim></div>
+              <div class="screen__black" data-black><span>☾ Tap to wake</span></div>
+            </div>
+          </div>
+          <div class="laptop__base"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Built for macOS -->
-    <section class="macos">
-      <div class="section-head">
-        <p class="eyebrow">Built for macOS</p>
-        <h2>Feels like a native part of your Mac.</h2>
+  <!-- ===================== Feature: Sleep Now ===================== -->
+  <section class="feat feat--now" id="sleep-now">
+    <div class="feat__inner feat__inner--rev">
+      <div class="feat__copy">
+        <p class="eyebrow eyebrow--new">New · Sleep Now</p>
+        <h2>Lights out, instantly.</h2>
+        <p>One click blacks out every display right away, with no timer to set. Good
+           for watching something in bed. Tap the screen to bring it back.</p>
+        <div class="control control--now">
+          <button class="btn btn--primary" type="button" data-now-toggle>Sleep now</button>
+        </div>
       </div>
+      <div class="feat__stage">
+        <div class="laptop">
+          <div class="laptop__lid">
+            <div class="laptop__screen" data-screen data-wall="now">
+              <div class="screen__wall"></div>
+              <div class="screen__bar"></div>
+              <div class="screen__dock"></div>
+              <div class="screen__tint" data-tint></div>
+              <div class="screen__dim" data-dim></div>
+              <div class="screen__black" data-black><span>☾ Tap to wake</span></div>
+            </div>
+          </div>
+          <div class="laptop__base"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Built for macOS -->
+  <section class="macos2">
+    <div class="wrap">
+      <p class="eyebrow">Built for macOS</p>
+      <h2>Built like a normal Mac app.</h2>
       <div class="macos__grid">
-        <div class="macos__item">Menu-bar app, one click away, always out of the way</div>
-        <div class="macos__item">Supports external monitors</div>
-        <div class="macos__item">Keyboard shortcuts for dimming, toggling, and the sleep timer</div>
-        <div class="macos__item">Launch at login and start where you left off</div>
-        <div class="macos__item">Adjustable fade duration</div>
-        <div class="macos__item">No accounts, no data collection — ever</div>
+        <div class="macos__item">Lives in your menu bar</div>
+        <div class="macos__item">Works on all connected displays</div>
+        <div class="macos__item">Keyboard shortcuts for everything</div>
+        <div class="macos__item">Automatic dimming from sunset to sunrise</div>
+        <div class="macos__item">Launches at login, with an adjustable fade duration</div>
+        <div class="macos__item">No accounts and no data collection</div>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
 
   <!-- Closing -->
   <section class="closing">
     <div class="wrap">
       <h2>Made for the hours after dark.</h2>
-      <a class="btn btn--primary" href="mailto:contact.andriy@icloud.com?subject=Notify%20me%3A%20Umbraa">Get notified ↗</a>
+      <a class="btn btn--primary" href="https://apps.apple.com/app/umbraa/id6786208355" target="_blank" rel="noopener">Download on the App Store ↗</a>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="wrap footer__inner">
-      <div class="footer__brand"><b>Umbraa</b> — by Anathema Labs</div>
+      <div class="footer__brand"><b>Umbraa</b> by Anathema Labs</div>
       <div class="footer__links">
-        <a href="#features">Features</a>
+        <a href="#dimming">Features</a>
         <a href="faq.html">FAQ</a>
         <a href="privacy.html">Privacy</a>
         <a href="mailto:contact.andriy@icloud.com">Contact</a>
@@ -140,5 +217,6 @@
     </div>
   </footer>
 
+  <script src="umbraa.js"></script>
 </body>
 </html>
