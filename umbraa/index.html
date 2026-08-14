@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Umbraa</title>
-  <meta name="description" content="Umbraa is a macOS menu bar app that dims your screen below its normal minimum, so your Mac is comfortable to use in a dark room. It can warm the color and black the screen out too." />
+  <meta name="description" content="Umbraa is a native macOS menu bar app that dims your screen below its built-in minimum, so your Mac is comfortable to use in a dark room. It can warm the color and black the screen out too." />
   <link rel="icon" href="../assets/icons/umbraa.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -36,15 +36,16 @@
       <h1>Umbraa</h1>
       <p class="hero2__tag">Made for the hours after dark.</p>
       <p class="hero2__lead">
-        Umbraa is a macOS menu bar app that dims your screen well below its normal
-        minimum, so your Mac isn't painful to look at in a dark room. It can also
-        warm the color and black the screen out when you're ready to sleep.
+        Umbraa lives in your menu bar and takes your Mac's screen well below its
+        built-in minimum brightness, so it stays comfortable in a dark room instead
+        of glaring back at you. It can warm the colors too, or black the screen out
+        completely when you're ready to sleep.
       </p>
       <div class="hero2__cta">
         <a class="btn btn--primary" href="https://apps.apple.com/app/umbraa/id6786208355" target="_blank" rel="noopener">Download on the App Store ↗</a>
         <a class="btn btn--ghost" href="#dimming">See how it works ↓</a>
       </div>
-      <p class="hero2__note">Free on the Mac App Store</p>
+      <p class="hero2__note">$3.99 on the Mac App Store</p>
     </div>
     <a class="hero2__scroll" href="#dimming" aria-label="Scroll to features">↓</a>
   </header>
@@ -55,9 +56,9 @@
       <div class="feat__copy">
         <p class="eyebrow">Screen Dimming</p>
         <h2>Go darker than your Mac allows.</h2>
-        <p>Your Mac has a lowest brightness, and in a dark room it can still be too
-           bright. Umbraa puts an overlay on top that takes every display much lower.
-           Drag the slider to try it.</p>
+        <p>Even at its lowest setting, your Mac's backlight is often still too bright
+           in a dark room. Umbraa dims every display well past that limit, smoothly
+           and right away. Drag the slider to see how far it goes.</p>
         <div class="control">
           <span class="control__ico" aria-hidden="true">☀</span>
           <input class="control__slider" type="range" min="0" max="100" value="35" data-dim-slider aria-label="Screen dimming" />
@@ -89,9 +90,9 @@
       <div class="feat__copy">
         <p class="eyebrow">Color Comfort</p>
         <h2>Neutral, warm, or red.</h2>
-        <p>Neutral just dims the screen. Warm adds an amber tint that's easier on your
-           eyes at night. Red takes out almost all the blue and green light. Pick one
-           to see it on the screen.</p>
+        <p>Three ways to make the screen easier on your eyes. Neutral keeps the colors
+           true, Warm shifts them amber for late evenings, and Red cuts nearly all the
+           blue and green light. Try each one on the screen.</p>
         <div class="control control--seg" data-color-group>
           <button class="seg is-on" type="button" data-tint-mode="neutral">Neutral</button>
           <button class="seg" type="button" data-tint-mode="warm">Warm</button>
@@ -122,12 +123,11 @@
       <div class="feat__copy">
         <p class="eyebrow">Sleep Timer</p>
         <h2>Fades to black while you fall asleep.</h2>
-        <p>Set a timer and the screen fades to black when it runs out. Handy if you
-           fall asleep watching something and don't want the screen waking you up
-           later. Start it to see the fade.</p>
+        <p>Set a timer and Umbraa fades the screen to black when it ends. Fall asleep
+           to a movie and it won't be a bright screen that wakes you at 3 a.m. Start
+           the timer to watch it fade.</p>
         <div class="control control--timer">
           <button class="btn btn--primary" type="button" data-timer-start>Start timer</button>
-          <span class="control__val" data-timer-label>Sets a 45-minute timer</span>
         </div>
       </div>
       <div class="feat__stage">
@@ -139,6 +139,16 @@
               <div class="screen__dock"></div>
               <div class="screen__tint" data-tint></div>
               <div class="screen__dim" data-dim></div>
+              <div class="screen__countdown" data-countdown>
+                <svg class="cd__ring" viewBox="0 0 100 100">
+                  <circle class="cd__track" cx="50" cy="50" r="44"/>
+                  <circle class="cd__prog" data-cd-ring cx="50" cy="50" r="44"/>
+                </svg>
+                <div class="cd__center">
+                  <span class="cd__time" data-cd-time>30:00</span>
+                  <span class="cd__label">until sleep</span>
+                </div>
+              </div>
               <div class="screen__black" data-black><span>☾ Tap to wake</span></div>
             </div>
           </div>
@@ -154,8 +164,9 @@
       <div class="feat__copy">
         <p class="eyebrow eyebrow--new">New · Sleep Now</p>
         <h2>Lights out, instantly.</h2>
-        <p>One click blacks out every display right away, with no timer to set. Good
-           for watching something in bed. Tap the screen to bring it back.</p>
+        <p>One click blacks out every display right away, with no timer to set. Ideal
+           when you're watching in bed and want the light gone this second. Tap the
+           screen to bring it back.</p>
         <div class="control control--now">
           <button class="btn btn--primary" type="button" data-now-toggle>Sleep now</button>
         </div>
@@ -169,7 +180,10 @@
               <div class="screen__dock"></div>
               <div class="screen__tint" data-tint></div>
               <div class="screen__dim" data-dim></div>
-              <div class="screen__black" data-black><span>☾ Tap to wake</span></div>
+              <div class="screen__black" data-black></div>
+              <div class="screen__count" data-count></div>
+              <div class="screen__goodnight" data-goodnight>Goodnight</div>
+              <div class="screen__wake" data-wake>☾ Tap to wake</div>
             </div>
           </div>
           <div class="laptop__base"></div>
@@ -181,8 +195,9 @@
   <!-- Built for macOS -->
   <section class="macos2">
     <div class="wrap">
-      <p class="eyebrow">Built for macOS</p>
-      <h2>Built like a normal Mac app.</h2>
+      <p class="eyebrow">Native to macOS</p>
+      <h2>A fully native Mac app.</h2>
+      <p class="macos2__lead">Umbraa is written entirely for macOS and tuned down to the small details, so it feels like part of the system rather than something bolted on. It stays fast, light, and out of your way.</p>
       <div class="macos__grid">
         <div class="macos__item">Lives in your menu bar</div>
         <div class="macos__item">Works on all connected displays</div>

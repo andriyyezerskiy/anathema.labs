@@ -273,12 +273,35 @@ img { max-width: 100%; display: block; }
 .screen__black.is-on { opacity: 1; pointer-events: auto; cursor: pointer; }
 .screen__black.is-arming { transition: opacity var(--fade,5000ms) linear; }
 
+/* sleep-timer countdown on the screen */
+.screen__countdown { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+.screen__countdown.is-on { opacity: 1; }
+.screen__countdown::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.4), transparent 58%); }
+.cd__ring { position: relative; width: 42%; aspect-ratio: 1; transform: rotate(-90deg); filter: drop-shadow(0 4px 12px rgba(0,0,0,0.45)); }
+.cd__track { fill: none; stroke: rgba(255,255,255,0.25); stroke-width: 5; }
+.cd__prog { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; }
+.cd__center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 3px; }
+.cd__time { font-family: var(--font-display); font-weight: 700; color: #fff; font-size: clamp(20px, 4.4vw, 34px); line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,0.5); font-variant-numeric: tabular-nums; }
+.cd__label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.72); }
+
+/* sleep-now sequence: countdown, goodnight, wake hint */
+.screen__count { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.screen__count.is-on { opacity: 1; }
+.screen__count span { display: inline-block; font-family: var(--font-display); font-weight: 700; color: #fff; font-size: clamp(52px, 13vw, 96px); line-height: 1; text-shadow: 0 4px 24px rgba(0,0,0,0.55); animation: countPop 0.35s ease; }
+@keyframes countPop { from { transform: scale(1.35); opacity: 0.2; } to { transform: scale(1); opacity: 1; } }
+.screen__goodnight { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; pointer-events: none; color: #fff; font-family: var(--font-display); font-weight: 700; font-size: clamp(30px, 7.5vw, 58px); letter-spacing: -0.01em; text-shadow: 0 4px 24px rgba(0,0,0,0.55); transition: opacity 1.5s ease; }
+.screen__goodnight.is-in { opacity: 1; transition: opacity 0.4s ease; }
+.screen__wake { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; pointer-events: none; color: rgba(255,255,255,0.45); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; transition: opacity 0.6s ease; }
+.screen__wake.is-on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .screen__count span { animation: none; } }
+
 /* ============================================================
    Built for macOS + closing (dark finale on home)
    ============================================================ */
 .macos2 { background: #0a1120; color: #fff; padding: 96px 0; }
 .macos2 .eyebrow { color: #6db2ff; }
-.macos2 h2 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 42px); font-weight: 700; letter-spacing: -0.02em; margin: 12px 0 36px; }
+.macos2 h2 { font-family: var(--font-display); font-size: clamp(28px, 4vw, 42px); font-weight: 700; letter-spacing: -0.02em; margin: 12px 0 16px; }
+.macos2__lead { max-width: 60ch; font-size: 17px; line-height: 1.6; color: rgba(255,255,255,0.72); margin-bottom: 40px; }
 .macos__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 40px; }
 .macos__item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 15px; color: rgba(255,255,255,0.9); }
 .macos__item::before { content: "▸"; color: #6db2ff; }

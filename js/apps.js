@@ -51,7 +51,7 @@ const ANATHEMA_APPS = [
     id: "umbraa",
     name: "Umbraa",
     tagline: "Made for the hours after dark",
-    about: "Umbraa is a macOS menu bar app that dims your screen well below its normal minimum, so your Mac isn't painful to look at in a dark room. It can also warm the color and black the screen out when you're ready to sleep.",
+    about: "Umbraa is a native macOS app that lives in your menu bar and takes your screen well below its built-in minimum brightness, so your Mac stays comfortable in a dark room. It can warm the colors and black the screen out when you're ready to sleep.",
     features: [
       ["Screen dimming", "Dims every connected display below the usual minimum, with the change showing right away."],
       ["Color comfort", "Neutral, Warm, or Red. Warm and red are easier on your eyes at night."],
