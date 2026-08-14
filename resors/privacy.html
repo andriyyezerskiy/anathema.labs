@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Resors</title>
+  <meta name="description" content="Resors privacy policy — Resors collects no personal information or analytics. Your data stays on your device and in your personal iCloud account." />
+  <link rel="canonical" href="https://andriyyezerskiy.github.io/anathema.labs/resors/privacy.html" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <meta name="theme-color" content="#f6f4f8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#100a16" media="(prefers-color-scheme: dark)" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Resors" />
+  <meta property="og:title" content="Privacy Policy — Resors" />
+  <meta property="og:description" content="Resors collects no personal information or analytics. Your data stays on your device and in your personal iCloud account." />
+  <meta property="og:url" content="https://andriyyezerskiy.github.io/anathema.labs/resors/privacy.html" />
+  <meta property="og:image" content="https://andriyyezerskiy.github.io/anathema.labs/resors/images/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Privacy Policy — Resors" />
+  <meta name="twitter:description" content="Resors collects no personal information or analytics." />
+  <meta name="twitter:image" content="https://andriyyezerskiy.github.io/anathema.labs/resors/images/og-image.jpg" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f4f8;
+      --text: #1c1c1e;
+      --muted: rgba(28,28,30,0.62);
+      --accent: #007aff;
+      --accent-2: #46b1ff;
+      --card-bg: rgba(255,255,255,0.65);
+      --border: rgba(0,0,0,0.08);
+      --shadow: 0 20px 60px rgba(0,0,0,0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #100a16;
+        --text: #f5f5f7;
+        --muted: rgba(245,245,247,0.62);
+        --accent: #0a84ff;
+        --accent-2: #64d2ff;
+        --card-bg: rgba(34,28,42,0.55);
+        --border: rgba(255,255,255,0.1);
+        --shadow: 0 20px 60px rgba(0,0,0,0.5);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: drift 22s ease-in-out infinite alternate; }
+    .blob.b1 { width: 46vw; height: 46vw; top: -14vw; left: -10vw; background: #7c3aed; }
+    .blob.b2 { width: 40vw; height: 40vw; top: 45vh; right: -14vw; background: #e11d48; animation-delay: -8s; }
+    @media (prefers-color-scheme: dark) { .blob { opacity: 0.35; } }
+    @keyframes drift {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(4vw,3vh) scale(1.1); }
+      100% { transform: translate(-3vw,-2vh) scale(0.95); }
+    }
+    @media (prefers-reduced-motion: reduce) { .blob { animation: none; } }
+
+    .wrap { max-width: 740px; margin: 0 auto; padding: 0 24px; }
+
+    header.page { text-align: center; padding: 5rem 0 2rem; }
+    .eyebrow {
+      text-transform: uppercase; letter-spacing: 0.12em;
+      font-size: 0.78rem; font-weight: 700; color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3rem);
+      font-weight: 800; letter-spacing: -0.03em; margin: 0 0 0.5rem;
+      background: linear-gradient(120deg, var(--text), var(--accent) 75%, var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    header.page p { color: var(--muted); margin: 0; }
+
+    .doc {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem 2.4rem;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+    }
+    .doc h2 { font-size: 1.2rem; font-weight: 800; margin: 2em 0 0.5em; }
+    .doc h2:first-child { margin-top: 0; }
+    .doc p { margin: 0 0 1em; color: var(--muted); }
+    .doc p:last-child { margin-bottom: 0; }
+    .doc a { color: var(--accent); text-decoration: none; }
+    .doc a:hover { text-decoration: underline; }
+
+    footer { text-align: center; padding: 2rem 0 4rem; font-size: 0.88rem; color: var(--muted); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+  </div>
+
+  <div class="wrap">
+    <header class="page">
+      <div class="eyebrow">Your data stays yours</div>
+      <h1>Privacy Policy</h1>
+      <p>Effective Date: November 4, 2025</p>
+    </header>
+
+    <div class="doc">
+      <p>Resors respects your privacy. This policy explains how your information is handled when you use the app.</p>
+
+      <h2>1. Information We Collect</h2>
+      <p>Resors does not collect personal information or analytics data. All data and settings you work with remain on your device unless you choose to export or share them manually.</p>
+
+      <h2>2. Use of iCloud</h2>
+      <p>Resors uses Apple’s iCloud service to securely store and sync user data — such as app preferences or user-generated data — across your devices. This data is stored in your personal iCloud account, and Resors does not have access to it. Apple’s iCloud terms and privacy policies apply to this data.</p>
+
+      <h2>3. Data Security</h2>
+      <p>All data processed by Resors stays local to your device or your iCloud account. No data is transmitted to third-party servers or analytics services.</p>
+
+      <h2>4. Your Choices</h2>
+      <p>You can disable iCloud syncing at any time in your device’s iCloud settings. Doing so will keep all Resors data stored locally on your Mac.</p>
+
+      <h2>Contact</h2>
+      <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:contact.andriy@icloud.com">contact.andriy@icloud.com</a>.</p>
+    </div>
+
+    <footer>
+      © 2025–2026 Andriy Yezerskiy · <a href="index.html">Resors</a> · <a href="roadmap.html">Roadmap</a> · <a href="support.html">Support</a>
+    </footer>
+  </div>
+</body>
+</html>

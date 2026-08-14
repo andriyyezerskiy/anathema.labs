@@ -45,7 +45,7 @@ const ANATHEMA_APPS = [
     iconDark: "assets/icons/resors-dark.png",
     accent: false,
     appStore: "https://apps.apple.com/app/resors/id6748361802",
-    url: ""
+    url: "resors/index.html"
   },
   {
     id: "umbraa",

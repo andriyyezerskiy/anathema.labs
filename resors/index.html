@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resors — Xcode Design Systems Made Easy</title>
+  <meta name="description" content="Resors transforms Xcode asset management into a fast, visual workflow. Create, import, group, and export color assets — with bi-directional sync to your Xcode project." />
+  <link rel="canonical" href="https://andriyyezerskiy.github.io/anathema.labs/resors/" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <meta name="theme-color" content="#f6f4f8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#100a16" media="(prefers-color-scheme: dark)" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Resors" />
+  <meta property="og:title" content="Resors — Xcode Design Systems Made Easy" />
+  <meta property="og:description" content="A native macOS app that turns Xcode asset management into a fast, visual workflow. Create, import, group, sync, and export — colors, symbols, and images." />
+  <meta property="og:url" content="https://andriyyezerskiy.github.io/anathema.labs/resors/" />
+  <meta property="og:image" content="https://andriyyezerskiy.github.io/anathema.labs/resors/images/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Resors — Xcode Design Systems Made Easy" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Resors — Xcode Design Systems Made Easy" />
+  <meta name="twitter:description" content="A native macOS app that turns Xcode asset management into a fast, visual workflow." />
+  <meta name="twitter:image" content="https://andriyyezerskiy.github.io/anathema.labs/resors/images/og-image.jpg" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Resors",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "macOS",
+    "url": "https://andriyyezerskiy.github.io/anathema.labs/resors/",
+    "image": "https://andriyyezerskiy.github.io/anathema.labs/resors/images/og-image.jpg",
+    "description": "Resors transforms Xcode asset management into a fast, visual workflow. Create, import, group, sync, and export color, symbol, and image assets with bi-directional Xcode sync.",
+    "downloadUrl": "https://apps.apple.com/app/resors/id6748361802",
+    "offers": { "@type": "Offer", "url": "https://apps.apple.com/app/resors/id6748361802" }
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f4f8;
+      --text: #1c1c1e;
+      --muted: rgba(28,28,30,0.62);
+      --accent: #007aff;
+      --accent-grad: #46b1ff;
+      --card-bg: rgba(255,255,255,0.65);
+      --card-strong: rgba(255,255,255,0.9);
+      --border: rgba(0,0,0,0.08);
+      --shadow: 0 20px 60px rgba(0,0,0,0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #100a16;
+        --text: #f5f5f7;
+        --muted: rgba(245,245,247,0.62);
+        --accent: #0a84ff;
+        --accent-grad: #64d2ff;
+        --card-bg: rgba(34,28,42,0.55);
+        --card-strong: rgba(46,38,56,0.8);
+        --border: rgba(255,255,255,0.1);
+        --shadow: 0 20px 60px rgba(0,0,0,0.5);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Animated ambient background blobs — brand purple / crimson / orange */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: drift 22s ease-in-out infinite alternate;
+    }
+    .blob.b1 { width: 46vw; height: 46vw; top: -10vw; left: -8vw; background: #7c3aed; }
+    .blob.b2 { width: 40vw; height: 40vw; top: 30vh; right: -12vw; background: #e11d48; animation-delay: -6s; }
+    .blob.b3 { width: 38vw; height: 38vw; bottom: -12vw; left: 25vw; background: #f97316; animation-delay: -12s; opacity: 0.35; }
+    @media (prefers-color-scheme: dark) {
+      .blob { opacity: 0.35; }
+      .blob.b3 { opacity: 0.22; }
+    }
+    @keyframes drift {
+      0%   { transform: translate(0,0) scale(1); }
+      50%  { transform: translate(4vw,3vh) scale(1.1); }
+      100% { transform: translate(-3vw,-2vh) scale(0.95); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .blob { animation: none; }
+    }
+
+    .wrap {
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 0 3rem;
+    }
+    .app-icon {
+      width: 132px;
+      height: 132px;
+      border-radius: 30px;
+      object-fit: cover;
+      box-shadow: var(--shadow);
+      animation: floatIcon 6s ease-in-out infinite;
+    }
+    @keyframes floatIcon {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-10px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .app-icon, .folder, .aurora, .aurora .disc { animation: none; }
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 1.8rem 0 0.4rem;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      backdrop-filter: blur(20px);
+    }
+    .badge .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #34c759;
+      box-shadow: 0 0 0 0 rgba(52,199,89,0.6);
+      animation: pulse 2.2s infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(52,199,89,0.55); }
+      70%  { box-shadow: 0 0 0 8px rgba(52,199,89,0); }
+      100% { box-shadow: 0 0 0 0 rgba(52,199,89,0); }
+    }
+    h1.logo {
+      font-size: clamp(2.8rem, 8vw, 4.6rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      margin: 0.5rem 0 0.4rem;
+      background: linear-gradient(110deg, var(--accent), var(--accent-grad));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tagline {
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.8rem;
+    }
+    .subtitle {
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      color: var(--muted);
+      max-width: 580px;
+      margin: 0 auto 2rem;
+      line-height: 1.55;
+    }
+    .cta-row {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    a.button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: #fff;
+      background: var(--accent);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.9rem 1.7rem;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,122,255,0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+    a.button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 16px 40px rgba(0,122,255,0.45);
+    }
+    a.button.ghost {
+      color: var(--text);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      box-shadow: none;
+      backdrop-filter: blur(20px);
+    }
+    a.button.ghost:hover {
+      background: var(--card-strong);
+      filter: none;
+      box-shadow: var(--shadow);
+    }
+
+    /* Sections */
+    section.block { padding: 4rem 0; }
+    .section-head { text-align: center; margin-bottom: 2.5rem; }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    .section-head h2 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+    }
+    .section-head p { color: var(--muted); margin: 0; }
+
+    /* ============ Interactive demo ============ */
+    /* The demo window follows the website's color scheme via these vars.
+       Dark is the base; light overrides below. */
+    .demo-shell {
+      --ink: #f0f0f3;
+      --ink2: rgba(255,255,255,0.55);
+      --ink3: rgba(255,255,255,0.38);
+      --srf: rgba(255,255,255,0.05);
+      --srf2: rgba(255,255,255,0.09);
+      --srf3: rgba(255,255,255,0.14);
+      --brd: rgba(255,255,255,0.09);
+      --glass-card: rgba(44,42,52,0.55);
+      --card-sh: 0 6px 18px rgba(0,0,0,0.3);
+      --code-c: #9ecbff;
+      --export-bg: rgba(10,8,16,0.45);
+      --seg-on: #3f3d48;
+      --side-w: 240px;
+      --insp-w: 264px;
+
+      border-radius: 22px;
+      background: rgba(24,21,32,0.78);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      color: var(--ink);
+    }
+    @media (prefers-color-scheme: light) {
+      .demo-shell {
+        --ink: #1c1c1e;
+        --ink2: rgba(28,28,30,0.6);
+        --ink3: rgba(28,28,30,0.42);
+        --srf: rgba(0,0,0,0.035);
+        --srf2: rgba(0,0,0,0.05);
+        --srf3: rgba(0,0,0,0.09);
+        --brd: rgba(0,0,0,0.08);
+        --glass-card: rgba(255,255,255,0.72);
+        --card-sh: 0 6px 18px rgba(0,0,0,0.1);
+        --code-c: #0a5fd6;
+        --export-bg: rgba(255,255,255,0.5);
+        --seg-on: #ffffff;
+
+        background: rgba(248,246,252,0.8);
+        border: 1px solid rgba(0,0,0,0.1);
+      }
+    }
+    /* unified macOS toolbar */
+    .tb {
+      display: grid;
+      grid-template-columns: var(--side-w) minmax(0,1fr) var(--insp-w);
+      align-items: center;
+      height: 52px;
+      background: var(--srf);
+      border-bottom: 1px solid var(--brd);
+    }
+    .tb-side, .tb-mid, .tb-insp { display: flex; align-items: center; height: 100%; min-width: 0; }
+    .tb-side { gap: 8px; padding: 0 14px; border-right: 1px solid var(--brd); }
+    .tb-mid { justify-content: space-between; gap: 10px; padding: 0 16px; }
+    .tb-insp { gap: 8px; padding: 0 12px; border-left: 1px solid var(--brd); }
+    .tl { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .tl.r { background: #ff5f57; } .tl.y { background: #febc2e; } .tl.g { background: #28c840; }
+    .tb-title { font-size: 0.9rem; font-weight: 700; line-height: 1.05; white-space: nowrap; }
+    .tb-title small { display: block; font-weight: 500; font-size: 0.64rem; color: var(--ink3); margin-top: 2px; }
+    .tb-grp { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .tb-ico {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--ink2);
+    }
+    .tb-ico svg { width: 15px; height: 15px; }
+    .tb-ico.round { border: 1px solid var(--brd); background: var(--srf2); }
+    .tb-ico.plain { color: var(--ink3); }
+    .tb-ico.wide { width: auto; padding: 0 8px; gap: 1px; }
+    .tb-ico.wide .chev { width: 9px; height: 9px; }
+    .tb-search {
+      display: flex; align-items: center; gap: 6px;
+      flex: 1; min-width: 0; height: 28px; padding: 0 10px;
+      border-radius: 8px; background: var(--srf2); border: 1px solid var(--brd);
+      color: var(--ink3); font-size: 0.78rem;
+    }
+    .tb-search svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* skeleton "blobs" for non-essential chrome (toolbar / sidebar / inspector) */
+    .bk { background: var(--srf3); border-radius: 999px; display: inline-block; flex-shrink: 0; }
+    .bk.sq { border-radius: 7px; }
+    .lb { height: 8px; border-radius: 4px; background: var(--srf3); display: inline-block; }
+    .tb-title-bk { display: flex; flex-direction: column; gap: 6px; }
+    .sb-label { width: 60px; height: 7px; border-radius: 4px; background: var(--srf2); margin: 14px 10px 8px; }
+    .sb-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; }
+    .sb-row.active { background: var(--srf3); }
+    .sb-row .ic { width: 16px; height: 16px; border-radius: 6px; background: var(--srf3); flex-shrink: 0; }
+    .sb-row.active .ic { background: var(--ink3); }
+    .sb-row.active .lb { background: var(--ink2); }
+    .ins-seg { display: flex; gap: 4px; background: var(--srf2); border-radius: 9px; padding: 3px; margin-bottom: 14px; }
+    .ins-seg span { flex: 1; height: 22px; border-radius: 7px; background: var(--srf3); }
+    .ins-seg span.on { background: var(--accent); }
+    .ins-label { width: 52px; height: 7px; border-radius: 4px; background: var(--srf2); margin: 14px 0 9px; }
+    .ins-chip { display: inline-block; height: 24px; width: 58px; border-radius: 7px; background: var(--srf3); }
+    .ins-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--brd); }
+
+    .d-body { display: flex; min-height: 500px; }
+
+    .d-side {
+      width: var(--side-w);
+      flex-shrink: 0;
+      background: var(--srf);
+      padding: 14px 10px;
+      border-right: 1px solid var(--brd);
+      font-size: 0.82rem;
+    }
+    .grp-label {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink3);
+      margin: 10px 10px 6px;
+      font-weight: 700;
+    }
+    .grp {
+      padding: 7px 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink2);
+      white-space: nowrap;
+    }
+    .grp svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.8; }
+    .grp.active { background: var(--srf3); color: var(--ink); }
+
+    .d-main { flex: 1; padding: 16px; display: flex; flex-direction: column; min-width: 0; }
+    .d-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .d-toolbar .ttl { font-weight: 700; font-size: 0.92rem; }
+    .d-toolbar .ttl small { display: block; font-weight: 500; font-size: 0.7rem; color: var(--ink3); }
+    .d-actions { display: flex; gap: 8px; align-items: center; }
+    .seg {
+      display: inline-flex;
+      background: var(--srf2);
+      border-radius: 9px;
+      padding: 3px;
+    }
+    .seg button {
+      all: unset;
+      box-sizing: border-box;
+      cursor: pointer;
+      padding: 5px 13px;
+      border-radius: 7px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--ink2);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .seg button.on { background: var(--seg-on); color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+    .d-btn {
+      all: unset;
+      box-sizing: border-box;
+      cursor: pointer;
+      padding: 6px 13px;
+      border-radius: 9px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      background: var(--srf2);
+      color: var(--ink);
+      transition: background 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+    }
+    .d-btn:hover { background: var(--srf3); }
+    .d-btn[disabled] { opacity: 0.4; cursor: default; }
+    .d-btn.primary { background: var(--accent); color: #fff; }
+    .d-btn.primary:hover { filter: brightness(1.12); background: var(--accent); }
+
+    .d-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+      gap: 12px;
+      align-content: start;
+      flex: 1;
+    }
+    /* Asset card — glassy, edge-to-edge swatch, 140:230 proportions */
+    .d-card {
+      aspect-ratio: 140 / 230;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      background: var(--glass-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: var(--ink);
+      border: 2px solid transparent;
+      border-radius: 24px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: var(--card-sh);
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    /* Entrance animation only on first mount / import, never on reselect */
+    .d-card.fresh { animation: cardIn 0.4s cubic-bezier(.2,.7,.3,1) both; }
+    @keyframes cardIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .d-card:hover { transform: translateY(-2px); }
+    .d-card.sel { border-color: var(--accent); }
+    .d-card .sw {
+      flex: 0 0 62%;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.25s ease;
+    }
+    .d-card .sw.surface { background: var(--srf3); }
+    .d-card .sw svg { width: 42%; height: 42%; }
+    .d-card .meta {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 14px;
+    }
+    .d-card .nm {
+      font-size: 0.78rem;
+      font-weight: 700;
+      word-break: break-word;
+      line-height: 1.25;
+    }
+    .d-card .dots { display: flex; gap: 7px; align-items: center; }
+    .d-card .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid currentColor;
+    }
+    .d-card .dot.full { background: currentColor; }
+    .d-card .dot.half { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+    .d-card .sub { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.05em; opacity: 0.5; }
+
+    .d-export {
+      margin-top: 14px;
+      background: var(--export-bg);
+      border: 1px solid var(--brd);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .ex-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      font-size: 0.72rem;
+      font-family: "SF Mono", ui-monospace, Menlo, monospace;
+      color: var(--ink2);
+      border-bottom: 1px solid var(--brd);
+    }
+    .d-export pre {
+      margin: 0;
+      padding: 12px;
+      font-size: 0.68rem;
+      line-height: 1.5;
+      font-family: "SF Mono", ui-monospace, Menlo, monospace;
+      color: var(--code-c);
+      overflow-x: auto;
+      max-height: 220px;
+    }
+
+    /* Inspector */
+    .d-insp {
+      width: var(--insp-w);
+      flex-shrink: 0;
+      background: var(--srf);
+      border-left: 1px solid var(--brd);
+      padding: 14px;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .i-tabs {
+      display: flex;
+      background: var(--srf2);
+      border-radius: 9px;
+      padding: 3px;
+      margin-bottom: 12px;
+    }
+    .i-tabs button {
+      all: unset;
+      box-sizing: border-box;
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: 5px 0;
+      border-radius: 7px;
+      cursor: pointer;
+      color: var(--ink2);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .i-tabs button.on { background: var(--accent); color: #fff; }
+    .i-tabs button svg { width: 15px; height: 15px; }
+
+    .i-tab { display: none; flex: 1; }
+    .i-tab.on { display: block; }
+
+    .i-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--brd);
+      color: var(--ink2);
+      font-size: 0.72rem;
+    }
+    .i-row code, .i-row b {
+      font-family: "SF Mono", ui-monospace, Menlo, monospace;
+      font-weight: 500;
+      font-size: 0.7rem;
+      color: var(--ink);
+      text-align: right;
+    }
+    .i-label {
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink3);
+      margin: 12px 0 7px;
+      font-weight: 700;
+    }
+    .i-tab .i-label:first-child { margin-top: 0; }
+    .chip {
+      display: inline-block;
+      background: var(--srf3);
+      border-radius: 7px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .e-swatch {
+      width: 84px;
+      height: 84px;
+      border-radius: 18px;
+      margin: 12px auto;
+      border: 1px solid var(--brd);
+      transition: background 0.25s ease;
+    }
+    .op-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+    .op-row span { font-size: 0.72rem; color: var(--ink2); }
+    .op-bar { flex: 1; height: 4px; border-radius: 2px; background: var(--srf3); position: relative; }
+    .op-bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 2px;
+      background: var(--accent);
+    }
+
+    .pv-text {
+      border-radius: 12px;
+      padding: 10px 12px;
+      transition: background 0.25s ease;
+    }
+    .pv-text .t1 { font-size: 0.62rem; margin: 0 0 2px; transition: color 0.25s ease; }
+    .pv-text .t2 { font-size: 0.86rem; font-weight: 700; margin: 0 0 3px; transition: color 0.25s ease; }
+    .pv-text .t3 { font-size: 0.64rem; font-family: "SF Mono", ui-monospace, Menlo, monospace; margin: 0; transition: color 0.25s ease; }
+    .pv-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .pv-btns span {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 7px;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+    .pv-toggle { display: flex; align-items: center; gap: 8px; }
+    .pv-check {
+      width: 16px; height: 16px;
+      border-radius: 5px;
+      display: grid; place-items: center;
+      color: #fff;
+      font-size: 0.62rem;
+      transition: background 0.25s ease;
+    }
+    .pv-shapes { display: flex; align-items: center; gap: 10px; }
+    .pv-shapes i { display: block; transition: background 0.25s ease; }
+    .sh-square  { width: 22px; height: 22px; border-radius: 3px; }
+    .sh-round   { width: 22px; height: 22px; border-radius: 8px; }
+    .sh-circle  { width: 22px; height: 22px; border-radius: 50%; }
+    .sh-capsule { width: 38px; height: 22px; border-radius: 11px; }
+
+    .i-export { width: 100%; margin-top: 12px; text-align: center; }
+    .i-empty { color: var(--ink3); font-size: 0.82rem; text-align: center; line-height: 1.5; padding: 28px 10px; }
+
+    /* ---- Drag & drop stage: floating Finder + connector + window ---- */
+    /* ---- Drag stage: loose blue folders + hand-drawn arrow + tilted window ---- */
+    .demo-stage { position: relative; padding-top: 8px; }
+    .folder-zone {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 28px;
+      margin-bottom: 22px;
+    }
+    .folder {
+      width: 118px;
+      display: flex; flex-direction: column; align-items: center; gap: 9px;
+      cursor: grab;
+      touch-action: none;
+      user-select: none; -webkit-user-select: none;
+      animation: floatFolder 5.5s ease-in-out infinite;
+    }
+    .folder:active { cursor: grabbing; }
+    .folder.taken { opacity: 0.3; pointer-events: none; animation: none; }
+    .folder svg { width: 88px; height: auto; filter: drop-shadow(0 9px 15px rgba(0,0,0,0.3)); transition: transform 0.18s ease; }
+    .folder:hover svg { transform: scale(1.08); }
+    .folder .folder-label {
+      font-size: 0.72rem; font-weight: 500; text-align: center; line-height: 1.25;
+      color: var(--text); white-space: nowrap;
+    }
+    @keyframes floatFolder {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-9px); }
+    }
+    .connector {
+      display: none;
+      position: absolute;
+      color: var(--text); opacity: 0.5;
+      z-index: 2; pointer-events: none; overflow: visible;
+    }
+
+    @media (min-width: 1100px) {
+      .demo-stage {
+        width: min(1520px, calc(100vw - 24px));
+        margin-left: 50%;
+        transform: translateX(-50%);
+        display: grid;
+        grid-template-columns: 272px minmax(0, 1fr);
+        align-items: center;
+        gap: 72px;
+        padding-top: 24px;
+      }
+      .folder-zone {
+        position: relative;
+        display: block;
+        height: 320px;
+        margin-bottom: 0;
+      }
+      .folder { position: absolute; }
+      .folder.f0 { top: 14px;  left: 78px; z-index: 2; animation-delay: 0s; }
+      .folder.f1 { top: 108px; left: 4px;  z-index: 1; animation-delay: -1.8s; }
+      .folder.f2 { top: 92px;  left: 150px; z-index: 1; animation-delay: -3.6s; }
+      .connector { display: block; left: 150px; top: 150px; width: 720px; height: 340px; }
+    }
+
+    .d-cards { position: relative; flex: 1; display: flex; flex-direction: column; }
+    .d-cards .d-grid { min-height: 250px; }
+    /* empty state — "No assets found" */
+    .dropzone {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; text-align: center; color: var(--ink3);
+    }
+    .dropzone.hide { display: none; }
+    .dz-dash { width: 48px; height: 40px; }
+    .dz-title { font-size: 1.12rem; font-weight: 700; color: var(--ink3); }
+
+    /* drag overlay — aurora "release to import" panel */
+    .drop-overlay {
+      position: absolute; inset: 0;
+      display: none; align-items: center; justify-content: center;
+      z-index: 5;
+    }
+    .drop-overlay.on { display: flex; }
+    .do-panel {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      padding: 30px 46px 28px;
+      border-radius: 22px;
+      background: rgba(18,18,24,0.72);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 30px 64px rgba(0,0,0,0.45);
+    }
+    .do-title { font-size: 1.18rem; font-weight: 700; color: #fff; }
+    .do-sub { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+    .aurora { position: relative; width: 116px; height: 116px; animation: auroraPulse 2.4s ease-in-out infinite; }
+    .aurora .ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: radial-gradient(circle at 50% 45%, #1f3358 0%, #16263f 62%, #0f1a2c 100%);
+    }
+    .aurora .disc {
+      position: absolute; inset: 12px; border-radius: 50%;
+      background: conic-gradient(from 0deg, #ff5b6e, #ff9d4d, #ffe24d, #5bd07a, #4dd0e1, #5b8cff, #b06bff, #ff5b9e, #ff5b6e);
+      filter: blur(7px) saturate(1.15);
+      animation: auroraSpin 7s linear infinite;
+    }
+    .aurora .glow {
+      position: absolute; inset: 33px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.6), rgba(255,255,255,0) 68%);
+    }
+    .aurora .badge {
+      position: absolute; right: 2px; bottom: 2px;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #30d158; color: #fff;
+      display: grid; place-items: center;
+      font-size: 1.25rem; font-weight: 500; line-height: 1;
+      border: 3px solid #14141a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    @keyframes auroraSpin { to { transform: rotate(360deg); } }
+    @keyframes auroraPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+    .drag-ghost {
+      position: absolute; z-index: 9999;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1.04);
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      padding: 9px 12px;
+      border-radius: 12px;
+      background: var(--card-strong);
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      opacity: 0.96;
+    }
+    .drag-ghost svg { width: 50px; height: auto; }
+    .drag-ghost .folder-label { font-size: 0.64rem; font-weight: 500; color: var(--text); white-space: nowrap; }
+    .drag-ghost.snapback { transition: left 0.28s cubic-bezier(.3,.6,.3,1), top 0.28s cubic-bezier(.3,.6,.3,1), opacity 0.28s ease; opacity: 0; }
+
+    .demo-hint {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 860px) {
+      .d-side { display: none; }
+      .d-body { flex-wrap: wrap; }
+      .d-insp { width: 100%; border-left: none; border-top: 1px solid var(--brd); }
+    }
+
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    @media (max-width: 800px) { .features { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .features { grid-template-columns: 1fr; } }
+
+    .feature {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 1.6rem;
+      backdrop-filter: blur(20px);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .feature.in { opacity: 1; transform: translateY(0); }
+    .feature:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      background: var(--card-strong);
+    }
+    .feature .ico {
+      width: 46px; height: 46px;
+      display: grid; place-items: center;
+      border-radius: 13px;
+      margin-bottom: 1rem;
+      background: rgba(0,122,255,0.14);
+      color: var(--accent);
+    }
+    .feature h3 {
+      font-size: 1.08rem;
+      font-weight: 700;
+      margin: 0 0 0.4rem;
+    }
+    .feature h3 .plus-badge {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(120deg, var(--accent), var(--accent-grad));
+      padding: 0.14rem 0.5rem;
+      border-radius: 999px;
+      margin-left: 0.4rem;
+    }
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    /* Closing CTA */
+    .final {
+      text-align: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 3.5rem 2rem;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+    }
+    .final h2 {
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.6rem;
+    }
+    .final p { color: var(--muted); margin: 0 auto 1.8rem; max-width: 520px; }
+
+    footer {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute; left: -9999px; top: 0; z-index: 100;
+      background: var(--accent); color: #fff; font-weight: 600;
+      padding: 10px 16px; border-radius: 0 0 12px 0;
+    }
+    .skip-link:focus { left: 0; }
+
+    /* Mac App Store badge button */
+    a.button.appstore {
+      background: #000; color: #fff;
+      padding: 0.6rem 1.35rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+    }
+    a.button.appstore:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.38); filter: none; }
+    @media (prefers-color-scheme: dark) {
+      a.button.appstore { background: #fff; color: #000; }
+    }
+    a.button.appstore .apple { width: 26px; height: 26px; flex-shrink: 0; }
+    .as-txt { display: flex; flex-direction: column; line-height: 1; text-align: left; }
+    .as-txt small { font-size: 0.62rem; font-weight: 500; opacity: 0.85; }
+    .as-txt b { font-size: 1.16rem; font-weight: 600; letter-spacing: -0.01em; margin-top: 3px; }
+
+    /* Hero meta (pricing / requirements) */
+    .hero-meta {
+      margin: 1.4rem 0 0;
+      font-size: 0.86rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .hero-meta .plus {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Screenshot gallery */
+    .shots { display: flex; flex-direction: column; gap: 44px; }
+    .shot {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 34px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .shot.in { opacity: 1; transform: translateY(0); }
+    .shot:nth-child(even) .shot-cap { order: -1; }
+    .shot-img {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      background: var(--card-bg);
+      line-height: 0;
+    }
+    .shot-img img { display: block; width: 100%; height: auto; }
+    .shot-cap h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 0.5rem; }
+    .shot-cap p { margin: 0; color: var(--muted); font-size: 0.96rem; line-height: 1.55; }
+    @media (max-width: 800px) {
+      .shot { grid-template-columns: 1fr; gap: 16px; }
+      .shot:nth-child(even) .shot-cap { order: 0; }
+    }
+
+    /* Reset demo button */
+    .reset-btn {
+      all: unset;
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 2px 4px;
+      border-radius: 6px;
+    }
+    .reset-btn:hover { text-decoration: underline; }
+    .reset-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  </style>
+  <noscript>
+    <style>
+      .feature, .shot { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="ambient" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <header class="hero">
+      <picture>
+        <source srcset="images/resors-icon@dark.png" media="(prefers-color-scheme: dark)">
+        <source srcset="images/resors-icon.png" media="(prefers-color-scheme: light)">
+        <img class="app-icon" src="images/resors-icon.png" alt="Resors app icon" />
+      </picture>
+
+      <span class="badge"><span class="dot"></span> Native macOS app</span>
+      <h1 class="logo">Resors</h1>
+      <p class="tagline">Xcode Design Systems Made Easy</p>
+      <p class="subtitle">Build beautiful, consistent assets for your apps — without the usual Xcode friction. Create, import, group, sync, and export, all in one fast visual workflow.</p>
+
+      <div class="cta-row">
+        <a class="button appstore" href="https://apps.apple.com/app/resors/id6748361802" aria-label="Download Resors on the Mac App Store">
+          <svg class="apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.94c-.02-2.16 1.76-3.2 1.84-3.25-1-1.47-2.56-1.67-3.12-1.69-1.33-.13-2.59.78-3.26.78-.67 0-1.71-.76-2.81-.74-1.45.02-2.79.84-3.53 2.14-1.5 2.61-.38 6.47 1.08 8.59.71 1.04 1.56 2.2 2.67 2.16 1.07-.04 1.48-.69 2.77-.69 1.29 0 1.66.69 2.79.67 1.15-.02 1.88-1.05 2.59-2.09.81-1.2 1.15-2.36 1.17-2.42-.03-.01-2.24-.86-2.26-3.42zM14.9 6.66c.59-.72.99-1.71.88-2.7-.85.03-1.88.57-2.49 1.28-.55.63-1.03 1.64-.9 2.61.95.07 1.92-.48 2.51-1.19z"/></svg>
+          <span class="as-txt"><small>Download on the</small><b>Mac App Store</b></span>
+        </a>
+        <a class="button ghost" href="#demo">Try the live demo</a>
+      </div>
+      <p class="hero-meta">
+        Free on the Mac App Store · Requires macOS 26 or later<br>
+        <span class="plus">Resors+</span> subscription unlocks export &amp; Xcode sync
+      </p>
+    </header>
+
+    <main id="main">
+
+    <!-- INTERACTIVE DEMO -->
+    <section class="block" id="demo">
+      <div class="section-head">
+        <div class="eyebrow">Live demo — drag the files in</div>
+        <h2>Drag &amp; drop to import</h2>
+        <p>Pull each file from the folder into Resors — colors, symbols, and images, imported in a snap.</p>
+      </div>
+
+      <div class="demo-stage">
+       <div class="folder-zone" id="fzGrid"></div>
+
+       <svg class="connector" viewBox="0 0 720 340" fill="none" aria-hidden="true">
+         <defs>
+           <marker id="arrowhead" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto-start-reverse">
+             <path d="M0.6,0.6 L6,3 L0.6,5.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+           </marker>
+         </defs>
+         <path d="M40,40 C120,70 150,150 110,190 C78,222 36,196 64,160 C108,104 210,150 270,180 C370,230 470,196 614,168"
+               stroke="currentColor" stroke-width="2.6" stroke-dasharray="1 11" stroke-linecap="round" marker-end="url(#arrowhead)"/>
+       </svg>
+
+       <div class="demo-shell">
+        <div class="tb">
+          <div class="tb-side">
+            <span class="tl r"></span><span class="tl y"></span><span class="tl g"></span>
+            <span class="tb-grp" style="margin-left:auto">
+              <span class="bk" style="width:18px;height:18px"></span>
+              <span class="bk" style="width:18px;height:18px"></span>
+            </span>
+          </div>
+          <div class="tb-mid">
+            <div class="tb-title-bk">
+              <span class="bk sq" style="width:84px;height:10px"></span>
+              <span class="bk sq" style="width:46px;height:7px;background:var(--srf2)"></span>
+            </div>
+            <span class="tb-grp">
+              <span class="bk" style="width:22px;height:22px"></span>
+              <span class="bk" style="width:34px;height:22px;border-radius:11px"></span>
+              <span class="bk" style="width:22px;height:22px"></span>
+            </span>
+          </div>
+          <div class="tb-insp">
+            <span class="bk" style="width:18px;height:18px"></span>
+            <span class="bk" style="width:22px;height:22px"></span>
+            <span class="bk" style="width:22px;height:22px"></span>
+            <span class="bk sq" style="flex:1;height:24px;border-radius:8px"></span>
+          </div>
+        </div>
+        <div class="d-body">
+          <aside class="d-side" aria-hidden="true">
+            <div class="sb-label"></div>
+            <div class="sb-row active"><span class="ic"></span><span class="lb" style="width:64px"></span></div>
+            <div class="sb-row"><span class="ic"></span><span class="lb" style="width:46px"></span></div>
+            <div class="sb-row"><span class="ic"></span><span class="lb" style="width:58px"></span></div>
+            <div class="sb-row"><span class="ic"></span><span class="lb" style="width:52px"></span></div>
+            <div class="sb-label"></div>
+            <div class="sb-row"><span class="ic"></span><span class="lb" style="width:50px"></span></div>
+            <div class="sb-row"><span class="ic"></span><span class="lb" style="width:42px"></span></div>
+            <div class="sb-row"><span class="ic"></span><span class="lb" style="width:38px"></span></div>
+            <div class="sb-row"><span class="ic"></span><span class="lb" style="width:54px"></span></div>
+            <div class="sb-row"><span class="ic"></span><span class="lb" style="width:56px"></span></div>
+          </aside>
+
+          <div class="d-main">
+            <div class="d-cards" id="dCards">
+              <div class="d-grid" id="dGrid"></div>
+              <div class="dropzone" id="dropzone">
+                <svg class="dz-dash" viewBox="0 0 48 40"><rect x="1.5" y="1.5" width="45" height="37" rx="7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-dasharray="5 5"/></svg>
+                <span class="dz-title">No assets found</span>
+              </div>
+              <div class="drop-overlay" id="dropOverlay">
+                <div class="do-panel">
+                  <div class="aurora">
+                    <span class="ring"></span><span class="disc"></span><span class="glow"></span>
+                    <span class="badge">+</span>
+                  </div>
+                  <span class="do-title" id="dropOverlayText">Release to import 1 ColorSet</span>
+                  <span class="do-sub" id="dropOverlaySub">Drop your .colorset file to add it to selected group.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="d-insp" aria-hidden="true">
+            <div class="ins-seg"><span class="on"></span><span></span><span></span></div>
+            <div class="ins-label"></div>
+            <span class="ins-chip"></span>
+            <div class="ins-label"></div>
+            <div class="ins-row"><span class="lb" style="width:42px"></span><span class="lb" style="width:68px"></span></div>
+            <div class="ins-row"><span class="lb" style="width:54px"></span><span class="lb" style="width:36px"></span></div>
+            <div class="ins-row"><span class="lb" style="width:58px"></span><span class="lb" style="width:84px"></span></div>
+            <div class="ins-row"><span class="lb" style="width:72px"></span><span class="lb" style="width:84px"></span></div>
+          </aside>
+        </div>
+       </div>
+      </div>
+      <p class="demo-hint">Drag, drop, done. The real app imports your actual <code>.colorset</code>, <code>.symbolset</code>, and <code>.imageset</code> files — with two-way Xcode sync. <button id="resetDemo" class="reset-btn" type="button" hidden>↺ Reset demo</button></p>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="block" id="features">
+      <div class="section-head">
+        <div class="eyebrow">What makes Resors different</div>
+        <h2>Your tools should keep up with you</h2>
+      </div>
+
+      <div class="features">
+        <div class="feature">
+          <div class="ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z"/></svg>
+          </div>
+          <h3>Visual-first design</h3>
+          <p>Create and edit colors in a clean, intuitive interface. See Light, Dark, and High Contrast variants side by side — previewed on real UI components before you ship.</p>
+        </div>
+
+        <div class="feature">
+          <div class="ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+          </div>
+          <h3>Bi-directional Xcode sync <span class="plus-badge">Resors+</span></h3>
+          <p>Connect your project, choose a catalog, and changes flow both ways — keeping Resors and your Xcode catalog in step. Flexible conflict-resolution modes are on the way.</p>
+        </div>
+
+        <div class="feature">
+          <div class="ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15V6a2 2 0 0 0-2-2H9l-4 4"/><path d="M3 9v9a2 2 0 0 0 2 2h14"/><path d="m7 13 3 3 7-7"/></svg>
+          </div>
+          <h3>Import without friction</h3>
+          <p>Drop in existing <code>.colorset</code> files and validate them instantly. Catch issues early — from a single color to a full design system.</p>
+        </div>
+
+        <div class="feature">
+          <div class="ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </div>
+          <h3>Build once, reuse everywhere</h3>
+          <p>Organize colors into reusable libraries. Define your palette once and keep it consistent across every app you build.</p>
+        </div>
+
+        <div class="feature">
+          <div class="ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><rect x="4" y="17" width="16" height="4" rx="1"/></svg>
+          </div>
+          <h3>Export that just works <span class="plus-badge">Resors+</span></h3>
+          <p>Generate Xcode-ready <code>.colorset</code> files in seconds. Export individual assets or entire libraries with guaranteed compatibility.</p>
+        </div>
+
+        <div class="feature">
+          <div class="ico">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
+          </div>
+          <h3>Fast, focused workflow</h3>
+          <p>Drag, drop, preview, export. Resors stays out of your way so you can focus on building great apps.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREENSHOTS -->
+    <section class="block" id="screens">
+      <div class="section-head">
+        <div class="eyebrow">See it in action</div>
+        <h2>The real thing</h2>
+        <p>Actual screenshots from Resors on macOS.</p>
+      </div>
+
+      <div class="shots">
+        <figure class="shot">
+          <div class="shot-img">
+            <img src="images/shots/shot-organize.jpg" alt="Resors showing a grid of color assets with a context menu for exporting, duplicating, and managing groups" loading="lazy" width="1600" height="1000" />
+          </div>
+          <figcaption class="shot-cap">
+            <h3>Organize into groups &amp; libraries</h3>
+            <p>Sort assets into system and custom groups, then export, duplicate, or manage a whole selection at once.</p>
+          </figcaption>
+        </figure>
+
+        <figure class="shot">
+          <div class="shot-img">
+            <img src="images/shots/shot-import.jpg" alt="Resors with a drop overlay reading Release to import 4 ColorSets" loading="lazy" width="1600" height="1000" />
+          </div>
+          <figcaption class="shot-cap">
+            <h3>Drag &amp; drop import</h3>
+            <p>Drop <code>.colorset</code>, <code>.symbolset</code>, and <code>.imageset</code> files straight into a group — validated the moment they land.</p>
+          </figcaption>
+        </figure>
+
+        <figure class="shot">
+          <div class="shot-img">
+            <img src="images/shots/shot-editor.jpg" alt="Resors color editor showing appearances, sRGB color space, hex value, and opacity for a color set" loading="lazy" width="1600" height="1000" />
+          </div>
+          <figcaption class="shot-cap">
+            <h3>Precise color editing</h3>
+            <p>Edit each appearance variant with exact HEX, RGB, and Float values, color space, and opacity — no guesswork.</p>
+          </figcaption>
+        </figure>
+
+        <figure class="shot">
+          <div class="shot-img">
+            <img src="images/shots/shot-preview.jpg" alt="Resors previewing a color applied to real buttons, text, toggles, and shapes" loading="lazy" width="1600" height="1000" />
+          </div>
+          <figcaption class="shot-cap">
+            <h3>Preview on real UI</h3>
+            <p>See every color on live buttons, text, toggles, and shapes before it ever reaches your project.</p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="block">
+      <div class="final">
+        <h2>Ready to simplify your workflow?</h2>
+        <p>Whether you're shipping your first app or scaling a full design system — get Resors and stop worrying about <code>.colorset</code> files. Free to download, with <span class="plus">Resors+</span> when you need export and Xcode sync.</p>
+        <div class="cta-row" style="justify-content:center">
+          <a class="button appstore" href="https://apps.apple.com/app/resors/id6748361802" aria-label="Download Resors on the Mac App Store">
+            <svg class="apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.94c-.02-2.16 1.76-3.2 1.84-3.25-1-1.47-2.56-1.67-3.12-1.69-1.33-.13-2.59.78-3.26.78-.67 0-1.71-.76-2.81-.74-1.45.02-2.79.84-3.53 2.14-1.5 2.61-.38 6.47 1.08 8.59.71 1.04 1.56 2.2 2.67 2.16 1.07-.04 1.48-.69 2.77-.69 1.29 0 1.66.69 2.79.67 1.15-.02 1.88-1.05 2.59-2.09.81-1.2 1.15-2.36 1.17-2.42-.03-.01-2.24-.86-2.26-3.42zM14.9 6.66c.59-.72.99-1.71.88-2.7-.85.03-1.88.57-2.49 1.28-.55.63-1.03 1.64-.9 2.61.95.07 1.92-.48 2.51-1.19z"/></svg>
+            <span class="as-txt"><small>Download on the</small><b>Mac App Store</b></span>
+          </a>
+        </div>
+      </div>
+    </section>
+    </main>
+
+    <footer>
+      © 2025–2026 <a href="https://andriyyezerskiy.github.io/anathema.labs/resors">Resors</a> ·
+      <a href="roadmap.html">Roadmap</a> ·
+      <a href="support.html">Support</a> ·
+      <a href="privacy.html">Privacy Policy</a>
+    </footer>
+  </div>
+
+  <script>
+    /* ---------- Interactive demo: drag & drop import ---------- */
+
+    /* Files waiting in the Finder folder */
+    const FILES = [
+      { id: 'primaryBlue', name: 'primaryBlue', kind: 'color',  light: '#1E6BF0', dark: '#3B82F6' },
+      { id: 'ring',        name: 'ring',        kind: 'symbol',  glyph: 'ring' },
+      { id: 'heroCard',    name: 'heroCard',    kind: 'image',   tone: ['#7C3AED', '#E11D48'] },
+    ];
+    const EXT = { color: 'colorset', symbol: 'symbolset', image: 'imageset' };
+    const KIND = { color: 'ColorSet', symbol: 'SymbolSet', image: 'ImageSet' };
+    const GLYPH = {
+      ring:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/></svg>',
+      photo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg>',
+    };
+
+    let mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    let selected = null;
+    const imported = [];
+
+    const grid = document.getElementById('dGrid');
+    const fzGrid = document.getElementById('fzGrid');
+    const dCards = document.getElementById('dCards');
+    const dropzone = document.getElementById('dropzone');
+    const dropOverlay = document.getElementById('dropOverlay');
+    const cardEls = new Map();
+
+    function rgbOf(hex) {
+      const n = parseInt(hex.slice(1), 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    const f3 = v => (v / 255).toFixed(3);
+
+    /* ----- shared file-icon markup (folder chips + drag ghost) ----- */
+    /* macOS-style blue folder (all asset bundles show as folders in Finder) */
+    const FOLDER_SVG =
+      '<svg viewBox="0 0 64 52" fill="none">' +
+        '<path d="M3 13c0-2.2 1.8-4 4-4h14.3c1.1 0 2.1.42 2.86 1.17L27.2 13H57c2.2 0 4 1.8 4 4v2.4H3z" fill="#2C86DB"/>' +
+        '<path d="M3 17.4h58V44c0 2.2-1.8 4-4 4H7c-2.2 0-4-1.8-4-4z" fill="#54ACF2"/>' +
+        '<path d="M3 17.4h58v2.3H3z" fill="#3F9BEA"/>' +
+      '</svg>';
+
+    /* ----- loose folders on the left ----- */
+    function renderFolder() {
+      fzGrid.innerHTML = '';
+      FILES.forEach((f, i) => {
+        const el = document.createElement('div');
+        el.className = 'folder f' + i + (f.imported ? ' taken' : '');
+        el.innerHTML = FOLDER_SVG + '<span class="folder-label">' + f.name + '.' + EXT[f.kind] + '</span>';
+        if (!f.imported) {
+          el.setAttribute('role', 'button');
+          el.setAttribute('aria-label', 'Drag ' + f.name + '.' + EXT[f.kind] + ' into Resors to import it');
+          attachDrag(el, f);
+        }
+        fzGrid.appendChild(el);
+      });
+    }
+
+    /* ----- grid cards ----- */
+    function cardSwatch(a) {
+      if (a.kind === 'color')  return '<div class="sw" style="background:' + a[mode] + '"></div>';
+      if (a.kind === 'symbol') return '<div class="sw surface">' + GLYPH[a.glyph] + '</div>';
+      return '<div class="sw" style="background:linear-gradient(135deg,' + a.tone[0] + ',' + a.tone[1] + ')"></div>';
+    }
+    function cardSub(a) {
+      if (a.kind === 'color')  return '<div class="dots"><span class="dot full"></span><span class="dot half"></span></div>';
+      if (a.kind === 'symbol') return '<div class="sub">SYMBOL</div>';
+      return '<div class="sub">1× 2× 3×</div>';
+    }
+    function buildCard(a) {
+      const card = document.createElement('div');
+      card.className = 'd-card fresh' + (a === selected ? ' sel' : '');
+      card.innerHTML = cardSwatch(a) + '<div class="meta"><div class="nm">' + a.name + '</div>' + cardSub(a) + '</div>';
+      card.addEventListener('click', () => selectAsset(a));
+      card.addEventListener('animationend', () => card.classList.remove('fresh'));
+      cardEls.set(a, card);
+      return card;
+    }
+    function refreshSwatches() {
+      cardEls.forEach((el, a) => { if (a.kind === 'color') el.querySelector('.sw').style.background = a[mode]; });
+    }
+
+    function selectAsset(a) {
+      selected = a;
+      cardEls.forEach((el, asset) => el.classList.toggle('sel', asset === selected));
+    }
+
+    const resetBtn = document.getElementById('resetDemo');
+
+    function addAsset(f) {
+      if (f.imported) return;
+      f.imported = true;
+      imported.push(f);
+      dropzone.classList.add('hide');
+      grid.appendChild(buildCard(f));
+      selectAsset(f);
+      if (imported.length === FILES.length) resetBtn.hidden = false;
+    }
+
+    function resetDemo() {
+      imported.length = 0;
+      FILES.forEach(f => f.imported = false);
+      cardEls.clear();
+      grid.innerHTML = '';
+      selected = null;
+      dropzone.classList.remove('hide');
+      resetBtn.hidden = true;
+      renderFolder();
+    }
+    resetBtn.addEventListener('click', resetDemo);
+
+    /* ----- pointer-based drag (works on mouse + touch) ----- */
+    let drag = null;
+    function overTarget(e) {
+      const r = dCards.getBoundingClientRect();
+      return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    }
+    function moveGhost(e) {
+      drag.ghost.style.left = e.pageX + 'px';
+      drag.ghost.style.top = e.pageY + 'px';
+      const over = overTarget(e);
+      dropOverlay.classList.toggle('on', over);
+      if (over) {
+        document.getElementById('dropOverlayText').textContent = 'Release to import 1 ' + KIND[drag.f.kind];
+        document.getElementById('dropOverlaySub').textContent = 'Drop your .' + EXT[drag.f.kind] + ' file to add it to selected group.';
+      }
+    }
+    function endDrag(e) {
+      dropOverlay.classList.remove('on');
+      if (overTarget(e)) {
+        drag.ghost.remove();
+        addAsset(drag.f);
+        renderFolder();
+      } else {
+        const r = drag.el.getBoundingClientRect();
+        const g = drag.ghost;
+        g.classList.add('snapback');
+        g.style.left = (r.left + r.width / 2 + window.scrollX) + 'px';
+        g.style.top = (r.top + r.height / 2 + window.scrollY) + 'px';
+        setTimeout(() => g.remove(), 300);
+      }
+      drag = null;
+    }
+    function attachDrag(el, f) {
+      let sx, sy, active;
+      el.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        sx = e.clientX; sy = e.clientY; active = false;
+        drag = { f, el, ghost: null };
+        el.setPointerCapture && el.setPointerCapture(e.pointerId);
+      });
+      el.addEventListener('pointermove', e => {
+        if (!drag || drag.f !== f) return;
+        if (!active) {
+          if (Math.hypot(e.clientX - sx, e.clientY - sy) < 5) return;
+          active = true;
+          const ghost = document.createElement('div');
+          ghost.className = 'drag-ghost';
+          ghost.innerHTML = FOLDER_SVG + '<span class="folder-label">' + f.name + '.' + EXT[f.kind] + '</span>';
+          document.body.appendChild(ghost);
+          drag.ghost = ghost;
+        }
+        moveGhost(e);
+      });
+      el.addEventListener('pointerup', e => {
+        if (!drag || drag.f !== f) return;
+        if (active) endDrag(e); else drag = null;
+      });
+      el.addEventListener('pointercancel', () => {
+        if (drag && drag.f === f) { if (drag.ghost) drag.ghost.remove(); dropOverlay.classList.remove('on'); drag = null; }
+      });
+    }
+
+    /* ----- follow the website's light/dark scheme for color variants ----- */
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      mode = e.matches ? 'dark' : 'light';
+      refreshSwatches();
+      renderFolder();
+    });
+
+    /* ----- init ----- */
+    renderFolder();
+
+    /* ---------- Reveal feature cards on scroll ---------- */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          e.target.style.transitionDelay = (i * 0.06) + 's';
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.feature, .shot').forEach(el => {
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease, box-shadow 0.25s ease, background 0.25s ease';
+      io.observe(el);
+    });
+  </script>
+</body>
+</html>

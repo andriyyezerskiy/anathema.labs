@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resors — Roadmap</title>
+  <meta name="description" content="See what's shipped, what's in progress, and what's planned for Resors — and submit your own feature request." />
+  <link rel="canonical" href="https://andriyyezerskiy.github.io/anathema.labs/resors/roadmap.html" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <meta name="theme-color" content="#f6f4f8" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#100a16" media="(prefers-color-scheme: dark)" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Resors" />
+  <meta property="og:title" content="Resors — Roadmap" />
+  <meta property="og:description" content="What's shipped, what's in progress, and what's planned for Resors — and a place to submit your own feature request." />
+  <meta property="og:url" content="https://andriyyezerskiy.github.io/anathema.labs/resors/roadmap.html" />
+  <meta property="og:image" content="https://andriyyezerskiy.github.io/anathema.labs/resors/images/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Resors — Roadmap" />
+  <meta name="twitter:description" content="What's shipped, in progress, and planned for Resors." />
+  <meta name="twitter:image" content="https://andriyyezerskiy.github.io/anathema.labs/resors/images/og-image.jpg" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f4f8;
+      --text: #1c1c1e;
+      --muted: rgba(28,28,30,0.62);
+      --accent: #007aff;
+      --accent-2: #46b1ff;
+      --card-bg: rgba(255,255,255,0.65);
+      --card-strong: rgba(255,255,255,0.9);
+      --border: rgba(0,0,0,0.08);
+      --shadow: 0 20px 60px rgba(0,0,0,0.08);
+      --field-bg: rgba(255,255,255,0.7);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #100a16;
+        --text: #f5f5f7;
+        --muted: rgba(245,245,247,0.62);
+        --accent: #0a84ff;
+        --accent-2: #64d2ff;
+        --card-bg: rgba(34,28,42,0.55);
+        --card-strong: rgba(46,38,56,0.8);
+        --border: rgba(255,255,255,0.1);
+        --shadow: 0 20px 60px rgba(0,0,0,0.5);
+        --field-bg: rgba(20,16,28,0.6);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: drift 22s ease-in-out infinite alternate; }
+    .blob.b1 { width: 46vw; height: 46vw; top: -14vw; left: -10vw; background: #7c3aed; }
+    .blob.b2 { width: 40vw; height: 40vw; top: 40vh; right: -14vw; background: #e11d48; animation-delay: -8s; }
+    .blob.b3 { width: 36vw; height: 36vw; bottom: -14vw; left: 28vw; background: #f97316; animation-delay: -14s; opacity: 0.32; }
+    @media (prefers-color-scheme: dark) { .blob { opacity: 0.35; } .blob.b3 { opacity: 0.2; } }
+    @keyframes drift {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(4vw,3vh) scale(1.1); }
+      100% { transform: translate(-3vw,-2vh) scale(0.95); }
+    }
+    @media (prefers-reduced-motion: reduce) { .blob { animation: none; } }
+
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+    header.page { text-align: center; padding: 5rem 0 2.5rem; }
+    .eyebrow {
+      text-transform: uppercase; letter-spacing: 0.12em;
+      font-size: 0.78rem; font-weight: 700; color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3rem);
+      font-weight: 800; letter-spacing: -0.03em; margin: 0 0 0.5rem;
+      background: linear-gradient(120deg, var(--text), var(--accent) 75%, var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    header.page p { color: var(--muted); font-size: 1.1rem; margin: 0 auto; max-width: 560px; }
+
+    /* board */
+    .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
+    @media (max-width: 820px) { .board { grid-template-columns: 1fr; gap: 22px; } }
+
+    .col-head {
+      display: flex; align-items: center; gap: 0.55rem;
+      font-weight: 800; font-size: 1.05rem; letter-spacing: -0.01em;
+      margin-bottom: 1rem;
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .s-done { background: #30d158; }
+    .s-prog { background: var(--accent); }
+    .s-plan { background: #ff9f0a; }
+    .count {
+      margin-left: auto; font-size: 0.78rem; font-weight: 700; color: var(--muted);
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 999px; padding: 0.1rem 0.6rem;
+    }
+
+    .col { display: flex; flex-direction: column; gap: 12px; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 1.1rem;
+      backdrop-filter: blur(20px);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: var(--shadow); background: var(--card-strong); }
+    .card h3 { font-size: 0.98rem; font-weight: 700; margin: 0 0 0.3rem; }
+    .card p { font-size: 0.86rem; color: var(--muted); margin: 0; line-height: 1.45; }
+    .card .tags { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.65rem; }
+    .ver {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      color: var(--accent); background: rgba(0,122,255,0.14);
+      padding: 0.18rem 0.55rem; border-radius: 999px;
+    }
+    .check { color: #30d158; font-weight: 700; }
+    .plus-badge {
+      display: inline-block; font-size: 0.72rem; font-weight: 700; color: #fff;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      padding: 0.18rem 0.55rem; border-radius: 999px;
+    }
+    .legend {
+      display: flex; align-items: center; justify-content: center; gap: 0.55rem; flex-wrap: wrap;
+      text-align: center; color: var(--muted); font-size: 0.86rem; margin: 1.8rem auto 0; max-width: 560px;
+    }
+
+    /* request form */
+    .request {
+      background: var(--card-strong);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.4rem;
+      margin: 3.5rem auto 0;
+      max-width: 680px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+    }
+    .request h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.3rem; text-align: center; }
+    .request .lead { color: var(--muted); margin: 0 0 1.8rem; text-align: center; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .field label { font-size: 0.82rem; font-weight: 600; }
+    input, select, textarea {
+      font: inherit; width: 100%;
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--field-bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,122,255,0.18);
+    }
+    textarea { min-height: 130px; resize: vertical; line-height: 1.5; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      width: 100%; margin-top: 0.4rem;
+      font: inherit; font-weight: 600; cursor: pointer;
+      color: #fff; background: var(--accent);
+      border: none; padding: 0.9rem 1.6rem; border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,122,255,0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 16px 40px rgba(0,122,255,0.45); }
+    .hint { font-size: 0.78rem; color: var(--muted); text-align: center; margin: 0.9rem 0 0; }
+
+    footer { text-align: center; padding: 3rem 0 4rem; font-size: 0.88rem; color: var(--muted); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <div class="wrap">
+    <header class="page">
+      <div class="eyebrow">What's next</div>
+      <h1>Roadmap</h1>
+      <p>Where Resors is headed — what's shipped, what's cooking, and what's on the horizon. Got an idea? Send it our way.</p>
+    </header>
+
+    <div class="board">
+      <!-- Shipped -->
+      <div class="col">
+        <div class="col-head"><span class="dot s-done"></span> Shipped <span class="count">6</span></div>
+
+        <div class="card">
+          <h3>Light, Dark &amp; High-Contrast editing</h3>
+          <p>Create and edit every appearance variant side by side with exact color values.</p>
+          <div class="tags"><span class="check">✓ Available</span></div>
+        </div>
+        <div class="card">
+          <h3>Drag &amp; drop import</h3>
+          <p>Drop <code>.colorset</code>, <code>.symbolset</code>, and <code>.imageset</code> files straight into a group.</p>
+          <div class="tags"><span class="check">✓ Available</span></div>
+        </div>
+        <div class="card">
+          <h3>Instant import validation</h3>
+          <p>Catch malformed assets the moment they land — before they reach your project.</p>
+          <div class="tags"><span class="check">✓ Available</span></div>
+        </div>
+        <div class="card">
+          <h3>Xcode-ready export</h3>
+          <p>Generate compatible asset catalogs for individual items or entire libraries.</p>
+          <div class="tags"><span class="check">✓ Available</span> <span class="plus-badge">Resors+</span></div>
+        </div>
+        <div class="card">
+          <h3>Reusable groups &amp; libraries</h3>
+          <p>Define a palette once and reuse it consistently across every project.</p>
+          <div class="tags"><span class="check">✓ Available</span></div>
+        </div>
+        <div class="card">
+          <h3>Bi-directional Xcode sync</h3>
+          <p>Connect a project and keep Resors and your catalog in step, both directions.</p>
+          <div class="tags"><span class="check">✓ Available</span> <span class="plus-badge">Resors+</span></div>
+        </div>
+      </div>
+
+      <!-- In Progress -->
+      <div class="col">
+        <div class="col-head"><span class="dot s-prog"></span> In progress <span class="count">3</span></div>
+
+        <div class="card">
+          <h3>SF Symbols browsing &amp; editing</h3>
+          <p>Search, preview, and tune symbol sets with rendering modes and weights.</p>
+          <div class="tags"><span class="ver">Expected · v1.3</span></div>
+        </div>
+        <div class="card">
+          <h3>Image set management</h3>
+          <p>Manage 1×/2×/3× scales, idioms, and resizing for <code>.imageset</code> assets.</p>
+          <div class="tags"><span class="ver">Expected · v1.3</span></div>
+        </div>
+        <div class="card">
+          <h3>Sync conflict resolution</h3>
+          <p>Flexible modes to decide which side wins when Resors and Xcode diverge.</p>
+          <div class="tags"><span class="ver">Expected · v1.4</span></div>
+        </div>
+      </div>
+
+      <!-- Planned -->
+      <div class="col">
+        <div class="col-head"><span class="dot s-plan"></span> Planned <span class="count">5</span></div>
+
+        <div class="card">
+          <h3>Figma &amp; Sketch import</h3>
+          <p>Pull palettes straight from your design files into a Resors library.</p>
+        </div>
+        <div class="card">
+          <h3>Shared team libraries</h3>
+          <p>Sync a single source-of-truth palette across a whole team.</p>
+        </div>
+        <div class="card">
+          <h3>String catalogs &amp; localization</h3>
+          <p>Bring the same fast, visual workflow to localized strings.</p>
+        </div>
+        <div class="card">
+          <h3>Shortcuts &amp; automation</h3>
+          <p>Script imports and exports for CI and repeatable workflows.</p>
+        </div>
+        <div class="card">
+          <h3>Spacing &amp; type tokens</h3>
+          <p>Manage more of your design system than color alone.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="legend"><span class="plus-badge">Resors+</span> Unlocked by the optional Resors+ subscription. Everything else is free.</p>
+
+    <!-- Feature request -->
+    <section class="request">
+      <h2>Request a feature</h2>
+      <p class="lead">Have something you'd love to see in Resors? Tell us — it helps shape this list.</p>
+
+      <form id="featureForm">
+        <div class="row">
+          <div class="field">
+            <label for="frName">Your name <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+            <input type="text" id="frName" autocomplete="name" placeholder="Jane Appleseed" />
+          </div>
+          <div class="field">
+            <label for="frCat">Area</label>
+            <select id="frCat">
+              <option>Colors</option>
+              <option>Symbols</option>
+              <option>Images</option>
+              <option>Xcode sync</option>
+              <option>Export</option>
+              <option>Interface &amp; workflow</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="frMsg">Your idea</label>
+          <textarea id="frMsg" placeholder="Describe the feature and what it would help you do…" required></textarea>
+        </div>
+        <button type="submit" class="btn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+          Send request
+        </button>
+        <p class="hint">Opens your mail app, pre-filled to contact.andriy@icloud.com. Nothing is sent until you hit send.</p>
+      </form>
+    </section>
+
+    <footer>
+      © 2025–2026 <a href="index.html">Resors</a> · <a href="support.html">Support</a> · <a href="privacy.html">Privacy Policy</a>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('featureForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('frName').value.trim();
+      const cat = document.getElementById('frCat').value;
+      const msg = document.getElementById('frMsg').value.trim();
+      if (!msg) { document.getElementById('frMsg').focus(); return; }
+
+      const subject = 'Resors feature request: ' + cat;
+      let body = msg + '\n\n';
+      body += '— Area: ' + cat + '\n';
+      if (name) body += '— From: ' + name + '\n';
+      body += '\nSent from the Resors roadmap page.';
+
+      window.location.href = 'mailto:contact.andriy@icloud.com'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(body);
+    });
+  </script>
+</body>
+</html>
