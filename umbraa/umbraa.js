@@ -148,6 +148,9 @@
     var count = part(screen, "[data-count]");
     var goodnight = part(screen, "[data-goodnight]");
     var wake = part(screen, "[data-wake]");
+    /* promote each text overlay to its own compositing layer so it paints
+       cleanly above the opacity-animated black screen */
+    [count, goodnight, wake].forEach(function (el) { if (el) el.style.transform = "translateZ(0)"; });
     var STEP = 800;            // ms per countdown number
     var FADE = STEP * 5;       // black fades in over the countdown
     var GN_IN = 400, GN_HOLD = 1000, GN_OUT = 1500;
