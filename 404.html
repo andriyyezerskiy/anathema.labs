@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Not found — Anathema Labs</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/anathema.labs/assets/icons/anathema.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/anathema.labs/assets/icons/anathema-512.png" />
+  <meta name="theme-color" content="#f7f6f3" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0d0d10" media="(prefers-color-scheme: dark)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Space+Grotesk:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --paper: #fbfaf8;
+      --white: #f7f6f3;
+      --ink: #17171c;
+      --muted: rgba(23,23,28,0.6);
+      --accent: #ff5b04;
+      --grid-line: rgba(63,81,181,0.14);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #17171c;
+        --white: #0d0d10;
+        --ink: #f2f1ee;
+        --muted: rgba(242,241,238,0.55);
+        --grid-line: rgba(126,140,224,0.18);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--ink);
+      background-color: var(--white);
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      max-width: 520px;
+      text-align: center;
+      background: var(--paper);
+      border: 1.5px solid var(--ink);
+      border-radius: 14px;
+      padding: 2.5rem 2rem;
+      box-shadow: 8px 8px 0 var(--ink);
+    }
+    .code {
+      font-family: "Space Mono", monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 1rem;
+    }
+    .brand {
+      font-family: "EB Garamond", Georgia, serif;
+      font-size: clamp(2rem, 6vw, 2.75rem);
+      line-height: 1.05;
+      margin: 0 0 0.75rem;
+    }
+    .brand em { font-style: normal; color: var(--accent); }
+    p.msg { color: var(--muted); margin: 0 0 1.75rem; font-size: 1.02rem; }
+    a.home {
+      display: inline-block;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--white);
+      background: var(--accent);
+      padding: 0.7rem 1.4rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--ink);
+    }
+    a.home:hover { filter: brightness(1.05); }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <p class="code">Error 404 · page not found</p>
+    <h1 class="brand"><em>Anathema</em> Labs</h1>
+    <p class="msg">This page slipped through the cracks. It may have moved, or it never existed.</p>
+    <a class="home" href="/anathema.labs/">Back to the desktop &rarr;</a>
+  </main>
+</body>
+</html>

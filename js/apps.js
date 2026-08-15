@@ -22,9 +22,8 @@
               set, the status chip is hidden (the store implies "live")
      url     external link (optional, "" to disable)
 
-   NOTE: tagline/about/status below are PLACEHOLDERS — give me the real
-   copy and I'll drop it in. Icons are SVG stand-ins recreated from the
-   art you shared; replace with real PNGs in assets/icons/ when ready.
+   Copy and icons below are final (real App Store listings). `glyph` remains
+   only as an inline-SVG fallback if an icon PNG ever fails to load.
    ============================================================ */
 
 const ANATHEMA_APPS = [
