@@ -149,10 +149,29 @@
     if (openIds[app.id]) { bringFront(openIds[app.id]); return; }
 
     var win = el("section", "win");
-    win.style.width = "380px";
+    win.style.width = app.custom === "ipod" ? "300px" : "380px";
     win.style.top = (110 + spawnOffset) + "px";
     win.style.left = (Math.min(520, 300) + spawnOffset) + "px";
     spawnOffset = (spawnOffset + 28) % 140;
+
+    /* Custom "app" windows render their own body instead of the project card. */
+    if (app.custom === "ipod") {
+      win.innerHTML =
+        '<header class="win__bar" data-drag>' +
+          '<button class="win__close" aria-label="Close"></button>' +
+          '<div class="win__title">' + app.name + "</div>" +
+          '<div class="win__lines"></div>' +
+        "</header>" +
+        '<div class="win__body win__body--player"></div>';
+      surface.appendChild(win);
+      openIds[app.id] = win;
+      win.dataset.appid = app.id;
+      makeDraggable(win);
+      wireClose(win, app.id);
+      bringFront(win);
+      if (window.AnathemaIpod) AnathemaIpod.mount(win.querySelector(".win__body--player"), app.playlist);
+      return;
+    }
 
     win.innerHTML =
       '<header class="win__bar" data-drag>' +
@@ -188,9 +207,16 @@
     var close = win.querySelector(".win__close");
     close.addEventListener("click", function (e) {
       e.stopPropagation();
+      maybeUnmountPlayer(id);
       win.remove();
       delete openIds[id];
     });
+  }
+
+  /* Tear the audio engine down when the player's own window/sheet closes. */
+  function maybeUnmountPlayer(id) {
+    var app = findApp(id);
+    if (app && app.custom === "ipod" && window.AnathemaIpod) AnathemaIpod.unmount();
   }
 
   /* Drag any .win by its [data-drag] bar (also the pre-rendered About window). */
@@ -248,12 +274,12 @@
     wins.sort(function (a, b) { return (+a.style.zIndex || 0) - (+b.style.zIndex || 0); });
     var top = wins[wins.length - 1];
     if (top.id === "win-about") top.style.display = "none";
-    else { var id = top.dataset.appid; top.remove(); if (id) delete openIds[id]; }
+    else { var id = top.dataset.appid; maybeUnmountPlayer(id); top.remove(); if (id) delete openIds[id]; }
   }
   function closeAll() {
     if (about) about.style.display = "none";
     Object.keys(openIds).forEach(function (id) {
-      if (openIds[id]) { openIds[id].remove(); delete openIds[id]; }
+      if (openIds[id]) { maybeUnmountPlayer(id); openIds[id].remove(); delete openIds[id]; }
     });
   }
 
@@ -376,6 +402,15 @@
   var sheetContent = byId("sheetContent");
 
   function openSheet(app) {
+    if (app.custom === "ipod") {
+      sheetContent.className = "sheet__content sheet__content--player";
+      sheetContent.innerHTML = "";
+      sheet.classList.add("is-open");
+      sheet.setAttribute("aria-hidden", "false");
+      if (window.AnathemaIpod) AnathemaIpod.mount(sheetContent, app.playlist);
+      return;
+    }
+    sheetContent.className = "sheet__content";
     sheetContent.innerHTML =
       '<div class="' + tileClass(app, "sheet__icon") + (app.accent && !app.icon ? " sheet__icon--accent" : "") + '">' + iconInner(app) + "</div>" +
       '<div class="sheet__name">' + app.name + "</div>" +
@@ -393,6 +428,8 @@
   }
   /* Studio About sheet (the Anathema home icon). */
   function openStudioSheet() {
+    if (window.AnathemaIpod) AnathemaIpod.unmount();
+    sheetContent.className = "sheet__content";
     sheetContent.innerHTML =
       '<div class="sheet__icon sheet__icon--img"><img src="' + ANATHEMA_ICON + '" alt="" draggable="false" /></div>' +
       '<h2 class="brand" style="font-size:32px;margin-bottom:6px">Anathema<span class="brand__thin">Labs</span></h2>' +
@@ -405,6 +442,7 @@
     sheet.setAttribute("aria-hidden", "false");
   }
   function closeSheet() {
+    if (window.AnathemaIpod) AnathemaIpod.unmount();
     sheet.classList.remove("is-open");
     sheet.setAttribute("aria-hidden", "true");
   }

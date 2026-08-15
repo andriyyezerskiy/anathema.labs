@@ -720,3 +720,258 @@ html.theme-dark .dock__divider { background: rgba(255,255,255,0.18); }
   max-width: 90vw;
   height: auto;
 }
+
+
+/* ============================================================
+   8. ETHEREAL — monochrome-iPod music player.
+
+   A self-contained "device": a brushed silver body (space-gray in
+   dark mode) with a backlit grey LCD that stays lit in both themes,
+   and a click wheel. Orange (the brand accent) is the ONLY colour —
+   used for the menu selection bar, the now-playing marker, and the
+   scrubber fill. Rendered inside a desktop window body OR the iOS
+   sheet, both of which get a padding-free "player" variant.
+   ============================================================ */
+.win__body--player, .sheet__content--player {
+  padding: 20px 18px 24px;
+  display: flex;
+  justify-content: center;
+}
+.sheet__content--player { padding-bottom: 8px; }
+
+.ipod {
+  --pod-body-1: #f3f3f5;
+  --pod-body-2: #cfcfd4;
+  --pod-body-edge: #a9a9b0;
+  --pod-lcd-1: #cfd4cb;   /* backlit grey-green LCD, top */
+  --pod-lcd-2: #bfc5bd;   /* LCD, bottom */
+  --pod-lcd-ink: #20241f;
+  --pod-lcd-dim: #5c6159;
+  --pod-wheel-1: #ececef;
+  --pod-wheel-2: #d3d3d8;
+  --pod-key: #6a6a72;
+  width: 248px;
+  max-width: 100%;
+  padding: 22px 20px 24px;
+  border-radius: 34px;
+  background: linear-gradient(160deg, var(--pod-body-1), var(--pod-body-2));
+  border: 1px solid var(--pod-body-edge);
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.9),
+    inset 0 -2px 6px rgba(0,0,0,0.12),
+    0 10px 26px -8px rgba(0,0,0,0.4);
+  outline: none;
+  user-select: none;
+}
+
+/* --- screen --- */
+.ipod__screen {
+  height: 196px;
+  border-radius: 5px;
+  padding: 6px 0 0;
+  background: linear-gradient(180deg, var(--pod-lcd-1), var(--pod-lcd-2));
+  border: 1px solid rgba(0,0,0,0.28);
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,0.28),
+    inset 0 2px 6px rgba(0,0,0,0.16);
+  color: var(--pod-lcd-ink);
+  font-family: var(--font-ui);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.ipod__bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px 4px;
+  margin: 0 4px 2px;
+  border-bottom: 1px solid rgba(0,0,0,0.22);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ipod__batt {
+  width: 18px; height: 9px;
+  border: 1px solid var(--pod-lcd-ink);
+  border-radius: 2px;
+  position: relative;
+  background:
+    linear-gradient(90deg, var(--pod-lcd-ink) 0 72%, transparent 72%) content-box;
+  padding: 1px;
+}
+.ipod__batt::after {
+  content: ""; position: absolute; right: -3px; top: 2px;
+  width: 2px; height: 3px; background: var(--pod-lcd-ink); border-radius: 0 1px 1px 0;
+}
+.ipod__stage { position: relative; flex: 1; min-height: 0; }
+
+/* --- menu (track list) view --- */
+.ipod__menu { position: absolute; inset: 0; overflow-y: auto; }
+.ipod[data-mode="now"] .ipod__menu { display: none; }
+.ipod__list { list-style: none; margin: 0; padding: 0; }
+.ipod__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 9px;
+  font-size: 12px;
+  line-height: 1.25;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+.ipod__row-t {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ipod__row-ic {
+  flex: none; width: 8px; height: 8px; border-radius: 50%;
+  background: transparent;
+}
+.ipod__row.is-playing .ipod__row-ic {
+  background: var(--orange);
+  box-shadow: 0 0 0 2px rgba(255,91,4,0.25);
+}
+.ipod__row-caret { flex: none; font-size: 12px; opacity: 0.5; }
+.ipod__row.is-sel {
+  background: linear-gradient(180deg, #ff7a30, var(--orange));
+  color: #fff;
+  border-bottom-color: transparent;
+}
+.ipod__row.is-sel .ipod__row-caret { opacity: 0.85; }
+.ipod__row.is-sel.is-playing .ipod__row-ic { background: #fff; box-shadow: none; }
+.ipod__msg {
+  padding: 22px 14px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--pod-lcd-dim);
+}
+
+/* --- now-playing view --- */
+.ipod__now {
+  position: absolute; inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 6px 14px 12px;
+}
+.ipod[data-mode="now"] .ipod__now { display: flex; }
+.ipod__now-count {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--pod-lcd-dim);
+  margin-bottom: 8px;
+}
+.ipod__art {
+  width: 74px; height: 74px;
+  display: grid; place-items: center;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  color: var(--pod-lcd-dim);
+  background: rgba(255,255,255,0.28);
+  border: 1px solid rgba(0,0,0,0.18);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.4);
+}
+.ipod.is-playing .ipod__art { color: var(--orange); }
+.ipod__now-title {
+  font-size: 13px; font-weight: 600; line-height: 1.25;
+  max-width: 100%;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ipod__now-artist {
+  font-size: 11px; color: var(--pod-lcd-dim); margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+.ipod__scrub {
+  display: flex; align-items: center; gap: 6px;
+  width: 100%; margin-top: auto;
+  font-family: var(--font-mono); font-size: 9px; color: var(--pod-lcd-dim);
+}
+.ipod__track {
+  flex: 1; height: 5px; border-radius: 3px;
+  background: rgba(0,0,0,0.16);
+  overflow: hidden;
+}
+.ipod__fill {
+  display: block; height: 100%; width: 0;
+  background: var(--orange);
+  transition: width 0.25s linear;
+}
+
+/* --- click wheel --- */
+.ipod__wheel {
+  position: relative;
+  width: 168px; height: 168px;
+  margin: 22px auto 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, var(--pod-wheel-1), var(--pod-wheel-2));
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.8),
+    inset 0 -3px 6px rgba(0,0,0,0.12),
+    0 1px 2px rgba(0,0,0,0.12);
+  touch-action: none;
+}
+.ipod__key {
+  position: absolute;
+  color: var(--pod-key);
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: color 0.12s, transform 0.08s;
+}
+.ipod__key:hover { color: var(--orange); }
+.ipod__key:active { transform: scale(0.88); }
+.ipod__key--menu { top: 12px; left: 50%; transform: translateX(-50%); }
+.ipod__key--menu:active { transform: translateX(-50%) scale(0.88); }
+.ipod__key--prev { left: 14px; top: 50%; transform: translateY(-50%); }
+.ipod__key--prev:active { transform: translateY(-50%) scale(0.88); }
+.ipod__key--next { right: 14px; top: 50%; transform: translateY(-50%); }
+.ipod__key--next:active { transform: translateY(-50%) scale(0.88); }
+.ipod__key--play { bottom: 12px; left: 50%; transform: translateX(-50%); }
+.ipod__key--play:active { transform: translateX(-50%) scale(0.88); }
+.ipod__center {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 62px; height: 62px;
+  margin: -31px 0 0 -31px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #fafafb, #dededf);
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.9),
+    inset 0 -2px 4px rgba(0,0,0,0.12),
+    0 1px 3px rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: transform 0.08s;
+}
+.ipod__center:active { transform: scale(0.94); }
+
+/* --- dark mode: space-gray chassis, LCD stays lit --- */
+html.theme-dark .ipod {
+  --pod-body-1: #34343a;
+  --pod-body-2: #17171b;
+  --pod-body-edge: #000;
+  --pod-wheel-1: #3a3a41;
+  --pod-wheel-2: #232328;
+  --pod-key: #b9b9c0;
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.14),
+    inset 0 -2px 6px rgba(0,0,0,0.5),
+    0 12px 30px -8px rgba(0,0,0,0.7);
+}
+html.theme-dark .ipod__center {
+  background: radial-gradient(circle at 50% 40%, #46464d, #26262b);
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.18),
+    inset 0 -2px 4px rgba(0,0,0,0.5),
+    0 1px 3px rgba(0,0,0,0.5);
+}
