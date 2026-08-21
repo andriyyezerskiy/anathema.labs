@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://andriyyezerskiy.github.io/anathema.labs/resors/sitemap.xml
+Sitemap: https://anathemalabs.com/resors/sitemap.xml
