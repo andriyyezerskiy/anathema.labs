@@ -434,7 +434,7 @@
       '<div class="sheet__icon sheet__icon--img"><img src="' + ANATHEMA_ICON + '" alt="" draggable="false" /></div>' +
       '<h2 class="brand" style="font-size:32px;margin-bottom:6px">Anathema<span class="brand__thin">Labs</span></h2>' +
       '<div class="sheet__tagline">A collision of physical &amp; digital</div>' +
-      '<p class="sheet__about">We design where the physical and the digital collide — software made with unusual care, and objects built to last.</p>' +
+      '<p class="sheet__about">We build where the physical and the digital collide. Software made slowly, by hand, and objects made to be kept.</p>' +
       '<div class="sheet__meta">' +
         '<a class="btn-contact" href="mailto:' + STUDIO_EMAIL + '?subject=Hello%20Anathema%20Labs">Reach out ↗</a>' +
       "</div>";

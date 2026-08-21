@@ -31,9 +31,9 @@ const ANATHEMA_APPS = [
     id: "resors",
     name: "Resors",
     tagline: "Design Systems for Xcode",
-    about: "Resors turns Xcode asset management from a tedious, error-prone chore into a fast, visual workflow — build beautiful, consistent assets without the friction.",
+    about: "Resors turns Xcode asset management from a tedious, error-prone chore into a fast, visual workflow. Build beautiful, consistent assets without the friction.",
     features: [
-      ["Visual-first", "Edit colors in a clean interface — Light, Dark & High Contrast side by side, previewed on real UI."],
+      ["Visual-first", "Edit colors in a clean interface, with Light, Dark & High Contrast side by side, previewed on real UI."],
       ["Bi-directional sync", "Connect an asset catalog and reconcile changes both ways, with flexible conflict resolution."],
       ["Frictionless import", "Drop in existing .colorset files and validate them instantly."],
       ["Reusable libraries", "Define your palette once and ship it consistently across every app."],
