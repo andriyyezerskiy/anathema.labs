@@ -403,6 +403,11 @@ a.chip:hover { transform: translateY(-1px); }
   border: 1.5px solid var(--black);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 4px 9px -3px rgba(20,15,10,0.4);
   transition: transform 0.18s cubic-bezier(.2,.8,.2,1), filter 0.18s;
+  /* promote to its own GPU layer so the SVG-glyph tiles don't re-rasterize
+     (and shimmer) sub-pixel while lifting over the dock's backdrop blur */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .dock__item--mono .dock__tile { background: var(--paper); }
 .dock__tile svg { width: 30px; height: 30px; color: var(--paper); }
@@ -450,18 +455,18 @@ a.chip:hover { transform: translateY(-1px); }
   box-shadow: none;
   overflow: visible;
 }
-.dock__item:hover .dock__tile { transform: translateY(-6px); filter: brightness(1.05); }
+.dock__item:hover .dock__tile { transform: translate3d(0, -6px, 0); filter: brightness(1.05); }
 
 /* reflections removed for the clean glass look */
 .dock__reflect { display: none; }
 
 /* click bounce */
 @keyframes dockBounce {
-  0%   { transform: translateY(-5px); }
-  28%  { transform: translateY(-18px); }
-  55%  { transform: translateY(0); }
-  75%  { transform: translateY(-7px); }
-  100% { transform: translateY(0); }
+  0%   { transform: translate3d(0, -5px, 0); }
+  28%  { transform: translate3d(0, -18px, 0); }
+  55%  { transform: translate3d(0, 0, 0); }
+  75%  { transform: translate3d(0, -7px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 .dock__tile.is-bouncing { animation: dockBounce 0.55s ease; }
 
