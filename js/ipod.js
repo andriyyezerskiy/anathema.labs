@@ -19,6 +19,12 @@
 
   var API_SRC = "https://w.soundcloud.com/player/api.js";
 
+  /* Tiny status glyphs for the top bar — mirror the transport state. */
+  var ICON_PLAY =
+    '<svg viewBox="0 0 24 24" width="11" height="11"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>';
+  var ICON_PAUSE =
+    '<svg viewBox="0 0 24 24" width="11" height="11"><rect x="6.5" y="5" width="4" height="14" rx="0.6" fill="currentColor"/><rect x="13.5" y="5" width="4" height="14" rx="0.6" fill="currentColor"/></svg>';
+
   /* ---- SoundCloud Widget API loader (loaded once, lazily) ---- */
   var apiLoading = false, apiWaiters = [];
   function loadApi(cb) {
@@ -183,8 +189,8 @@
       '<div class="ipod" data-mode="menu" tabindex="0">' +
         '<div class="ipod__screen">' +
           '<div class="ipod__bar">' +
+            '<span class="ipod__status" aria-hidden="true"></span>' +
             '<span class="ipod__bar-title">Ethereal</span>' +
-            '<span class="ipod__batt" aria-hidden="true"></span>' +
           '</div>' +
           '<div class="ipod__stage">' +
             '<div class="ipod__menu"><ul class="ipod__list" role="listbox"></ul></div>' +
@@ -231,11 +237,17 @@
     var tA = container.querySelector(".ipod__t--a");
     var tB = container.querySelector(".ipod__t--b");
     var barTitle = container.querySelector(".ipod__bar-title");
+    var statusEl = container.querySelector(".ipod__status");
 
     var sel = state.index || 0; /* menu cursor (may differ from playing track) */
 
     function mode() { return root.getAttribute("data-mode"); }
-    function setMode(m) { root.setAttribute("data-mode", m); barTitle.textContent = m === "now" ? "Now Playing" : "Ethereal"; }
+    /* Menu bar reads "Ethereal" (right-aligned); the now-playing bar reads
+       "Now Playing" (centred) with a play/pause glyph leading it (renderNow). */
+    function setMode(m) {
+      root.setAttribute("data-mode", m);
+      barTitle.textContent = m === "now" ? "Now Playing" : "Ethereal";
+    }
 
     function renderList() {
       if (state.error) {
@@ -253,7 +265,6 @@
         var cls = "ipod__row" + (i === sel ? " is-sel" : "") +
                   (i === state.index ? " is-playing" : "");
         html += '<li class="' + cls + '" data-i="' + i + '">' +
-                  '<span class="ipod__row-ic" aria-hidden="true"></span>' +
                   '<span class="ipod__row-t">' + escapeHtml(titleOf(state.sounds[i])) + '</span>' +
                   '<span class="ipod__row-caret" aria-hidden="true">›</span>' +
                 '</li>';
@@ -279,6 +290,7 @@
       marquee(nowArtist, nowArtistT);
       nowCount.textContent = state.sounds.length
         ? (state.index + 1) + " of " + state.sounds.length : "";
+      statusEl.innerHTML = state.playing ? ICON_PLAY : ICON_PAUSE;
       root.classList.toggle("is-playing", state.playing);
       progress();
     }

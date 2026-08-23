@@ -149,7 +149,8 @@
     if (openIds[app.id]) { bringFront(openIds[app.id]); return; }
 
     var win = el("section", "win");
-    win.style.width = app.custom === "ipod" ? "300px" : "380px";
+    win.style.width = app.custom === "ipod" ? "300px"
+      : app.custom === "visualizer" ? "420px" : "380px";
     win.style.top = (110 + spawnOffset) + "px";
     win.style.left = (Math.min(520, 300) + spawnOffset) + "px";
     spawnOffset = (spawnOffset + 28) % 140;
@@ -162,7 +163,11 @@
       pod.style.top = (96 + spawnOffset) + "px";
       pod.style.left = (300 + spawnOffset) + "px";
       pod.innerHTML =
-        '<button class="ipod-float__close" type="button" aria-label="Close Ethereal">×</button>' +
+        '<header class="ipod-float__bar win__bar">' +
+          '<button class="ipod-float__close win__close" type="button" aria-label="Close Ethereal"></button>' +
+          '<div class="win__title">' + app.name + "</div>" +
+          '<div class="win__lines"></div>' +
+        "</header>" +
         '<div class="ipod-float__mount"></div>';
       surface.appendChild(pod);
       openIds[app.id] = pod;
@@ -171,6 +176,25 @@
       wirePodClose(pod, app.id);
       bringFront(pod);
       if (window.AnathemaIpod) AnathemaIpod.mount(pod.querySelector(".ipod-float__mount"), app.playlist);
+      return;
+    }
+
+    /* The visualizer is a standard window whose body is a live canvas. */
+    if (app.custom === "visualizer") {
+      win.innerHTML =
+        '<header class="win__bar" data-drag>' +
+          '<button class="win__close" aria-label="Close"></button>' +
+          '<div class="win__title">' + app.name + "</div>" +
+          '<div class="win__lines"></div>' +
+        "</header>" +
+        '<div class="win__body win__body--viz"></div>';
+      surface.appendChild(win);
+      openIds[app.id] = win;
+      win.dataset.appid = app.id;
+      makeDraggable(win);
+      wireClose(win, app.id);
+      bringFront(win);
+      if (window.AnathemaViz) AnathemaViz.mount(win.querySelector(".win__body--viz"));
       return;
     }
 
@@ -251,10 +275,12 @@
     });
   }
 
-  /* Tear the audio engine down when the player's own window/sheet closes. */
+  /* Tear the audio engine / visualizer down when its window or sheet closes. */
   function maybeUnmountPlayer(id) {
     var app = findApp(id);
-    if (app && app.custom === "ipod" && window.AnathemaIpod) AnathemaIpod.unmount();
+    if (!app) return;
+    if (app.custom === "ipod" && window.AnathemaIpod) AnathemaIpod.unmount();
+    if (app.custom === "visualizer" && window.AnathemaViz) AnathemaViz.unmount();
   }
 
   /* Drag any .win by its [data-drag] bar (also the pre-rendered About window). */
@@ -448,6 +474,15 @@
       if (window.AnathemaIpod) AnathemaIpod.mount(sheetContent, app.playlist);
       return;
     }
+    if (app.custom === "visualizer") {
+      sheetContent.className = "sheet__content sheet__content--viz";
+      sheetContent.innerHTML = "";
+      sheet.classList.add("is-open");
+      sheet.setAttribute("aria-hidden", "false");
+      if (window.AnathemaViz) AnathemaViz.mount(sheetContent);
+      return;
+    }
+    if (window.AnathemaViz) AnathemaViz.unmount();
     sheetContent.className = "sheet__content";
     sheetContent.innerHTML =
       '<div class="' + tileClass(app, "sheet__icon") + (app.accent && !app.icon ? " sheet__icon--accent" : "") + '">' + iconInner(app) + "</div>" +
@@ -467,6 +502,7 @@
   /* Studio About sheet (the Anathema home icon). */
   function openStudioSheet() {
     if (window.AnathemaIpod) AnathemaIpod.unmount();
+    if (window.AnathemaViz) AnathemaViz.unmount();
     sheetContent.className = "sheet__content";
     sheetContent.innerHTML =
       '<div class="sheet__icon sheet__icon--img"><img src="' + ANATHEMA_ICON + '" alt="" draggable="false" /></div>' +
@@ -481,6 +517,7 @@
   }
   function closeSheet() {
     if (window.AnathemaIpod) AnathemaIpod.unmount();
+    if (window.AnathemaViz) AnathemaViz.unmount();
     sheet.classList.remove("is-open");
     sheet.setAttribute("aria-hidden", "true");
   }
