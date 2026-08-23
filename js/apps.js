@@ -82,11 +82,11 @@ const ANATHEMA_APPS = [
     /* In-site toy — a standalone generative visualizer with switchable
        states/scenes. `custom: "visualizer"` makes app.js render the canvas
        (js/visualizer.js) instead of a standard project window/sheet. */
-    id: "spectra",
-    name: "Spectra",
+    id: "vision",
+    name: "Vision",
     tagline: "Generative visuals",
     custom: "visualizer",
-    glyph: '<svg viewBox="0 0 24 24" fill="currentColor" shape-rendering="crispEdges"><rect x="3" y="9" width="3" height="11"/><rect x="8" y="4" width="3" height="16"/><rect x="13" y="11" width="3" height="9"/><rect x="18" y="6" width="3" height="14"/></svg>',
+    glyph: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.6 10-6.6 10 6.6 10 6.6-3.6 6.6-10 6.6S2 12 2 12z"/><circle cx="12" cy="12" r="3.1"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg>',
     accent: true
   }
 ];
