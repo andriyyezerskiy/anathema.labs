@@ -154,22 +154,23 @@
     win.style.left = (Math.min(520, 300) + spawnOffset) + "px";
     spawnOffset = (spawnOffset + 28) % 140;
 
-    /* Custom "app" windows render their own body instead of the project card. */
+    /* The iPod is a chromeless "device" that floats on the desktop —
+       no window frame. Drag it by its chassis; a hover-reveal close dot
+       dismisses it. (Mobile still shows it inside the sheet.) */
     if (app.custom === "ipod") {
-      win.innerHTML =
-        '<header class="win__bar" data-drag>' +
-          '<button class="win__close" aria-label="Close"></button>' +
-          '<div class="win__title">' + app.name + "</div>" +
-          '<div class="win__lines"></div>' +
-        "</header>" +
-        '<div class="win__body win__body--player"></div>';
-      surface.appendChild(win);
-      openIds[app.id] = win;
-      win.dataset.appid = app.id;
-      makeDraggable(win);
-      wireClose(win, app.id);
-      bringFront(win);
-      if (window.AnathemaIpod) AnathemaIpod.mount(win.querySelector(".win__body--player"), app.playlist);
+      var pod = el("section", "ipod-float");
+      pod.style.top = (96 + spawnOffset) + "px";
+      pod.style.left = (300 + spawnOffset) + "px";
+      pod.innerHTML =
+        '<button class="ipod-float__close" type="button" aria-label="Close Ethereal">×</button>' +
+        '<div class="ipod-float__mount"></div>';
+      surface.appendChild(pod);
+      openIds[app.id] = pod;
+      pod.dataset.appid = app.id;
+      makePodDraggable(pod);
+      wirePodClose(pod, app.id);
+      bringFront(pod);
+      if (window.AnathemaIpod) AnathemaIpod.mount(pod.querySelector(".ipod-float__mount"), app.playlist);
       return;
     }
 
@@ -210,6 +211,43 @@
       maybeUnmountPlayer(id);
       win.remove();
       delete openIds[id];
+    });
+  }
+
+  function wirePodClose(pod, id) {
+    var close = pod.querySelector(".ipod-float__close");
+    close.addEventListener("click", function (e) {
+      e.stopPropagation();
+      maybeUnmountPlayer(id);
+      pod.remove();
+      delete openIds[id];
+    });
+  }
+
+  /* Drag the floating iPod by its chassis — but never when the pointer
+     starts on the screen, the click wheel, or the close dot, so those
+     stay fully interactive. */
+  function makePodDraggable(pod) {
+    var sx, sy, ox, oy, dragging = false;
+    pod.addEventListener("mousedown", function (e) {
+      bringFront(pod);
+      if (e.target.closest(".ipod__wheel") ||
+          e.target.closest(".ipod__screen") ||
+          e.target.closest(".ipod-float__close")) return;
+      e.preventDefault();
+      dragging = true;
+      sx = e.clientX; sy = e.clientY;
+      ox = pod.offsetLeft; oy = pod.offsetTop;
+      document.body.style.userSelect = "none";
+    });
+    document.addEventListener("mousemove", function (e) {
+      if (!dragging) return;
+      pod.style.left = (ox + (e.clientX - sx)) + "px";
+      pod.style.top = Math.max(0, oy + (e.clientY - sy)) + "px";
+    });
+    document.addEventListener("mouseup", function () {
+      dragging = false;
+      document.body.style.userSelect = "";
     });
   }
 
@@ -265,7 +303,7 @@
     bringFront(about);
   }
   function visibleWindows() {
-    return Array.prototype.slice.call(document.querySelectorAll(".win"))
+    return Array.prototype.slice.call(document.querySelectorAll(".win, .ipod-float"))
       .filter(function (w) { return w.offsetParent !== null; });
   }
   function closeFront() {

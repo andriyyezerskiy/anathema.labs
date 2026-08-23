@@ -57,8 +57,35 @@
     return sound.title || "Untitled";
   }
   function artistOf(sound) {
-    if (!sound || !sound.user) return "";
-    return sound.user.username || "";
+    if (!sound) return "";
+    /* Prefer the track's real artist (publisher metadata) over the
+       uploading account name, which is often just the label/playlist owner. */
+    var pm = sound.publisher_metadata;
+    if (pm && pm.artist) return pm.artist;
+    return (sound.user && sound.user.username) || "";
+  }
+  /* Cover art URL, bumped from SoundCloud's default 100px to a crisper
+     200px. Falls back to the artist's avatar, then to nothing (glyph). */
+  function artOf(sound) {
+    if (!sound) return "";
+    var u = sound.artwork_url || (sound.user && sound.user.avatar_url) || "";
+    return u ? u.replace("-large", "-t200x200") : "";
+  }
+
+  /* If the text overflows its box, scroll it back and forth like a real
+     iPod marquee; otherwise leave it static. Driven by CSS (see .ipod__marq). */
+  function marquee(box, inner) {
+    box.classList.remove("is-scroll");
+    box.style.removeProperty("--marq-shift");
+    box.style.removeProperty("--marq-dur");
+    requestAnimationFrame(function () {
+      var over = inner.scrollWidth - box.clientWidth;
+      if (over > 4) {
+        box.style.setProperty("--marq-shift", (-over) + "px");
+        box.style.setProperty("--marq-dur", Math.max(6, over / 22 + 4) + "s");
+        box.classList.add("is-scroll");
+      }
+    });
   }
 
   function ensureEngine(url, done) {
@@ -131,12 +158,23 @@
   function play() { if (widget) widget.play(); }
   function pause() { if (widget) widget.pause(); }
   function toggle() { if (widget) widget.toggle(); }
-  function next() { if (widget) { widget.next(); } }
-  function prev() { if (widget) { widget.prev(); } }
+  /* Prev/next step to the adjacent track and (re)start it from 0:00. We
+     drive this via skip() ourselves — the widget's own next()/prev() don't
+     reliably advance this playlist and leave playback where it was. */
+  function next() { step(1); }
+  function prev() { step(-1); }
+  function step(delta) {
+    if (!widget || !state.sounds.length) return;
+    var n = state.sounds.length;
+    playIndex((state.index + delta + n) % n);
+  }
   function playIndex(i) {
     if (!widget) return;
     state.index = i;
-    widget.skip(i); /* skip() starts playback of track i */
+    state.position = 0;
+    state.duration = (state.sounds[i] && state.sounds[i].duration) || 0;
+    widget.skip(i); /* skip() restarts track i from 0:00 and plays it */
+    render();
   }
 
   /* ---- View: builds the iPod DOM in `container` and drives it ---- */
@@ -153,10 +191,11 @@
             '<div class="ipod__now">' +
               '<div class="ipod__now-count"></div>' +
               '<div class="ipod__art" aria-hidden="true">' +
-                '<svg viewBox="0 0 24 24" width="34" height="34"><path d="M9 18V5l10-2v13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>' +
+                '<img class="ipod__art-img" alt="" draggable="false" />' +
+                '<svg class="ipod__art-ph" viewBox="0 0 24 24" width="34" height="34"><path d="M9 18V5l10-2v13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>' +
               '</div>' +
-              '<div class="ipod__now-title">—</div>' +
-              '<div class="ipod__now-artist"></div>' +
+              '<div class="ipod__now-title"><span class="ipod__marq">—</span></div>' +
+              '<div class="ipod__now-artist"><span class="ipod__marq"></span></div>' +
               '<div class="ipod__scrub">' +
                 '<span class="ipod__t ipod__t--a">0:00</span>' +
                 '<span class="ipod__track"><span class="ipod__fill"></span></span>' +
@@ -181,6 +220,12 @@
     var listEl = container.querySelector(".ipod__list");
     var nowTitle = container.querySelector(".ipod__now-title");
     var nowArtist = container.querySelector(".ipod__now-artist");
+    var nowTitleT = nowTitle.querySelector(".ipod__marq");
+    var nowArtistT = nowArtist.querySelector(".ipod__marq");
+    var artEl = container.querySelector(".ipod__art");
+    var artImg = artEl.querySelector(".ipod__art-img");
+    /* If the cover fails to load, drop back to the glyph placeholder. */
+    artImg.addEventListener("error", function () { artEl.classList.remove("has-art"); });
     var nowCount = container.querySelector(".ipod__now-count");
     var fill = container.querySelector(".ipod__fill");
     var tA = container.querySelector(".ipod__t--a");
@@ -220,8 +265,18 @@
 
     function renderNow() {
       var s = state.sounds[state.index];
-      nowTitle.textContent = titleOf(s);
-      nowArtist.textContent = artistOf(s);
+      nowTitleT.textContent = titleOf(s);
+      nowArtistT.textContent = artistOf(s);
+      var art = artOf(s);
+      if (art) {
+        if (artImg.getAttribute("src") !== art) artImg.src = art;
+        artEl.classList.add("has-art");
+      } else {
+        artImg.removeAttribute("src");
+        artEl.classList.remove("has-art");
+      }
+      marquee(nowTitle, nowTitleT);
+      marquee(nowArtist, nowArtistT);
       nowCount.textContent = state.sounds.length
         ? (state.index + 1) + " of " + state.sounds.length : "";
       root.classList.toggle("is-playing", state.playing);
