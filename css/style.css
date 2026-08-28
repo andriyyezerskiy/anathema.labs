@@ -1,31 +1,12 @@
 /* ============================================================
-   ANATHEMA LABS
-   0. Tokens   1. Base   2. Shared brand
+   ANATHEMA LABS — desktop/mobile shell
+   1. Base   2. Shared brand
    3. Desktop (classic macOS)   4. Mobile (iOS)   5. Sheet
+
+   Design primitives (colour, type, space, radii, borders,
+   elevation, motion, z-index) live in css/design-system.css and
+   MUST be linked before this file. This file only styles the shell.
    ============================================================ */
-
-/* ---------- 0. Tokens ---------- */
-:root {
-  --black: #0b0b0c;
-  --ink:   #141416;
-  --white: #f7f6f3;
-  --paper: #fbfaf8;
-  --gray-1: #e7e5e0;
-  --gray-2: #c9c6bf;
-  --gray-3: #8a8880;
-  --orange: #ff5b04;
-  --orange-deep: #e34e00;
-  --ultramarine: #1f2c9c;
-  --grid-line: rgba(26,43,200,0.34);
-
-  --line: 1.5px solid var(--black);
-  --shadow-hard: 4px 4px 0 var(--black);
-  --radius-ios: 24px;
-
-  --font-logo: "EB Garamond", Garamond, "Times New Roman", serif;
-  --font-ui:   "Space Grotesk", -apple-system, system-ui, sans-serif;
-  --font-mono: "Space Mono", ui-monospace, "SF Mono", monospace;
-}
 
 /* ---------- 1. Base ---------- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -97,7 +78,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* --- Menu bar --- */
 .menubar {
   position: relative;
-  z-index: 50;
+  z-index: var(--z-menubar);
   height: 30px;
   display: flex;
   align-items: center;
@@ -143,7 +124,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   position: absolute;
   top: calc(100% + 5px);
   left: 0;
-  z-index: 200;
+  z-index: var(--z-dropdown);
   display: none;
   min-width: 214px;
   padding: 5px;
@@ -347,7 +328,7 @@ a.chip:hover { transform: translateY(-1px); }
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 60;
+  z-index: var(--z-dock);
   display: flex;
   align-items: flex-end;
   gap: 14px;
@@ -592,7 +573,7 @@ a.chip:hover { transform: translateY(-1px); }
    5. Sheet (mobile app detail)
    ============================================================ */
 .sheet {
-  position: fixed; inset: 0; z-index: 100;
+  position: fixed; inset: 0; z-index: var(--z-sheet);
   display: none;
 }
 .sheet.is-open { display: block; }
@@ -643,22 +624,11 @@ a.chip:hover { transform: translateY(-1px); }
 
 
 /* ============================================================
-   6. DARK THEME — follows the system setting.
-   `html.theme-dark` is toggled from prefers-color-scheme in app.js.
-   Flipping the tokens cascades dark styling almost everywhere;
-   the rules below cover surfaces that hardcode colors.
+   6. DARK THEME — component surfaces that hardcode colours.
+   The token flip lives in css/design-system.css (html.theme-dark);
+   the rules below only cover surfaces the tokens can't reach
+   (frosted glass, gradients, backdrops).
    ============================================================ */
-html.theme-dark {
-  --white: #0d0d10;   /* base backdrop */
-  --paper: #17171c;   /* surfaces: windows, menu, dock items, sheets */
-  --black: #ece9e3;   /* primary text + borders (now light) */
-  --ink:   #cfccc5;   /* body copy */
-  --gray-1: #2b2b32;
-  --gray-2: #3c3c45;
-  --gray-3: #8f8d85;
-  --grid-line: rgba(96,116,255,0.24);   /* brightened ultramarine */
-  --shadow-hard: 5px 5px 0 rgba(0,0,0,0.5);
-}
 
 /* backdrops — dark vignette; the grid flips via --grid-line */
 html.theme-dark #desktop {
@@ -712,7 +682,7 @@ html.theme-dark .dock__divider { background: rgba(255,255,255,0.18); }
 .logo-fx {
   position: absolute;
   inset: 0;
-  z-index: 1;                 /* behind windows (which start at z 10) */
+  z-index: var(--z-base);     /* behind windows (which start at z 10) */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -999,7 +969,7 @@ html.theme-dark .ipod__center {
    frame. Grab the chassis to drag; screen + wheel stay interactive. --- */
 .ipod-float {
   position: absolute;
-  z-index: 10;
+  z-index: var(--z-window);
   cursor: grab;
   -webkit-user-select: none;
   user-select: none;

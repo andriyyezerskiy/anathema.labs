@@ -1,0 +1,164 @@
+/* ============================================================
+   ANATHEMA LABS — DESIGN SYSTEM
+   Single source of truth for the anathemalabs.com studio site.
+
+   This file owns every design primitive: colour, typography,
+   space, radii, borders, elevation, motion and layering. Nothing
+   here targets a component — component styles live in style.css
+   (desktop/mobile shell) and consume the tokens defined below.
+
+   The language is "classic macOS, drawn by hand": a warm paper
+   ground, near-black ink, a single orange accent, an ultramarine
+   grid, hard 1.5px rules and hard offset shadows. EB Garamond for
+   the wordmark, Space Grotesk for UI, Space Mono for labels.
+
+   Dark mode is driven by `html.theme-dark` (toggled in js/app.js
+   from prefers-color-scheme, with a manual override). Only the raw
+   ramp is re-pointed for dark — every semantic token references the
+   ramp, so the whole system flips from one block.
+
+   Contents
+     1. Brand palette (raw)
+     2. Neutral ramp (raw)
+     3. Semantic colour roles
+     4. Typography
+     5. Space
+     6. Radii
+     7. Borders & rules
+     8. Elevation (shadows)
+     9. Motion
+    10. Layering (z-index)
+    11. Dark theme (ramp re-point)
+   ============================================================ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---------- 1. Brand palette (raw) ---------- */
+  --orange:        #ff5b04;   /* the one accent */
+  --orange-deep:   #e34e00;   /* pressed / hover-dark accent */
+  --ultramarine:   #1f2c9c;   /* structural blue, source of the grid */
+  --grid-line:     rgba(26,43,200,0.34);   /* desktop/mobile graph grid */
+
+  /* ---------- 2. Neutral ramp (raw) ----------
+     Named by role at full strength. `--black` is the ink used for
+     text AND rules; it inverts to near-white in dark mode. */
+  --black:  #0b0b0c;   /* primary ink + borders */
+  --ink:    #141416;   /* body copy */
+  --white:  #f7f6f3;   /* base backdrop */
+  --paper:  #fbfaf8;   /* raised surfaces: windows, menus, sheets */
+  --gray-1: #e7e5e0;   /* hairline dividers on paper */
+  --gray-2: #c9c6bf;   /* disabled / secondary rule */
+  --gray-3: #8a8880;   /* muted text, captions */
+
+  /* ---------- 3. Semantic colour roles ----------
+     Prefer these in components; they carry meaning and flip cleanly. */
+  --bg:            var(--white);   /* page ground */
+  --surface:       var(--paper);   /* raised panel */
+  --text-strong:   var(--black);   /* headings, high-emphasis, borders */
+  --text:          var(--ink);     /* body copy */
+  --text-muted:    var(--gray-3);  /* labels, captions, meta */
+  --accent:        var(--orange);
+  --accent-strong: var(--orange-deep);
+  --on-accent:     var(--paper);   /* text/glyph on an orange fill */
+  --border-color:  var(--black);
+  --divider:       var(--gray-1);
+
+  /* ---------- 4. Typography ---------- */
+  /* families */
+  --font-logo: "EB Garamond", Garamond, "Times New Roman", serif;      /* wordmark / display serif */
+  --font-ui:   "Space Grotesk", -apple-system, system-ui, sans-serif;  /* interface sans */
+  --font-mono: "Space Mono", ui-monospace, "SF Mono", monospace;       /* labels / tech / clock */
+
+  /* type scale — matches the shell's real sizes so components can adopt it */
+  --text-2xs:  10.5px;  /* micro labels, chips */
+  --text-xs:   11px;    /* button labels, tooltips */
+  --text-sm:   12px;    /* menu meta, taglines */
+  --text-base: 13px;    /* default UI text */
+  --text-md:   14.5px;  /* body copy */
+  --text-lg:   17px;    /* menubar wordmark */
+  --text-xl:   26px;    /* sheet name */
+  --text-2xl:  40px;    /* window brand */
+  --text-3xl:  46px;    /* mobile hero brand */
+
+  /* weights */
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold:600;
+  --weight-bold:    700;
+
+  /* leading */
+  --leading-tight: 0.95;
+  --leading-snug:  1.25;
+  --leading-body:  1.55;
+
+  /* tracking (letter-spacing) */
+  --tracking-tight:  -0.015em;
+  --tracking-normal:  0;
+  --tracking-label:   0.1em;   /* mono labels / buttons */
+  --tracking-caps:    0.14em;  /* uppercase mono taglines */
+
+  /* ---------- 5. Space ----------
+     Tight macOS rhythm; use for padding, gaps and offsets. */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ---------- 6. Radii ---------- */
+  --radius-xs:   5px;    /* menu rows, small controls */
+  --radius-sm:   6px;    /* tooltips */
+  --radius-md:   14px;   /* dock tiles, cards */
+  --radius-lg:   22px;   /* pill buttons, panels */
+  --radius-ios:  24px;   /* iOS dock / sheet corners */
+  --radius-pill: 999px;  /* fully rounded */
+
+  /* ---------- 7. Borders & rules ---------- */
+  --border-width: 1.5px;
+  --line: var(--border-width) solid var(--border-color);   /* the signature hard rule */
+
+  /* ---------- 8. Elevation (hard offset shadows) ---------- */
+  --shadow-hard:    4px 4px 0 var(--black);   /* windows, menus, dropdowns */
+  --shadow-hard-lg: 8px 8px 0 var(--black);   /* full-page cards (404) */
+
+  /* ---------- 9. Motion ---------- */
+  --dur-instant: 0.08s;   /* press feedback */
+  --dur-fast:    0.12s;   /* hovers, toggles */
+  --dur-base:    0.18s;   /* tile lift, default */
+  --dur-slow:    0.32s;   /* sheet slide */
+  --ease-out:    cubic-bezier(.2, .8, .2, 1);   /* dock / general */
+  --ease-spring: cubic-bezier(.2, .9, .2, 1);   /* sheet / overshoot */
+
+  /* ---------- 10. Layering (z-index) ---------- */
+  --z-base:     1;    /* ambient logo fx */
+  --z-window:   10;   /* draggable windows, floating iPod */
+  --z-menubar:  50;   /* top menu bar */
+  --z-dock:     60;   /* dock */
+  --z-sheet:    100;  /* mobile sheet */
+  --z-dropdown: 200;  /* open menus */
+}
+
+/* ============================================================
+   11. Dark theme — re-point the raw ramp only.
+   `html.theme-dark` is set from prefers-color-scheme in js/app.js
+   (with a manual toggle). Semantic tokens, borders and shadows
+   inherit the flip automatically.
+   ============================================================ */
+html.theme-dark {
+  --white:  #0d0d10;   /* base backdrop */
+  --paper:  #17171c;   /* raised surfaces */
+  --black:  #ece9e3;   /* ink + borders (now light) */
+  --ink:    #cfccc5;   /* body copy */
+  --gray-1: #2b2b32;
+  --gray-2: #3c3c45;
+  --gray-3: #8f8d85;
+  --grid-line: rgba(96,116,255,0.24);   /* brightened ultramarine */
+
+  --shadow-hard:    5px 5px 0 rgba(0,0,0,0.5);
+  --shadow-hard-lg: 8px 8px 0 rgba(0,0,0,0.5);
+}

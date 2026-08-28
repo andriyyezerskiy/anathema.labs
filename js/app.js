@@ -347,7 +347,7 @@
     });
   }
 
-  var STUDIO_EMAIL = "contact.andriy@icloud.com";
+  var STUDIO_EMAIL = "hello@anathemalabs.com";
   var MENU_CONFIG = [
     { label: "File", items: [
       { label: "Open About Window", action: openAbout },

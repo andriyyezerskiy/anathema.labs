@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Not found · Anathema Labs</title>
+  <title>Not found · Anathema labs</title>
   <meta name="robots" content="noindex" />
   <link rel="icon" href="/assets/icons/anathema.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/icons/anathema-512.png" />
@@ -13,23 +13,38 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Space+Grotesk:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
+    /* An error page must be self-contained (it can be served from any path,
+       or opened directly), so the design-system tokens it needs are inlined
+       here rather than linked. Values MIRROR css/design-system.css — keep
+       them in sync with that source of truth. */
     :root {
-      color-scheme: light dark;
-      --paper: #fbfaf8;
-      --white: #f7f6f3;
-      --ink: #17171c;
-      --muted: rgba(23,23,28,0.6);
-      --accent: #ff5b04;
-      --grid-line: rgba(63,81,181,0.14);
+      --orange: #ff5b04;
+      --grid-line: rgba(26,43,200,0.34);
+      --bg: #f7f6f3;          /* --white  */
+      --surface: #fbfaf8;     /* --paper  */
+      --text-strong: #0b0b0c; /* --black  */
+      --text: #141416;        /* --ink    */
+      --text-muted: #8a8880;  /* --gray-3 */
+      --accent: var(--orange);
+      --on-accent: var(--surface);
+      --line: 1.5px solid var(--text-strong);
+      --shadow-hard: 4px 4px 0 var(--text-strong);
+      --radius-pill: 999px;
+      --weight-medium: 500;
+      --weight-semibold: 600;
+      --dur-fast: 0.12s;
+      --font-logo: "EB Garamond", Garamond, "Times New Roman", serif;
+      --font-ui:   "Space Grotesk", -apple-system, system-ui, sans-serif;
+      --font-mono: "Space Mono", ui-monospace, "SF Mono", monospace;
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --paper: #17171c;
-        --white: #0d0d10;
-        --ink: #f2f1ee;
-        --muted: rgba(242,241,238,0.55);
-        --grid-line: rgba(126,140,224,0.18);
-      }
+    html.theme-dark {
+      --grid-line: rgba(96,116,255,0.24);
+      --bg: #0d0d10;
+      --surface: #17171c;
+      --text-strong: #ece9e3;
+      --text: #cfccc5;
+      --text-muted: #8f8d85;
+      --shadow-hard: 5px 5px 0 rgba(0,0,0,0.5);
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
@@ -38,59 +53,136 @@
       align-items: center;
       justify-content: center;
       padding: 2rem;
-      font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--ink);
-      background-color: var(--white);
+      font-family: var(--font-ui);
+      color: var(--text);
+      background-color: var(--bg);
       background-image:
         linear-gradient(var(--grid-line) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 64px 64px;
       -webkit-font-smoothing: antialiased;
     }
-    .card {
-      max-width: 520px;
-      text-align: center;
-      background: var(--paper);
-      border: 1.5px solid var(--ink);
-      border-radius: 14px;
-      padding: 2.5rem 2rem;
-      box-shadow: 8px 8px 0 var(--ink);
+    /* Classic-macOS window, matching .win on the main desktop:
+       hard 1.5px rule, hard offset shadow, a title bar with a square
+       close box, a mono uppercase title, and a pinstripe fill. */
+    .win {
+      width: min(460px, 100%);
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: var(--line);
+      box-shadow: var(--shadow-hard);
     }
+    .win__bar {
+      position: relative;
+      flex: none;
+      display: flex;
+      align-items: center;
+      height: 26px;
+      padding: 0 8px;
+      border-bottom: var(--line);
+      user-select: none;
+    }
+    .win__close {
+      position: relative;
+      z-index: 2;
+      flex: none;
+      width: 13px;
+      height: 13px;
+      padding: 0;
+      border: var(--line);
+      background: var(--surface);
+      cursor: pointer;
+      transition: background var(--dur-fast);
+    }
+    .win__close:hover,
+    .win__close:focus-visible { background: var(--accent); outline: none; }
+    .win__title {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0 10px;
+      color: var(--text-strong);
+      background: var(--surface);
+    }
+    .win__lines {
+      position: absolute;
+      inset: 5px 8px;
+      z-index: 0;
+      background: repeating-linear-gradient(var(--text-strong) 0 1px, transparent 1px 3px);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .win__body { padding: 2.4rem 2rem 2.7rem; text-align: center; }
     .code {
-      font-family: "Space Mono", monospace;
+      font-family: var(--font-mono);
       font-size: 0.8rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--accent);
       margin: 0 0 1rem;
     }
+    /* Brand lockup, matching .brand on the main site: "Anathema" in orange
+       EB Garamond + "labs" in Space Grotesk sans (near-black / light in dark). */
     .brand {
-      font-family: "EB Garamond", Georgia, serif;
+      font-family: var(--font-logo);
+      font-weight: var(--weight-medium);
       font-size: clamp(2rem, 6vw, 2.75rem);
       line-height: 1.05;
+      letter-spacing: 0.01em;
       margin: 0 0 0.75rem;
+      color: var(--accent);
     }
-    .brand em { font-style: normal; color: var(--accent); }
-    p.msg { color: var(--muted); margin: 0 0 1.75rem; font-size: 1.02rem; }
+    .brand__thin {
+      font-family: var(--font-ui);
+      font-weight: var(--weight-semibold);
+      font-size: 0.78em;
+      letter-spacing: -0.015em;
+      color: var(--text-strong);
+      margin-left: 0.16em;
+    }
+    p.msg { color: var(--text-muted); margin: 0 0 1.75rem; font-size: 1.02rem; }
     a.home {
       display: inline-block;
-      font-weight: 500;
+      font-weight: var(--weight-medium);
       text-decoration: none;
-      color: var(--white);
+      color: var(--on-accent);
       background: var(--accent);
       padding: 0.7rem 1.4rem;
-      border-radius: 999px;
-      border: 1.5px solid var(--ink);
+      border-radius: var(--radius-pill);
+      border: var(--line);
+      transition: filter var(--dur-fast);
     }
     a.home:hover { filter: brightness(1.05); }
   </style>
 </head>
 <body>
-  <main class="card">
-    <p class="code">Error 404 · page not found</p>
-    <h1 class="brand"><em>Anathema</em> Labs</h1>
-    <p class="msg">This page slipped through the cracks. It may have moved, or it never existed.</p>
-    <a class="home" href="/">Back to the desktop &rarr;</a>
+  <main class="win">
+    <header class="win__bar">
+      <a class="win__close" href="/" aria-label="Close and return to the desktop"></a>
+      <div class="win__title">Not Found</div>
+      <div class="win__lines" aria-hidden="true"></div>
+    </header>
+    <div class="win__body">
+      <p class="code">Error 404 · page not found</p>
+      <h1 class="brand">Anathema<span class="brand__thin">labs</span></h1>
+      <p class="msg">This page slipped through the cracks. It may have moved, or it never existed.</p>
+      <a class="home" href="/">Back to the desktop &rarr;</a>
+    </div>
   </main>
+  <script>
+    /* Match the main site: dark mode is the `theme-dark` class on <html>,
+       seeded from the system setting and kept in sync. */
+    (function () {
+      var mq = window.matchMedia("(prefers-color-scheme: dark)");
+      var apply = function (on) { document.documentElement.classList.toggle("theme-dark", on); };
+      apply(mq.matches);
+      mq.addEventListener("change", function (e) { apply(e.matches); });
+    })();
+  </script>
 </body>
 </html>
