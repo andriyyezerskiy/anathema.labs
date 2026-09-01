@@ -179,7 +179,11 @@
     state.index = i;
     state.position = 0;
     state.duration = (state.sounds[i] && state.sounds[i].duration) || 0;
-    widget.skip(i); /* skip() restarts track i from 0:00 and plays it */
+    /* skip() advances to track i, but it no-ops when i is already the widget's
+       loaded sound (index can drift out of sync). Force the playhead back to
+       0:00 so prev/next always restart the song from the beginning. */
+    widget.skip(i);
+    widget.seekTo(0);
     render();
   }
 
