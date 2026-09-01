@@ -506,7 +506,7 @@
     sheetContent.className = "sheet__content";
     sheetContent.innerHTML =
       '<div class="sheet__icon sheet__icon--img"><img src="' + ANATHEMA_ICON + '" alt="" draggable="false" /></div>' +
-      '<h2 class="brand" style="font-size:32px;margin-bottom:6px">Anathema<span class="brand__thin">Labs</span></h2>' +
+      '<h2 class="brand" style="font-size:32px;margin-bottom:6px">Anathema<span class="brand__thin">labs</span></h2>' +
       '<div class="sheet__tagline">A collision of physical &amp; digital</div>' +
       '<p class="sheet__about">We build where the physical and the digital collide. Software made slowly, by hand, and objects made to be kept.</p>' +
       '<div class="sheet__meta">' +

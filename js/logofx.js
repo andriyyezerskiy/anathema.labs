@@ -74,7 +74,7 @@
     mctx.font = anaFont; mctx.letterSpacing = "0px";
     var anaW = mctx.measureText("Anathema").width;
     mctx.font = labsFont;
-    var labsW = mctx.measureText("Labs").width;
+    var labsW = mctx.measureText("labs").width;
 
     var gap = anaSize * 0.16;
     var pad = anaSize * 0.42;
@@ -96,7 +96,7 @@
     mctx.fillText("Anathema", pad, baseline);
     mctx.fillStyle = ink;
     mctx.font = labsFont;
-    mctx.fillText("Labs", pad + anaW + gap, baseline);
+    mctx.fillText("labs", pad + anaW + gap, baseline);
 
     /* Sample the mask on a grid; keep cells that fall on the ink. */
     var pw = mask.width;
