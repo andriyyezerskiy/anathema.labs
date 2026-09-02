@@ -12,6 +12,12 @@
      2 — "Roman Temple": a rotating 3D temple built from brand glyphs.
      3 — "Flow Field"  : particles chasing a noise field, leaving trails.
 
+   Scenes come in two kinds. A 2D scene draws with `draw(t,W,H)` on the
+   shared canvas context. A shader scene instead carries a `frag` GLSL
+   string and is rendered by WebGL on a second, stacked canvas (a canvas
+   holds only one context kind, so the two are toggled). The liminal set
+   at the end of SCENES is the shader group.
+
    Public surface (used by app.js):
      AnathemaViz.mount(container)  build the canvas + start the loop
      AnathemaViz.unmount()         stop the loop + tear the UI down
@@ -23,10 +29,101 @@
 
   var host = null, canvas = null, ctx = null, modeEl = null;
   var raf = 0, dpr = 1, cw = 0, ch = 0, cur = 0;
+  var scenes = null;                        /* SCENES minus anything unsupported */
 
   function disc(cx, cy, r, color) {
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
     if (color) ctx.fillStyle = color; ctx.fill();
+  }
+
+  /* ============================================================
+     GL layer — fragment-shader scenes.
+
+     A scene with a `frag` string is drawn by WebGL on its own canvas
+     instead of the 2D one (a canvas can only hold one context kind, so
+     the two are stacked and toggled). Each shader is a full-screen pass
+     over a single triangle, given `u_time` and `u_res`; GLSL_HEAD is
+     prepended so scenes only write the interesting part.
+     ============================================================ */
+  var glCanvas = null, gl = null, glProg = null, glQuad = null;
+  var uTime = null, uRes = null, glFrag = null, glBroken = false;
+
+  var VERT = "attribute vec2 a;void main(){gl_Position=vec4(a,0.0,1.0);}";
+
+  var GLSL_HEAD = [
+    "precision highp float;",
+    "uniform float u_time;",
+    "uniform vec2 u_res;",
+    "float box2(vec2 p, vec2 b){ vec2 d = abs(p) - b;",
+    "  return length(max(d,0.0)) + min(max(d.x,d.y),0.0); }",
+    "mat2 rot(float a){ return mat2(cos(a), -sin(a), sin(a), cos(a)); }",
+    "float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453123); }",
+    "float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.0-2.0*f);",
+    "  return mix(mix(hash(i), hash(i+vec2(1.0,0.0)), f.x),",
+    "             mix(hash(i+vec2(0.0,1.0)), hash(i+vec2(1.0,1.0)), f.x), f.y); }",
+    "float grain(vec2 c, float t){ return hash(c + fract(t)*97.0); }",
+    ""
+  ].join("\n");
+
+  function hasWebGL() {
+    try {
+      var c = document.createElement("canvas");
+      return !!(c.getContext("webgl") || c.getContext("experimental-webgl"));
+    } catch (e) { return false; }
+  }
+
+  function initGL() {
+    if (gl || glBroken) return !!gl;
+    try { gl = glCanvas.getContext("webgl") || glCanvas.getContext("experimental-webgl"); }
+    catch (e) { gl = null; }
+    if (!gl) { glBroken = true; return false; }
+    glQuad = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, glQuad);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    return true;
+  }
+
+  function compile(src, type) {
+    var s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+      if (window.console) console.warn("[viz] shader compile failed\n" + gl.getShaderInfoLog(s));
+      gl.deleteShader(s); return null;
+    }
+    return s;
+  }
+
+  function useFrag(src) {
+    if (!initGL()) return false;
+    if (glFrag === src && glProg) return true;
+    var vs = compile(VERT, gl.VERTEX_SHADER);
+    var fs = compile(GLSL_HEAD + src, gl.FRAGMENT_SHADER);
+    if (!vs || !fs) return false;
+    var p = gl.createProgram();
+    gl.attachShader(p, vs); gl.attachShader(p, fs); gl.linkProgram(p);
+    gl.deleteShader(vs); gl.deleteShader(fs);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+      if (window.console) console.warn("[viz] shader link failed\n" + gl.getProgramInfoLog(p));
+      return false;
+    }
+    if (glProg) gl.deleteProgram(glProg);
+    glProg = p; glFrag = src;
+    uTime = gl.getUniformLocation(p, "u_time");
+    uRes = gl.getUniformLocation(p, "u_res");
+    return true;
+  }
+
+  function drawGL(t) {
+    if (!gl || !glProg) return;
+    gl.viewport(0, 0, glCanvas.width, glCanvas.height);
+    gl.useProgram(glProg);
+    gl.uniform1f(uTime, t);
+    gl.uniform2f(uRes, glCanvas.width, glCanvas.height);
+    var loc = gl.getAttribLocation(glProg, "a");
+    gl.bindBuffer(gl.ARRAY_BUFFER, glQuad);
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
   /* ============================================================
@@ -550,43 +647,216 @@
         grd.addColorStop(0, "rgba(0,0,0,0)"); grd.addColorStop(0.5, "rgba(0,0,0,0.35)"); grd.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = grd; ctx.fillRect(0, by - 40, W, 80);
       }
+    },
+
+    /* ---- Liminal shader scenes (WebGL) ------------------------------
+       Threshold spaces: places you only ever pass through. Each is a
+       raymarch or ray-plane pass with heavy fog, a dying light source,
+       and motion that never arrives anywhere. ------------------------ */
+    {
+      /* An endless service corridor: pilasters repeating into fog, strip
+         lights overhead that gutter every few seconds. */
+      name: "Endless Corridor",
+      frag: [
+        "float map(vec3 p){",
+        "  float walls = min(1.5 - abs(p.x), min(p.y + 1.1, 1.9 - p.y));",
+        "  vec3 q = p; q.z = mod(p.z, 3.5) - 1.75;",
+        "  float pil = box2(vec2(abs(p.x) - 1.34, q.z), vec2(0.13, 0.22));",
+        "  return min(walls, pil);",
+        "}",
+        "void main(){",
+        "  vec2 uv = (gl_FragCoord.xy - 0.5*u_res)/u_res.y;",
+        "  float t = u_time;",
+        "  vec3 ro = vec3(sin(t*0.23)*0.10, 0.05*sin(t*0.7), t*1.5);",
+        "  vec3 rd = normalize(vec3(uv, 1.25));",
+        "  rd.xy = rot(sin(t*0.37)*0.045) * rd.xy;",
+        "  float d = 0.0;",
+        "  for(int i=0;i<72;i++){",
+        "    float s = map(ro + rd*d);",
+        "    if(s < 0.003) break;",
+        "    d += s*0.85;",
+        "    if(d > 40.0) break;",
+        "  }",
+        "  vec3 p = ro + rd*d;",
+        "  float lz = mod(p.z, 3.5) - 1.75;",
+        "  float lamp = smoothstep(0.6,0.0,abs(lz)) * smoothstep(0.7,0.0,abs(p.x)) * step(1.55, p.y);",
+        "  float gutter = step(0.90, fract(t*0.17));",
+        "  float flick = mix(1.0, 0.45 + 0.55*sin(t*41.0), gutter);",
+        "  float shade = 1.0/(1.0 + d*d*0.010);",
+        "  vec3 col = vec3(0.80,0.72,0.55) * shade * (0.30 + 0.70*flick);",
+        "  col += vec3(1.0,0.86,0.62) * lamp * 1.5 * flick;",
+        "  col *= 0.80 + 0.30*noise(p.xz*2.2 + p.y);",
+        "  float fog = 1.0 - exp(-d*0.088);",
+        "  col = mix(col, vec3(0.045,0.043,0.05), fog);",
+        "  col *= 1.0 - 0.55*dot(uv,uv);",
+        "  col += (grain(gl_FragCoord.xy, t) - 0.5)*0.045;",
+        "  gl_FragColor = vec4(max(col,0.0), 1.0);",
+        "}"
+      ].join("\n")
+    },
+    {
+      /* Backrooms: mono-yellow damp rooms, pillars on a 6m grid, ceiling
+         panels buzzing at mains frequency. You drift, never turning fully. */
+      name: "Backrooms",
+      frag: [
+        "float map(vec3 p){",
+        "  float fl = p.y + 1.0;",
+        "  float ce = 1.6 - p.y;",
+        "  vec3 q = p; q.xz = mod(p.xz + 3.0, 6.0) - 3.0;",
+        "  float pil = box2(q.xz, vec2(0.5, 0.5));",
+        "  return min(min(fl, ce), pil);",
+        "}",
+        "void main(){",
+        "  vec2 uv = (gl_FragCoord.xy - 0.5*u_res)/u_res.y;",
+        "  float t = u_time;",
+        "  vec3 ro = vec3(t*0.85, 0.12*sin(t*0.9), sin(t*0.11)*4.0);",
+        "  vec3 rd = normalize(vec3(uv, 1.3));",
+        "  rd.xz = rot(sin(t*0.07)*0.7) * rd.xz;",
+        "  float d = 0.0;",
+        "  for(int i=0;i<80;i++){",
+        "    float s = map(ro + rd*d);",
+        "    if(s < 0.003) break;",
+        "    d += s*0.9;",
+        "    if(d > 50.0) break;",
+        "  }",
+        "  vec3 p = ro + rd*d;",
+        "  float isFloor = step(p.y, -0.985);",
+        "  float isCeil = step(1.585, p.y);",
+        "  vec3 col = mix(vec3(0.82,0.70,0.30), vec3(0.30,0.25,0.12), isFloor);",
+        "  col = mix(col, vec3(0.76,0.74,0.60), isCeil);",
+        "  col *= 0.92 + 0.08*sin(p.y*30.0);",
+        "  vec2 g = mod(p.xz + 3.0, 6.0) - 3.0;",
+        "  float panel = isCeil * smoothstep(1.1, 0.6, max(abs(g.x), abs(g.y)));",
+        "  float buzz = 0.90 + 0.10*sin(t*50.0);",
+        "  col += vec3(1.0,0.96,0.78) * panel * 1.2 * buzz;",
+        "  col *= 0.72 + 0.42*noise(p.xz*1.7 + p.y*0.5);",
+        "  float fog = 1.0 - exp(-d*0.072);",
+        "  col = mix(col, vec3(0.10,0.085,0.045), fog);",
+        "  col *= 1.0 - 0.5*dot(uv,uv);",
+        "  col += (grain(gl_FragCoord.xy, t) - 0.5)*0.05;",
+        "  gl_FragColor = vec4(max(col,0.0), 1.0);",
+        "}"
+      ].join("\n")
+    },
+    {
+      /* A drained municipal pool, still lit from below. Tiles, caustics on
+         water that is no longer there, teal fog to the far end. */
+      name: "Drowned Pool",
+      frag: [
+        "void main(){",
+        "  vec2 uv = (gl_FragCoord.xy - 0.5*u_res)/u_res.y;",
+        "  float t = u_time;",
+        "  vec3 ro = vec3(0.0, 1.15 + 0.05*sin(t*0.5), t*0.75);",
+        "  vec3 rd = normalize(vec3(uv, 1.2));",
+        "  rd.xy = rot(sin(t*0.19)*0.05) * rd.xy;",
+        "  vec3 col;",
+        "  if (rd.y < -0.002) {",
+        "    float d = (ro.y + 1.5)/(-rd.y);",
+        "    vec3 p = ro + rd*d;",
+        "    vec2 f = abs(fract(p.xz*1.35) - 0.5);",
+        "    float grout = smoothstep(0.42, 0.5, max(f.x, f.y));",
+        "    vec3 tile = mix(vec3(0.46,0.80,0.82), vec3(0.11,0.27,0.34), grout);",
+        "    float c = sin(p.x*3.0 + t*1.2) * sin(p.z*3.4 - t*1.0);",
+        "    c += sin(p.x*5.6 - t*0.8) * sin(p.z*4.8 + t*1.6);",
+        "    c = pow(max(c*0.25 + 0.5, 0.0), 3.0);",
+        "    col = tile * (0.75 + 1.9*c);",
+        "    col *= 0.88 + 0.22*noise(p.xz*2.0);",
+        "    float fog = 1.0 - exp(-d*0.055);",
+        "    col = mix(col, vec3(0.10,0.21,0.25), fog);",
+        "  } else {",
+        "    float h = smoothstep(0.0, 0.45, rd.y);",
+        "    col = mix(vec3(0.14,0.25,0.28), vec3(0.035,0.08,0.12), h);",
+        "  }",
+        "  col *= 1.0 - 0.35*dot(uv,uv);",
+        "  col += (grain(gl_FragCoord.xy, t) - 0.5)*0.04;",
+        "  gl_FragColor = vec4(max(col,0.0), 1.0);",
+        "}"
+      ].join("\n")
+    },
+    {
+      /* Threshold: doorway inside doorway inside doorway, drifting toward
+         you forever. The room past the last one never resolves. */
+      name: "Threshold",
+      frag: [
+        "void main(){",
+        "  vec2 uv = (gl_FragCoord.xy - 0.5*u_res)/u_res.y;",
+        "  float t = u_time;",
+        "  uv += vec2(sin(t*0.21)*0.02, cos(t*0.17)*0.015);",
+        "  vec3 col = vec3(0.020,0.019,0.024);",
+        "  float off = fract(t*0.35);",
+        "  for(int i=0;i<16;i++){",
+        "    float fi = float(i) + off;",
+        "    float z = fi*0.85 + 0.55;",
+        "    vec2 q = uv * z;",
+        "    float sd = box2(q, vec2(0.42, 0.72));",
+        "    float depth = exp(-fi*0.20);",
+        "    float edge = smoothstep(0.045, 0.0, abs(sd));",
+        "    col += vec3(1.0, 0.62, 0.22) * edge * depth * 0.55;",
+        "    float inside = smoothstep(0.0, -0.35, sd);",
+        "    col += vec3(0.95, 0.70, 0.42) * inside * depth * 0.035;",
+        "  }",
+        "  float haze = exp(-dot(uv,uv)*2.2);",
+        "  col += vec3(0.10,0.06,0.03) * haze * 0.5;",
+        "  col *= 1.0 - 0.6*dot(uv,uv);",
+        "  col += (grain(gl_FragCoord.xy, t) - 0.5)*0.05;",
+        "  gl_FragColor = vec4(max(col,0.0), 1.0);",
+        "}"
+      ].join("\n")
     }
   ];
 
+  /* Both canvases share the visible box; only the active one is shown. */
   function sizeCanvas() {
     if (!canvas) return;
-    var r = canvas.getBoundingClientRect();
+    var live = (scenes && scenes[cur] && scenes[cur].frag) ? glCanvas : canvas;
+    var r = live.getBoundingClientRect();
     cw = Math.max(1, r.width); ch = Math.max(1, r.height);
     dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(cw * dpr);
     canvas.height = Math.round(ch * dpr);
+    if (glCanvas) {
+      glCanvas.width = Math.round(cw * dpr);
+      glCanvas.height = Math.round(ch * dpr);
+    }
   }
   var onResize = function () {
     sizeCanvas();
-    if (SCENES[cur].init) SCENES[cur].init(cw, ch);
+    if (scenes[cur].init) scenes[cur].init(cw, ch);
   };
 
   function frame(ts) {
     if (!canvas || !document.contains(canvas)) { stop(); return; }
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);  /* draw in CSS pixels */
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = "source-over";
-    SCENES[cur].draw(ts * 0.001, cw, ch);
+    var sc = scenes[cur], t = ts * 0.001;
+    if (sc.frag) {
+      drawGL(t);
+    } else {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);  /* draw in CSS pixels */
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = "source-over";
+      sc.draw(t, cw, ch);
+    }
     raf = requestAnimationFrame(frame);
   }
 
   function setScene(i) {
-    cur = ((i % SCENES.length) + SCENES.length) % SCENES.length;
-    var sc = SCENES[cur];
-    if (sc.init) sc.init(cw, ch);
-    if (ctx) {                                /* clear so trail-scenes don't inherit */
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "#08090d"; ctx.fillRect(0, 0, cw, ch);
+    cur = ((i % scenes.length) + scenes.length) % scenes.length;
+    var sc = scenes[cur], isGL = !!sc.frag;
+    if (glCanvas) glCanvas.style.display = isGL ? "block" : "none";
+    if (canvas) canvas.style.display = isGL ? "none" : "block";
+    sizeCanvas();
+    if (isGL) {
+      useFrag(sc.frag);
+    } else {
+      if (sc.init) sc.init(cw, ch);
+      if (ctx) {                              /* clear so trail-scenes don't inherit */
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "#08090d"; ctx.fillRect(0, 0, cw, ch);
+      }
     }
     if (modeEl) {
-      modeEl.textContent = SCENES.length > 1
-        ? sc.name + "  " + (cur + 1) + "/" + SCENES.length
+      modeEl.textContent = scenes.length > 1
+        ? sc.name + "  " + (cur + 1) + "/" + scenes.length
         : sc.name;
     }
   }
@@ -601,15 +871,19 @@
     mount: function (container) {
       this.unmount();
       host = container;
+      /* Shader scenes only exist if the browser can actually run them. */
+      scenes = hasWebGL() ? SCENES : SCENES.filter(function (s) { return !s.frag; });
       host.innerHTML =
         '<div class="viz">' +
-          '<canvas class="viz__canvas"></canvas>' +
+          '<canvas class="viz__canvas viz__2d"></canvas>' +
+          '<canvas class="viz__canvas viz__gl" style="display:none"></canvas>' +
           '<div class="viz__readout">' +
             '<span class="viz__mode"></span>' +
             '<button class="viz__next" type="button" aria-label="Next state">state ›</button>' +
           "</div>" +
         "</div>";
-      canvas = host.querySelector(".viz__canvas");
+      canvas = host.querySelector(".viz__2d");
+      glCanvas = host.querySelector(".viz__gl");
       ctx = canvas.getContext("2d");
       modeEl = host.querySelector(".viz__mode");
       host.querySelector(".viz__next").addEventListener("click", function () { setScene(cur + 1); });
@@ -621,7 +895,9 @@
     unmount: function () {
       stop();
       if (host) host.innerHTML = "";
-      host = canvas = ctx = modeEl = null;
+      /* The GL context dies with its canvas; drop the cached program too. */
+      host = canvas = ctx = modeEl = glCanvas = null;
+      gl = null; glProg = null; glQuad = null; glFrag = null; glBroken = false;
     }
   };
 })();
