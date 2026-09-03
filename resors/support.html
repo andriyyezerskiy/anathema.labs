@@ -3,52 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resors — Support</title>
-  <meta name="description" content="Resors support — answers to common questions about importing, syncing, and exporting Xcode color assets, plus a direct line to email support." />
+  <title>Resors: Support</title>
+  <meta name="description" content="Answers to common questions about importing, syncing, and exporting Xcode color assets with Resors, plus a direct line to email support." />
   <link rel="canonical" href="https://anathemalabs.com/resors/support.html" />
 
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-  <meta name="theme-color" content="#f6f4f8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#100a16" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Resors" />
-  <meta property="og:title" content="Resors — Support" />
-  <meta property="og:description" content="Answers to common questions about Resors — and a direct line if you need one." />
+  <meta property="og:title" content="Resors: Support" />
+  <meta property="og:description" content="Answers to common questions about Resors, and a direct line if you need one." />
   <meta property="og:url" content="https://anathemalabs.com/resors/support.html" />
   <meta property="og:image" content="https://anathemalabs.com/resors/images/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Resors — Support" />
-  <meta name="twitter:description" content="Answers to common questions about Resors — and a direct line if you need one." />
+  <meta name="twitter:title" content="Resors: Support" />
+  <meta name="twitter:description" content="Answers to common questions about Resors, and a direct line if you need one." />
   <meta name="twitter:image" content="https://anathemalabs.com/resors/images/og-image.jpg" />
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #f6f4f8;
-      --text: #1c1c1e;
-      --muted: rgba(28,28,30,0.62);
-      --accent: #007aff;
-      --accent-2: #46b1ff;
-      --card-bg: rgba(255,255,255,0.65);
-      --card-strong: rgba(255,255,255,0.9);
-      --border: rgba(0,0,0,0.08);
-      --shadow: 0 20px 60px rgba(0,0,0,0.08);
+      --bg: #fbfbfd;
+      --bg-alt: #f5f5f7;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --accent: #0071e3;
+      --accent-2: #0071e3;
+      --card-bg: #ffffff;
+      --card-strong: #ffffff;
+      --border: rgba(0,0,0,0.10);
+      --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.07);
       --code-bg: rgba(0,0,0,0.06);
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #100a16;
+        --bg: #000000;
+        --bg-alt: #0d0d0f;
         --text: #f5f5f7;
-        --muted: rgba(245,245,247,0.62);
-        --accent: #0a84ff;
-        --accent-2: #64d2ff;
-        --card-bg: rgba(34,28,42,0.55);
-        --card-strong: rgba(46,38,56,0.8);
-        --border: rgba(255,255,255,0.1);
-        --shadow: 0 20px 60px rgba(0,0,0,0.5);
+        --muted: #a1a1a6;
+        --accent: #2997ff;
+        --accent-2: #2997ff;
+        --card-bg: #1c1c1e;
+        --card-strong: #232325;
+        --border: rgba(255,255,255,0.12);
+        --shadow: 0 1px 2px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.55);
         --code-bg: rgba(255,255,255,0.1);
       }
     }
@@ -65,17 +67,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    .ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
-    .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: drift 22s ease-in-out infinite alternate; }
-    .blob.b1 { width: 46vw; height: 46vw; top: -14vw; left: -10vw; background: #7c3aed; }
-    .blob.b2 { width: 40vw; height: 40vw; top: 40vh; right: -14vw; background: #e11d48; animation-delay: -8s; }
-    @media (prefers-color-scheme: dark) { .blob { opacity: 0.35; } }
-    @keyframes drift {
-      0% { transform: translate(0,0) scale(1); }
-      50% { transform: translate(4vw,3vh) scale(1.1); }
-      100% { transform: translate(-3vw,-2vh) scale(0.95); }
-    }
-    @media (prefers-reduced-motion: reduce) { .blob { animation: none; } }
+    .ambient { display: none; }
 
     .wrap { max-width: 740px; margin: 0 auto; padding: 0 24px; }
 
@@ -107,7 +99,7 @@
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 0 1.4rem;
-      backdrop-filter: blur(20px);
+      
       transition: box-shadow 0.25s ease, background 0.25s ease;
     }
     .faq details[open] { background: var(--card-strong); box-shadow: var(--shadow); }
@@ -143,7 +135,7 @@
       border-radius: 24px;
       padding: 2.5rem 2rem;
       margin: 2.5rem 0;
-      backdrop-filter: blur(20px);
+      
       box-shadow: var(--shadow);
     }
     .contact-card p { color: var(--muted); margin: 0 0 1.4rem; }
@@ -163,16 +155,12 @@
   </style>
 </head>
 <body>
-  <div class="ambient" aria-hidden="true">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-  </div>
 
   <div class="wrap">
     <header class="page">
-      <div class="eyebrow">We're here to help</div>
+      <div class="eyebrow">Support</div>
       <h1>Resors Support</h1>
-      <p>Answers to common questions — and a direct line if you need one.</p>
+      <p>Answers to common questions, and a direct line if you need one.</p>
     </header>
 
     <h2>Common questions</h2>
@@ -180,8 +168,8 @@
       <details open>
         <summary>How do I import my Xcode colors?</summary>
         <div class="body">
-          <p>Simply drag one or more <code>.colorset</code> folders into Resors. The app validates them instantly and displays their color values for all appearance variants — so you catch issues early, whether you're importing a single color or a full design system.</p>
-          <p>Alternatively, use the Import command-bar button to launch the file picker.</p>
+          <p>Drag one or more <code>.colorset</code> folders into Resors. The app validates them on arrival and shows their color values for every appearance, so problems surface before the assets reach your project.</p>
+          <p>You can also use the Import button in the command bar to open a file picker.</p>
         </div>
       </details>
 
@@ -189,15 +177,15 @@
         <summary>Is Resors free? What is Resors+?</summary>
         <div class="body">
           <p>Resors is free to download and use. Creating, importing, validating, organizing, and previewing colors, symbols, and images all come at no cost.</p>
-          <p><span class="plus">Resors+</span> is an optional subscription that unlocks the pro workflow — exporting Xcode-ready assets and two-way Xcode sync. You can subscribe any time from within the app.</p>
+          <p><span class="plus">Resors+</span> is an optional subscription that adds exporting and two-way Xcode sync. You can subscribe at any time from inside the app.</p>
         </div>
       </details>
 
       <details>
         <summary>How does syncing with Xcode work?</summary>
         <div class="body">
-          <p>Two-way Xcode sync is part of <span class="plus">Resors+</span>. Connect your project, choose a catalog, and synchronize changes in both directions — edits made in Resors flow to Xcode, and changes in Xcode flow back to Resors.</p>
-          <p>Flexible conflict-resolution modes — letting you choose which version wins when both sides have changed — are coming in a future update.</p>
+          <p>Two-way Xcode sync is part of <span class="plus">Resors+</span>. Connect your project and choose a catalog. Edits made in Resors reach Xcode, and changes made in Xcode come back to Resors.</p>
+          <p>Conflict-resolution modes, which let you choose which version wins when both sides have changed, are coming in a future update.</p>
         </div>
       </details>
 
@@ -211,28 +199,28 @@
       <details>
         <summary>Can I export colors back to Xcode?</summary>
         <div class="body">
-          <p>Yes — exporting is a <span class="plus">Resors+</span> feature. Resors generates Xcode-ready <code>.colorset</code> files in seconds, so you can export individual assets or entire libraries with guaranteed compatibility, or keep a connected project up to date automatically via sync.</p>
+          <p>Exporting is a <span class="plus">Resors+</span> feature. Resors generates <code>.colorset</code> files Xcode reads directly, so you can export a single asset or an entire library. A connected project can also stay current through sync.</p>
         </div>
       </details>
 
       <details>
         <summary>Can I reuse colors across multiple apps?</summary>
         <div class="body">
-          <p>Yes. Organize colors into reusable groups and libraries — define your palette once and use it across all your apps with consistency.</p>
+          <p>Yes. Organize colors into groups and libraries, then define a palette once and use it across your apps.</p>
         </div>
       </details>
 
       <details>
         <summary>Does Resors support multiple colorsets at once?</summary>
         <div class="body">
-          <p>Yes. You can import and manage multiple <code>.colorset</code> files simultaneously, making it easy to review and verify entire color libraries.</p>
+          <p>Yes. You can import and manage multiple <code>.colorset</code> files at once, which makes reviewing a whole library practical.</p>
         </div>
       </details>
 
       <details>
         <summary>What color data does Resors show?</summary>
         <div class="body">
-          <p>Each appearance variant includes HEX, RGB and Float RGB values, and each color value can define a color space — so you can precisely verify color consistency across Light, Dark, and High Contrast modes.</p>
+          <p>Each appearance includes HEX, RGB, and Float RGB values, and each color value can define a color space. That lets you check consistency across Light, Dark, and High Contrast.</p>
         </div>
       </details>
 

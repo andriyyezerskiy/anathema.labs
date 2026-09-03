@@ -3,52 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resors — Roadmap</title>
-  <meta name="description" content="See what's shipped, what's in progress, and what's planned for Resors — and submit your own feature request." />
+  <title>Resors: Roadmap</title>
+  <meta name="description" content="See what's shipped, what's in progress, and what's planned for Resors, and submit your own feature request." />
   <link rel="canonical" href="https://anathemalabs.com/resors/roadmap.html" />
 
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-  <meta name="theme-color" content="#f6f4f8" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#100a16" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Resors" />
-  <meta property="og:title" content="Resors — Roadmap" />
-  <meta property="og:description" content="What's shipped, what's in progress, and what's planned for Resors — and a place to submit your own feature request." />
+  <meta property="og:title" content="Resors: Roadmap" />
+  <meta property="og:description" content="What's shipped, what's in progress, and what's planned for Resors, plus a place to submit your own feature request." />
   <meta property="og:url" content="https://anathemalabs.com/resors/roadmap.html" />
   <meta property="og:image" content="https://anathemalabs.com/resors/images/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Resors — Roadmap" />
+  <meta name="twitter:title" content="Resors: Roadmap" />
   <meta name="twitter:description" content="What's shipped, in progress, and planned for Resors." />
   <meta name="twitter:image" content="https://anathemalabs.com/resors/images/og-image.jpg" />
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #f6f4f8;
-      --text: #1c1c1e;
-      --muted: rgba(28,28,30,0.62);
-      --accent: #007aff;
-      --accent-2: #46b1ff;
-      --card-bg: rgba(255,255,255,0.65);
-      --card-strong: rgba(255,255,255,0.9);
-      --border: rgba(0,0,0,0.08);
-      --shadow: 0 20px 60px rgba(0,0,0,0.08);
+      --bg: #fbfbfd;
+      --bg-alt: #f5f5f7;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --accent: #0071e3;
+      --accent-2: #0071e3;
+      --card-bg: #ffffff;
+      --card-strong: #ffffff;
+      --border: rgba(0,0,0,0.10);
+      --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.07);
       --field-bg: rgba(255,255,255,0.7);
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #100a16;
+        --bg: #000000;
+        --bg-alt: #0d0d0f;
         --text: #f5f5f7;
-        --muted: rgba(245,245,247,0.62);
-        --accent: #0a84ff;
-        --accent-2: #64d2ff;
-        --card-bg: rgba(34,28,42,0.55);
-        --card-strong: rgba(46,38,56,0.8);
-        --border: rgba(255,255,255,0.1);
-        --shadow: 0 20px 60px rgba(0,0,0,0.5);
+        --muted: #a1a1a6;
+        --accent: #2997ff;
+        --accent-2: #2997ff;
+        --card-bg: #1c1c1e;
+        --card-strong: #232325;
+        --border: rgba(255,255,255,0.12);
+        --shadow: 0 1px 2px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.55);
         --field-bg: rgba(20,16,28,0.6);
       }
     }
@@ -65,18 +67,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    .ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: var(--bg); }
-    .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: drift 22s ease-in-out infinite alternate; }
-    .blob.b1 { width: 46vw; height: 46vw; top: -14vw; left: -10vw; background: #7c3aed; }
-    .blob.b2 { width: 40vw; height: 40vw; top: 40vh; right: -14vw; background: #e11d48; animation-delay: -8s; }
-    .blob.b3 { width: 36vw; height: 36vw; bottom: -14vw; left: 28vw; background: #f97316; animation-delay: -14s; opacity: 0.32; }
-    @media (prefers-color-scheme: dark) { .blob { opacity: 0.35; } .blob.b3 { opacity: 0.2; } }
-    @keyframes drift {
-      0% { transform: translate(0,0) scale(1); }
-      50% { transform: translate(4vw,3vh) scale(1.1); }
-      100% { transform: translate(-3vw,-2vh) scale(0.95); }
-    }
-    @media (prefers-reduced-motion: reduce) { .blob { animation: none; } }
+    .ambient { display: none; }
 
     .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
 
@@ -119,7 +110,7 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 1rem 1.1rem;
-      backdrop-filter: blur(20px);
+      
       transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
     .card:hover { transform: translateY(-3px); box-shadow: var(--shadow); background: var(--card-strong); }
@@ -151,7 +142,7 @@
       margin: 3.5rem auto 0;
       max-width: 680px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(20px);
+      
     }
     .request h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 0.3rem; text-align: center; }
     .request .lead { color: var(--muted); margin: 0 0 1.8rem; text-align: center; }
@@ -192,17 +183,12 @@
   </style>
 </head>
 <body>
-  <div class="ambient" aria-hidden="true">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
-  </div>
 
   <div class="wrap">
     <header class="page">
       <div class="eyebrow">What's next</div>
       <h1>Roadmap</h1>
-      <p>Where Resors is headed — what's shipped, what's cooking, and what's on the horizon. Got an idea? Send it our way.</p>
+      <p>What has shipped, what is in progress, and what is planned. If something you need is missing, send it over.</p>
     </header>
 
     <div class="board">
@@ -222,7 +208,7 @@
         </div>
         <div class="card">
           <h3>Instant import validation</h3>
-          <p>Catch malformed assets the moment they land — before they reach your project.</p>
+          <p>Malformed assets are caught as they land, before they reach your project.</p>
           <div class="tags"><span class="check">✓ Available</span></div>
         </div>
         <div class="card">
@@ -295,7 +281,7 @@
     <!-- Feature request -->
     <section class="request">
       <h2>Request a feature</h2>
-      <p class="lead">Have something you'd love to see in Resors? Tell us — it helps shape this list.</p>
+      <p class="lead">If there is something you want in Resors, tell us. It helps shape this list.</p>
 
       <form id="featureForm">
         <div class="row">
@@ -343,8 +329,8 @@
 
       const subject = 'Resors feature request: ' + cat;
       let body = msg + '\n\n';
-      body += '— Area: ' + cat + '\n';
-      if (name) body += '— From: ' + name + '\n';
+      body += 'Area: ' + cat + '\n';
+      if (name) body += 'From: ' + name + '\n';
       body += '\nSent from the Resors roadmap page.';
 
       window.location.href = 'mailto:support@anathemalabs.com'
