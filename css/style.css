@@ -59,7 +59,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   margin-top: 10px;
 }
 
-
 /* ============================================================
    3. DESKTOP — classic macOS
    ============================================================ */
@@ -273,8 +272,7 @@ a.chip:hover { transform: translateY(-1px); }
 .win__icon svg { width: 32px; height: 32px; }
 
 /* real image icons, full-bleed in any tile container */
-.win__icon--img, .ios-app__icon--img, .sheet__icon--img,
-.dock__tile--img { padding: 0; }
+.ios-app__icon--img, .sheet__icon--img, .dock__tile--img { padding: 0; }
 .win__icon img, .ios-app__icon img, .sheet__icon img {
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
@@ -394,25 +392,8 @@ a.chip:hover { transform: translateY(-1px); }
 .dock__item--mono .dock__tile svg { color: var(--black); }
 
 /* studio "home" tile — off-white with orange Garamond wordmark */
-.dock__tile--word {
-  background: linear-gradient(180deg, #ffffff 0%, var(--paper) 100%);
-  border: 1.5px solid var(--black);
-  padding: 3px;
-}
-.al-word {
-  font-family: var(--font-logo);
-  font-weight: 600;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: -0.012em;
-  color: var(--orange);
-  white-space: nowrap;
-}
 
 /* studio "home" wordmark tiles on iOS (dock icon + About sheet) */
-.ios-app__icon--word { background: linear-gradient(180deg, #ffffff 0%, var(--paper) 100%); }
-.sheet__icon--word { background: linear-gradient(180deg, #ffffff 0%, var(--paper) 100%); }
-.sheet__icon--word .al-word { font-size: 15px; }
 
 /* dock divider between studio home and the projects */
 .dock__divider {
@@ -426,10 +407,7 @@ a.chip:hover { transform: translateY(-1px); }
 .dock__tile--img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* real image icons carry their own shape + shadow — strip the tile chrome */
-.dock__tile--img,
-.ios-app__icon--img,
-.sheet__icon--img,
-.win__icon--img {
+.dock__tile--img, .ios-app__icon--img, .sheet__icon--img {
   background: transparent;
   border: none;
   box-shadow: none;
@@ -469,7 +447,6 @@ a.chip:hover { transform: translateY(-1px); }
   transition: opacity 0.12s, transform 0.12s;
 }
 .dock__item:hover .dock__label { opacity: 1; transform: translateX(-50%) translateY(0); }
-
 
 /* ============================================================
    4. MOBILE — iOS home screen
@@ -567,7 +544,6 @@ a.chip:hover { transform: translateY(-1px); }
 }
 .ios-dock .ios-app__label { display: none; }
 
-
 /* ============================================================
    5. Sheet (mobile app detail)
    ============================================================ */
@@ -621,7 +597,6 @@ a.chip:hover { transform: translateY(-1px); }
   padding: 5px 12px; border: var(--line); border-radius: 20px;
 }
 
-
 /* ============================================================
    6. DARK THEME — component surfaces that hardcode colours.
    The token flip lives in css/design-system.css (html.theme-dark);
@@ -660,13 +635,7 @@ html.theme-dark .ios-dock {
 }
 
 /* studio "home" wordmark tiles → dark surface (orange text stays) */
-html.theme-dark .dock__tile--word,
-html.theme-dark .ios-app__icon--word,
-html.theme-dark .sheet__icon--word {
-  background: linear-gradient(180deg, #26262e 0%, #17171c 100%);
-}
 html.theme-dark .dock__divider { background: rgba(255,255,255,0.18); }
-
 
 /* ============================================================
    7. LOGO FX — the wordmark draws itself on/off in a loop.
@@ -695,7 +664,6 @@ html.theme-dark .dock__divider { background: rgba(255,255,255,0.18); }
   height: auto;
 }
 
-
 /* ============================================================
    8. ETHEREAL — monochrome-iPod music player.
 
@@ -706,7 +674,7 @@ html.theme-dark .dock__divider { background: rgba(255,255,255,0.18); }
    scrubber fill. Rendered inside a desktop window body OR the iOS
    sheet, both of which get a padding-free "player" variant.
    ============================================================ */
-.win__body--player, .sheet__content--player {
+.sheet__content--player {
   padding: 20px 18px 24px;
   display: flex;
   justify-content: center;
@@ -987,7 +955,6 @@ html.theme-dark .ipod__center {
   border: var(--line);
   box-shadow: var(--shadow-hard);
 }
-
 
 /* ============================================================
    9. SPECTRA — music visualizer (reacts to Ethereal's playback)

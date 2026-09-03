@@ -128,10 +128,7 @@
       widget.bind(E.READY, function () {
         settled = true; clearTimeout(timer);
         state.ready = true; state.error = false;
-        widget.getSounds(function (list) {
-          state.sounds = (list || []).filter(Boolean);
-          syncCurrent(function () { render(); });
-        });
+        loadSounds(0);
         done();
       });
       widget.bind(E.PLAY, function () {
@@ -145,6 +142,22 @@
         if (view) view.progress();
       });
       widget.bind(E.ERROR, function () { state.error = true; render(); });
+    });
+  }
+
+  /* The widget has only hydrated the first few sounds by the time READY
+     fires; the rest arrive a moment later with no `title`. Reading the list
+     once would leave those stuck on the "Untitled" fallback forever, so keep
+     re-reading until every sound has a title (or we run out of tries). */
+  function loadSounds(attempt) {
+    if (!widget) return;
+    widget.getSounds(function (list) {
+      state.sounds = (list || []).filter(Boolean);
+      syncCurrent(function () { render(); });
+      var pending = state.sounds.some(function (s) { return !s.title; });
+      if (pending && attempt < 6) {
+        setTimeout(function () { loadSounds(attempt + 1); }, 400);
+      }
     });
   }
 

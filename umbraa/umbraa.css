@@ -203,7 +203,6 @@ img { max-width: 100%; display: block; }
 
 /* ---------- controls ---------- */
 .control { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; position: relative; z-index: 1; }
-.control--slider { max-width: 440px; }
 .control__ico { font-size: 16px; color: rgba(255,255,255,0.72); }
 .control__slider {
   -webkit-appearance: none; appearance: none; flex: 1; min-width: 170px; height: 6px; border-radius: 6px;
