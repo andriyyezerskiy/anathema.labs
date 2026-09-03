@@ -243,7 +243,9 @@
     /* Infinite marquee. The track holds two identical sets and each set carries
        its own trailing gap, so one set is exactly half the track and a -50%
        translate lands on a pixel-identical frame with no visible seam. */
-    .strip { width: 100vw; margin-left: calc(50% - 50vw); overflow: hidden; padding: 3.5rem 0 0; }
+    /* overflow:hidden clips the marquee horizontally, so the box needs room
+       underneath the cards or their drop shadow gets sliced off flat. */
+    .strip { width: 100vw; margin-left: calc(50% - 50vw); overflow: hidden; padding: 3.5rem 0 1.75rem; }
     .strip-track { display: flex; width: max-content; animation: marquee 55s linear infinite; }
     .strip:hover .strip-track { animation-play-state: paused; }
     .strip-set { display: flex; gap: 24px; padding-right: 24px; }
