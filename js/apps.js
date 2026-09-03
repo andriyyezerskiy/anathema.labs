@@ -36,7 +36,7 @@ const ANATHEMA_APPS = [
       ["Visual-first", "Edit colors in a clean interface, with Light, Dark & High Contrast side by side, previewed on real UI."],
       ["Bi-directional sync", "Connect an asset catalog and reconcile changes both ways, with flexible conflict resolution."],
       ["Frictionless import", "Drop in existing .colorset files and validate them instantly."],
-      ["Reusable libraries", "Define your palette once and ship it consistently across every app."],
+      ["Reusable groups", "Define your palette once and ship it consistently across every app."],
       ["Export that just works", "Generate Xcode-ready .colorset files in seconds."]
     ],
     glyph: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="8.8" cy="9.2" r="1.7"/><path d="M4.5 17.5l4.5-4.5 3.5 3 2.5-2 4.5 4.5"/></svg>',

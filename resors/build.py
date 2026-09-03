@@ -544,7 +544,7 @@ def pv_set_image():
             '            </div>\n          </div>')
 
 
-# One library, and the projects that pull from it. Names match the catalogs
+# One group, and the projects that pull from it. Names match the catalogs
 # used in stages 01 and 02 so the page describes a single set of projects.
 REUSE_PROJECTS = ["Hydra.app", "Resors.app", "Playground.app"]
 
@@ -1018,7 +1018,7 @@ CSS = r"""
     .sym-points span { display: block; color: var(--ink2); font-size: 0.92rem;
                        line-height: 1.55; }
 
-    /* ---------- reuse: one library, three projects ---------- */
+    /* ---------- reuse: one group, three projects ---------- */
     .reuse { margin-top: 2.6rem; }
     .lib { border: 1px solid var(--rule-2); border-radius: 14px; background: var(--panel); padding: 16px; }
     .lib-cap { display: block; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
@@ -1259,11 +1259,11 @@ BODY = """<body>
         <div class="stage-head"><span class="num">04</span><span>Use it again</span><span class="line"></span><span>Reusable</span></div>
         <div class="stage-copy">
           <h2>Start the next one from your palette.</h2>
-          <p class="lede">Save a set of assets as a library and it becomes the starting point for whatever you build next. No copying folders between repositories, and no slowly drifting duplicates of the same blue.</p>
+          <p class="lede">Save a set of assets as a group and it becomes the starting point for whatever you build next. No copying folders between repositories, and no slowly drifting duplicates of the same blue.</p>
         </div>
         <div class="reuse">
           <div class="lib">
-            <span class="lib-cap">Library &middot; Studio Core</span>
+            <span class="lib-cap">Group &middot; Studio Core</span>
             <div class="lib-grid">
               __LIBCARDS__
             </div>
@@ -1292,7 +1292,7 @@ BODY = """<body>
           <div class="ship-card">
             <span class="cap">Export</span>
             <h3>A catalog Xcode reads directly<span class="plus">Resors+</span></h3>
-            <p>Generate <code>.colorset</code>, <code>.symbolset</code> and <code>.imageset</code> files for a single asset or the whole library.</p>
+            <p>Generate <code>.colorset</code>, <code>.symbolset</code> and <code>.imageset</code> files for a single asset or the whole group.</p>
             <div class="flow"><span class="b">Resors</span><span class="ar"></span><span class="b">.xcassets</span></div>
           </div>
           <div class="ship-card">
@@ -1311,8 +1311,8 @@ BODY = """<body>
         <div class="stage-head"><span class="num">&mdash;</span><span>The app</span><span class="line"></span></div>
         <div class="shots">
           <figure class="shot" style="margin:0">
-            <div class="plate"><div class="chrome"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div><div class="crop"><img src="images/shots/shot-organize.jpg" alt="Resors showing a library of colour assets in a grid with groups in the sidebar" loading="lazy" width="1600" height="1000" /></div></div>
-            <figcaption class="shot-cap"><span class="n">/ 01</span><div><h3>Groups and libraries</h3><p>Sort assets into system and custom groups, then export, duplicate or manage a whole selection at once.</p></div></figcaption>
+            <div class="plate"><div class="chrome"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div><div class="crop"><img src="images/shots/shot-organize.jpg" alt="Resors showing colour assets in a grid with groups in the sidebar" loading="lazy" width="1600" height="1000" /></div></div>
+            <figcaption class="shot-cap"><span class="n">/ 01</span><div><h3>Reusable groups</h3><p>Sort assets into system and custom groups, then export, duplicate or manage a whole selection at once.</p></div></figcaption>
           </figure>
           <figure class="shot" style="margin:0">
             <div class="plate"><div class="chrome"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div><div class="crop"><img src="images/shots/shot-editor.jpg" alt="The Resors colour editor showing appearances, colour space, hex value and opacity" loading="lazy" width="1600" height="1000" /></div></div>
@@ -1345,7 +1345,7 @@ BODY = """<body>
               <li>__CHECK__Light, Dark and High Contrast appearances</li>
               <li>__CHECK__Preview on real UI components</li>
               <li>__CHECK__Drag and drop import with validation</li>
-              <li>__CHECK__Groups and reusable libraries</li>
+              <li>__CHECK__Reusable groups</li>
             </ul>
             <a class="button ghost" href="https://apps.apple.com/app/resors/id6748361802">Download free</a>
           </div>
@@ -1357,7 +1357,7 @@ BODY = """<body>
               <li>__CHECK__Everything in the free app</li>
               <li>__CHECK__Export an Xcode-ready catalog</li>
               <li>__CHECK__Two-way sync with a project</li>
-              <li>__CHECK__Export a whole library at once</li>
+              <li>__CHECK__Export a whole group at once</li>
               <li>__CHECK__Conflict-resolution modes, coming soon</li>
             </ul>
             <a class="button" href="https://apps.apple.com/app/resors/id6748361802">Get Resors</a>
