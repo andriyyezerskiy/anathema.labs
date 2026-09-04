@@ -427,6 +427,85 @@ def fanout_groups():
     return "\n                  ".join(out)
 
 
+SHOTS = [
+    ("shot-organize.jpg",
+     "Resors showing colour assets in a grid with groups in the sidebar",
+     "Reusable groups",
+     "Sort assets into system and custom groups, then export, duplicate or "
+     "manage a whole selection at once."),
+    ("shot-editor.jpg",
+     "The Resors colour editor showing appearances, colour space, hex value and opacity",
+     "Exact values",
+     "Each appearance with HEX, RGB and Float components plus an explicit colour "
+     "space, so what you set is what renders."),
+    ("shot-preview.jpg",
+     "Resors previewing a colour applied to real buttons, text, toggles and shapes",
+     "Preview on real UI",
+     "See every asset on live buttons, text, toggles and shapes before it reaches "
+     "your project."),
+]
+
+
+def shots_all():
+    """Each screenshot on a lit stage, seated in a laptop rather than the drawn
+    window the page used before."""
+    out = []
+    for i, (src, alt, title, body) in enumerate(SHOTS, 1):
+            '<figure class="shot" style="margin:0">\n'
+            '            <div class="shot-stage">\n'
+            '              <div class="mb">\n'
+            '                <div class="mb-lid"><span class="mb-cam"></span>\n'
+            '                  <div class="mb-screen"><div class="mb-win">'
+            '<img src="images/shots/%s" alt="%s" loading="lazy" '
+            'width="1600" height="1000" /></div></div>\n'
+            '                </div>\n'
+            '                <div class="mb-foot"><i></i></div>\n'
+            '              </div>\n'
+            '            </div>\n'
+            '            <figcaption class="shot-cap"><span class="n">/ %02d</span>'
+            '<div><h3>%s</h3><p>%s</p></div></figcaption>\n'
+            '          </figure>' % (src, alt, i, title, body))
+    return "\n          ".join(out)
+
+
+def sym_guides():
+    """The symbol guide editor, drawn live: cap height and baseline, a
+    reference glyph the leading margin pushes against, the artwork between its
+    two guides, and the same margins applied to the symbol set inline in text.
+    The margins themselves are cycled by the page script."""
+    art = ('<svg viewBox="3.4 3 17.2 16.6" fill="currentColor" aria-hidden="true">'
+           '%s</svg>' % GLYPHS["star"])
+    ref = ('<svg class="sg-ref" viewBox="0 0 132 150" aria-hidden="true">'
+           '<text x="130" y="150" text-anchor="end" font-size="122" '
+           'font-family="-apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif" '
+           'fill="currentColor">A</text></svg>')
+    return ('<div class="sg" data-sg>\n'
+            '            <div class="pane-hd"><span>Symbol guides</span>'
+            '<span data-sg-mode>Match Content</span></div>\n'
+            '            <div class="sg-canvas" aria-hidden="true">\n'
+            '              <span class="sg-h sg-cap"></span>\n'
+            '              <span class="sg-h sg-base"></span>\n'
+            '              %s\n'
+            '              <span class="sg-band"></span>\n'
+            '              <span class="sg-art">%s</span>\n'
+            '              <span class="sg-sel"><i></i><i></i><i></i><i></i></span>\n'
+            '              <span class="sg-guide sg-lead"><i></i><b>Leading</b></span>\n'
+            '              <span class="sg-guide sg-trail"><i></i><b>Trailing</b></span>\n'
+            '            </div>\n'
+            '            <div class="sg-fields">\n'
+            '              <span>Leading <b data-sg-lead>0</b></span>\n'
+            '              <span>Trailing <b data-sg-trail>0</b></span>\n'
+            '            </div>\n'
+            '            <div class="sg-prev">\n'
+            '              <span>Preview</span>\n'
+            # no literal spaces around the symbol: the margins are the only
+            # thing holding it off the words either side, as in the app
+            '              <p class="sg-text">The quick brown fox jumps'
+            '<span class="sg-in">%s</span>over the lazy dog</p>\n'
+            '            </div>\n'
+            '          </div>' % (ref, art, art))
+
+
 def one_card():
     return card_color("AppTint", "#0071E3", "#2997FF")
 
@@ -584,6 +663,9 @@ CSS = r"""
       --plus-mark: #ef7b2e;
       --plus-a: #4fd1b9;
       --plus-b: #3d9fe6;
+      --g-lead:  #2f7fe0;
+      --g-trail: #d1483f;
+      --g-h:     #35b6c9;
       --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
       --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
       --maxw: 1200px;
@@ -604,6 +686,9 @@ CSS = r"""
         --plus-mark: #ff8a3f;
         --plus-a: #56dcc2;
         --plus-b: #4aa9ef;
+        --g-lead:  #4a9bf0;
+        --g-trail: #ff6f61;
+        --g-h:     #3fc9dc;
         --shadow: 0 1px 2px rgba(0,0,0,0.6), 0 14px 36px rgba(0,0,0,0.6);
         --shadow-lg: 0 2px 8px rgba(0,0,0,0.6), 0 34px 80px rgba(0,0,0,0.7);
       }
@@ -1012,10 +1097,65 @@ CSS = r"""
     .sym-copy { max-width: 60ch; }
     .sym-copy h3 { font-size: 1.3rem; letter-spacing: -0.02em; }
     .sym-copy p { color: var(--ink2); font-size: 1rem; margin: 0.8rem 0 0; }
-    .sym-shot { display: block; border: 1px solid var(--rule-2); border-radius: 14px;
-                overflow: hidden; background: var(--panel); }
-    .sym-shot img { display: block; width: 100%; height: auto;
-                    aspect-ratio: var(--ar); object-fit: cover; }
+    /* the guide canvas, built rather than screenshot: --l and --t are the
+       leading and trailing margins, and every geometry below is derived from
+       them so the canvas and the text preview always agree. */
+    .sg { --l: 0; --t: 0; --art: 91px; --half: 45.5px;
+          border: 1px solid var(--rule-2); border-radius: 14px;
+          background: var(--panel); overflow: hidden; }
+    .sg-canvas { position: relative; height: 208px; overflow: hidden; background: var(--paper-2); }
+    .sg-h { position: absolute; left: 0; right: 0; height: 0;
+            border-top: 1px solid var(--g-h); opacity: 0.75; }
+    .sg-cap { top: 62px; border-top-style: dashed; }
+    .sg-base { top: 150px; }
+    .sg-ref { position: absolute; top: 0; width: 132px; height: 150px;
+              right: calc(50% + var(--half) + var(--l) * 1px);
+              fill: var(--ink3); opacity: 0.3; transition: right 0.55s ease; }
+    .sg-band { position: absolute; top: 62px; height: 88px;
+               left: calc(50% - var(--half) - var(--l) * 1px);
+               width: calc(var(--art) + (var(--l) + var(--t)) * 1px);
+               background: color-mix(in srgb, var(--g-lead) 10%, transparent);
+               transition: left 0.55s ease, width 0.55s ease; }
+    .sg-art { position: absolute; top: 62px; left: calc(50% - var(--half));
+              width: var(--art); height: 88px; color: var(--ink); }
+    .sg-art svg { display: block; width: 100%; height: 100%; }
+    .sg-sel { position: absolute; top: 55px; left: calc(50% - var(--half) - 8px);
+              width: calc(var(--art) + 16px); height: 102px; border: 1px dashed var(--accent); }
+    .sg-sel i { position: absolute; width: 6px; height: 6px;
+                background: var(--panel); border: 1px solid var(--accent); }
+    .sg-sel i:nth-child(1) { left: -4px; top: -4px; }
+    .sg-sel i:nth-child(2) { right: -4px; top: -4px; }
+    .sg-sel i:nth-child(3) { left: -4px; bottom: -4px; }
+    .sg-sel i:nth-child(4) { right: -4px; bottom: -4px; }
+    .sg-guide { position: absolute; top: 0; bottom: 0; width: 0;
+                border-left: 1px solid currentColor; transition: left 0.55s ease; }
+    .sg-guide i { position: absolute; top: 50%; left: -4.5px; width: 9px; height: 9px;
+                  margin-top: -4.5px; border-radius: 50%; background: currentColor; }
+    .sg-guide b { position: absolute; bottom: 9px; font-weight: 400;
+                  font-family: var(--mono); font-size: 9px; letter-spacing: 0.07em;
+                  text-transform: uppercase; color: currentColor; white-space: nowrap; }
+    .sg-lead { color: var(--g-lead); left: calc(50% - var(--half) - var(--l) * 1px); }
+    .sg-lead b { right: 7px; }
+    .sg-trail { color: var(--g-trail); left: calc(50% + var(--half) + var(--t) * 1px); }
+    .sg-trail b { left: 7px; }
+    .sg-fields { display: flex; gap: 8px; padding: 11px 13px; border-top: 1px solid var(--rule-2);
+                 font-family: var(--mono); font-size: 10px; color: var(--ink3); }
+    .sg-fields span { display: inline-flex; align-items: center; gap: 7px;
+                      border: 1px solid var(--rule-2); border-radius: 7px; padding: 3px 9px; }
+    .sg-fields b { font-weight: 500; color: var(--ink); }
+    .sg-prev { padding: 13px 14px 17px; border-top: 1px solid var(--rule-2); }
+    .sg-prev > span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+                      text-transform: uppercase; color: var(--ink3); }
+    .sg-text { margin: 10px 0 0; font-size: 1.06rem; line-height: 2; letter-spacing: -0.01em; }
+    /* overflow:hidden puts the box's bottom edge on the text baseline, so the
+       band spans cap height to baseline exactly as it does on the canvas */
+    .sg-in { display: inline-block; overflow: hidden; height: 0.72em; box-sizing: content-box;
+             padding-left: calc(var(--l) * 0.008em); padding-right: calc(var(--t) * 0.008em);
+             background: color-mix(in srgb, var(--g-lead) 10%, transparent);
+             border-top: 1px dashed var(--g-h); border-bottom: 1px solid var(--g-h);
+             border-left: 1px solid var(--g-lead); border-right: 1px solid var(--g-trail);
+             transition: padding 0.55s ease; }
+    .sg-in svg { display: block; width: 0.746em; height: 0.72em; color: var(--ink); }
     .sym-points { list-style: none; margin: 1.8rem 0 0; padding: 0; }
     .sym-points li { padding: 1.1rem 0; border-top: 1px solid var(--rule-2); }
     .sym-points li:first-child { border-top: 0; padding-top: 0; }
@@ -1063,7 +1203,8 @@ CSS = r"""
     .tag--plus { font-family: var(--sans); font-size: 0.7rem; font-weight: 600;
                  letter-spacing: -0.006em; text-transform: none; color: var(--ink);
                  border: 1.5px solid transparent;
-                 background: linear-gradient(var(--panel), var(--panel)) padding-box,
+                 --tag-bg: var(--panel);
+                 background: linear-gradient(var(--tag-bg), var(--tag-bg)) padding-box,
                              linear-gradient(105deg, var(--plus-a), var(--plus-b)) border-box; }
     .tag--plus b { font-weight: 700; color: var(--plus-mark); margin-left: 0.05em; }
     .tag--soon { font-family: var(--mono); font-size: 0.58rem; font-weight: 500; letter-spacing: 0.08em;
@@ -1150,17 +1291,60 @@ CSS = r"""
                        font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em;
                        transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease; }
     .cf-modes button:hover { color: var(--ink); }
+    .cf-modes .mode-soon { margin-left: 0.45rem; padding-left: 0.45rem; font-size: 0.9em;
+                           border-left: 1px solid currentColor; opacity: 0.55; }
     .cf-modes button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
     /* ---------- screenshots ---------- */
     .shots { display: grid; gap: 5rem; }
     .shot { opacity: 0; transform: translateY(18px); }
     .shot.in { opacity: 1; transform: none; }
-    .plate { border-radius: 14px; overflow: hidden; border: 1px solid var(--rule-2); box-shadow: var(--shadow-lg); background: #141119; }
-    .plate .chrome { height: 30px; display: flex; align-items: center; gap: 7px; padding: 0 12px; background: #1b1722; border-bottom: 1px solid rgba(255,255,255,0.07); }
-    .plate .chrome i { width: 10px; height: 10px; border-radius: 50%; display: block; }
-    .crop { position: relative; aspect-ratio: 1468 / 868; overflow: hidden; line-height: 0; background: #0d0b12; }
-    .crop img { position: absolute; top: -7.604%; left: -4.496%; width: 108.99%; height: 115.21%; display: block; }
+    /* each shot sits on a lit stage, in a machine rather than a fake window */
+    .shot-stage { position: relative; overflow: hidden; border-radius: 16px;
+                  border: 1px solid var(--rule-2); padding: 5% 6% 4%;
+                  background:
+                    radial-gradient(88% 120% at 10% -12%, rgba(224,138,44,0.24), transparent 62%),
+                    radial-gradient(78% 110% at 93% 6%, rgba(62,142,155,0.26), transparent 58%),
+                    linear-gradient(165deg, var(--paper-2), var(--paper)); }
+    @media (prefers-color-scheme: dark) {
+      .shot-stage { background:
+                      radial-gradient(88% 120% at 10% -12%, rgba(224,138,44,0.23), transparent 62%),
+                      radial-gradient(78% 110% at 93% 6%, rgba(62,142,155,0.27), transparent 58%),
+                      linear-gradient(165deg, #1c1c24, #0d0d11); }
+      /* the lid is nearly the colour of the stage in dark, so give it a rim */
+      .mb-lid { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16); }
+    }
+    .mb { filter: drop-shadow(0 26px 40px rgba(0,0,0,0.30)); }
+    .mb-lid { position: relative; padding: 0.85%; border-radius: 13px;
+              background: linear-gradient(180deg, #2c2c33, #1c1c21);
+              box-shadow: inset 0 0 0 1px rgba(255,255,255,0.11); }
+    .mb-cam { position: absolute; top: 0.3%; left: 50%; transform: translateX(-50%);
+              width: 4px; height: 4px; border-radius: 50%; background: #3d3d46; }
+    .mb-screen { position: relative; aspect-ratio: 16 / 10; overflow: hidden;
+                 border-radius: 6px; line-height: 0;
+                 background:
+                   radial-gradient(120% 95% at 16% 6%, rgba(224,138,44,0.34), transparent 60%),
+                   radial-gradient(110% 95% at 90% 94%, rgba(62,142,155,0.36), transparent 62%),
+                   linear-gradient(158deg, #241a2c, #101823); }
+    /* the app window floats on that desktop rather than filling the display */
+    .mb-win { position: absolute; left: 8.5%; right: 8.5%; top: 10%; aspect-ratio: 1495 / 896;
+              overflow: hidden; border-radius: 6px;
+              box-shadow: 0 14px 30px rgba(0,0,0,0.55); }
+    /* The sources are the window on a white desktop. Measured window bounds are
+       x 48..1551, y 34..936 of 1600x1000; the image is scaled a little past that
+       and centred, so the window bleeds off every edge and no desktop shows. */
+    .mb-win img { position: absolute; display: block; width: 107.6%; height: auto;
+                  left: -3.77%; top: -4.43%; }
+    .mb-foot { position: relative; width: 112%; margin: 0 -6%; padding-bottom: 1.15%;
+               border-radius: 0 0 11px 11px;
+               background: linear-gradient(180deg, #d2d2d9 0%, #a8a8b1 42%, #85858e 100%); }
+    .mb-foot::before { content: ""; position: absolute; top: 0; left: 5.4%; right: 5.4%;
+                       height: 1px; background: rgba(0,0,0,0.38); }
+    .mb-foot i { position: absolute; top: 0; bottom: 52%; left: 50%; transform: translateX(-50%);
+                 width: 11.5%; border-radius: 0 0 7px 7px; background: rgba(0,0,0,0.20); }
+    @media (prefers-color-scheme: dark) {
+      .mb-foot { background: linear-gradient(180deg, #9d9da6 0%, #70707a 42%, #4f4f58 100%); }
+    }
     .shot-cap { display: flex; gap: 18px; align-items: baseline; margin-top: 1.2rem; }
     .shot-cap .n { font-family: var(--mono); font-size: 0.68rem; color: var(--ink3); letter-spacing: 0.1em; flex-shrink: 0; }
     .shot-cap p { margin: 0.3rem 0 0; color: var(--ink2); font-size: 0.94rem; max-width: 62ch; }
@@ -1171,7 +1355,10 @@ CSS = r"""
     .plan { padding: 2rem; }
     .plan + .plan { border-left: 1px solid var(--rule); }
     @media (max-width: 760px) { .plan + .plan { border-left: 0; border-top: 1px solid var(--rule); } }
-    .plan .pn { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink3); }
+    .plan .pn { display: flex; align-items: center; min-height: 26px;
+               font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em;
+               text-transform: uppercase; color: var(--ink3); }
+    .plan.hi .tag--plus { --tag-bg: var(--paper-2); }
     .plan .pp { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.035em; margin: 0.6rem 0 0.2rem; }
     .plan .ps { color: var(--ink3); font-size: 0.84rem; margin-bottom: 1.5rem; }
     .plan ul { list-style: none; margin: 0 0 1.8rem; padding: 0; display: grid; gap: 0.65rem; }
@@ -1322,10 +1509,7 @@ BODY = """<body>
                 </li>
               </ul>
           </div>
-          <picture class="sym-shot" style="--ar:0.7525">
-                <source srcset="images/shots/symbol-guides@dark.png" media="(prefers-color-scheme: dark)">
-                <img src="images/shots/symbol-guides.png" width="906" height="1204" loading="lazy" alt="The Resors symbol guide editor: leading and trailing margins shown against cap height and baseline" />
-              </picture>
+          __SYMGUIDES__
         </div>
       </div>
     </section>
@@ -1392,7 +1576,7 @@ BODY = """<body>
           <article class="ship-card">
             <div class="card-hd"><span class="cap">Export</span><span class="tag tag--plus">Resors<b>+</b></span></div>
             <h3>One action, the whole group</h3>
-            <p>Select one asset or an entire group and write a catalog Xcode reads directly. Every appearance, colour space and symbol margin is written for you in a single pass. No folder plumbing, no hand-edited JSON.</p>
+            <p>Select one asset or an entire group and write a catalog Xcode reads directly. Appearances, colour spaces and symbol margins all land intact in one pass, with no folder plumbing and no JSON to hand-edit.</p>
             <div class="ex" aria-hidden="true">
               <div class="ex-box">
                 <div class="ex-hd">
@@ -1412,8 +1596,8 @@ BODY = """<body>
           </article>
           <article class="ship-card">
             <div class="card-hd"><span class="cap">Sync</span><span class="tag tag--plus">Resors<b>+</b></span></div>
-            <h3>Connect once, then stop thinking about it</h3>
-            <p>Point Resors at the project&rsquo;s catalog and the wire stays up. An edit you save is written straight into the catalog; anything that lands in Xcode, whether a teammate&rsquo;s commit or a value typed into the JSON, comes back into Resors, validated on the way in. No re-export, no drag and drop, no second copy to keep straight.</p>
+            <h3>Pair once, then sync on your word</h3>
+            <p>A group is paired with one asset catalog and stays paired with it. Sync runs when you launch it, never behind your back, and a single pass covers the lot: whatever landed in Xcode comes in, validated on the way; your edits go out to the catalog; and anything that diverged on both sides is settled by the rule you set. No re-export, no drag and drop, no second copy to keep straight.</p>
             <div class="sync-wire" aria-hidden="true">
               <div class="sw-end"><b>Resors</b><em>Your system</em></div>
               <div class="sw-lanes">
@@ -1423,15 +1607,15 @@ BODY = """<body>
               <div class="sw-end"><b>.xcassets</b><em>The project</em></div>
             </div>
             <div class="sw-note">
-              <span>Connect once</span><span>Both directions</span><span>Validated on import</span><span>No re-export</span>
+              <span>One group, one catalog</span><span>You choose when it runs</span><span>Imports and exports</span><span>Conflicts settled for you</span>
             </div>
           </article>
         </div>
         <div class="cf">
           <div class="cf-copy">
-            <div class="card-hd"><span class="cap">Conflicts</span><span class="tag tag--soon">Coming &middot; v1.4</span></div>
+            <div class="card-hd"><span class="cap">Conflicts</span><span class="tag tag--plus">Resors<b>+</b></span></div>
             <h3>Both sides moved? The rule decides</h3>
-            <p>Sync will not stop to interrogate you. Set how divergence is settled for a connected project and Resors applies it as it runs, asset by asset. You step in only when you have asked to.</p>
+            <p>Sync will not stop to interrogate you. Set how divergence is settled for a paired group and Resors applies it as the sync runs, asset by asset. Keeping Resors, keeping Xcode and keeping the newest edit all work today. Handing the call back to you, asset by asset, arrives in v1.4.</p>
           </div>
           <div class="cf-demo" data-cf data-mode="newest">
             <div class="cf-conflict">
@@ -1453,7 +1637,7 @@ BODY = """<body>
               <button type="button" data-cf-mode="resors" aria-pressed="false">Resors wins</button>
               <button type="button" data-cf-mode="xcode" aria-pressed="false">Xcode wins</button>
               <button type="button" data-cf-mode="newest" aria-pressed="true">Newest wins</button>
-              <button type="button" data-cf-mode="ask" aria-pressed="false">Ask me</button>
+              <button type="button" data-cf-mode="ask" aria-pressed="false">Ask me<span class="mode-soon">v1.4</span></button>
             </div>
           </div>
         </div>
@@ -1465,18 +1649,7 @@ BODY = """<body>
       <div class="wrap">
         <div class="stage-head"><span class="num">&mdash;</span><span>The app</span><span class="line"></span></div>
         <div class="shots">
-          <figure class="shot" style="margin:0">
-            <div class="plate"><div class="chrome"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div><div class="crop"><img src="images/shots/shot-organize.jpg" alt="Resors showing colour assets in a grid with groups in the sidebar" loading="lazy" width="1600" height="1000" /></div></div>
-            <figcaption class="shot-cap"><span class="n">/ 01</span><div><h3>Reusable groups</h3><p>Sort assets into system and custom groups, then export, duplicate or manage a whole selection at once.</p></div></figcaption>
-          </figure>
-          <figure class="shot" style="margin:0">
-            <div class="plate"><div class="chrome"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div><div class="crop"><img src="images/shots/shot-editor.jpg" alt="The Resors colour editor showing appearances, colour space, hex value and opacity" loading="lazy" width="1600" height="1000" /></div></div>
-            <figcaption class="shot-cap"><span class="n">/ 02</span><div><h3>Exact values</h3><p>Each appearance with HEX, RGB and Float components plus an explicit colour space, so what you set is what renders.</p></div></figcaption>
-          </figure>
-          <figure class="shot" style="margin:0">
-            <div class="plate"><div class="chrome"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div><div class="crop"><img src="images/shots/shot-preview.jpg" alt="Resors previewing a colour applied to real buttons, text, toggles and shapes" loading="lazy" width="1600" height="1000" /></div></div>
-            <figcaption class="shot-cap"><span class="n">/ 03</span><div><h3>Preview on real UI</h3><p>See every asset on live buttons, text, toggles and shapes before it reaches your project.</p></div></figcaption>
-          </figure>
+          __SHOTS__
         </div>
       </div>
     </section>
@@ -1499,13 +1672,13 @@ BODY = """<body>
               <li>__CHECK__The whole system in one view</li>
               <li>__CHECK__Light, Dark and High Contrast appearances</li>
               <li>__CHECK__Preview on real UI components</li>
-              <li>__CHECK__Drag and drop import with validation</li>
+              <li>__CHECK__Drag and drop</li>
               <li>__CHECK__Reusable groups</li>
             </ul>
             <a class="button ghost" href="https://apps.apple.com/app/resors/id6748361802">Download free</a>
           </div>
           <div class="plan hi">
-            <span class="pn">Resors+</span>
+            <span class="pn"><span class="tag tag--plus">Resors<b>+</b></span></span>
             <div class="pp">Subscription</div>
             <div class="ps">Optional, from inside the app</div>
             <ul>
@@ -1513,7 +1686,7 @@ BODY = """<body>
               <li>__CHECK__Export an Xcode-ready catalog</li>
               <li>__CHECK__Two-way sync with a project</li>
               <li>__CHECK__Export a whole group at once</li>
-              <li>__CHECK__Conflict-resolution modes, coming soon</li>
+              <li>__CHECK__Automatically synchronize groups and asset catalogs</li>
             </ul>
             <a class="button" href="https://apps.apple.com/app/resors/id6748361802">Get Resors</a>
           </div>
@@ -1709,6 +1882,36 @@ JS = """
       f();
     })();
 
+    /* ---------- symbol guides: walk the margins while the panel is in view ---------- */
+    (function () {
+      var sg = document.querySelector('[data-sg]');
+      if (!sg) return;
+      var states = [['Match Content', 0, 0], ['Leading nudged', 34, 0], ['Both wide', 26, 26]];
+      var name = sg.querySelector('[data-sg-mode]');
+      var lead = sg.querySelector('[data-sg-lead]');
+      var trail = sg.querySelector('[data-sg-trail]');
+      var i = 0, timer = null;
+      var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+      function put(s) {
+        sg.style.setProperty('--l', s[1]);
+        sg.style.setProperty('--t', s[2]);
+        name.textContent = s[0];
+        lead.textContent = s[1];
+        trail.textContent = s[2];
+      }
+      function start() {
+        if (timer || still.matches) return;
+        timer = setInterval(function () { i = (i + 1) % states.length; put(states[i]); }, 2800);
+      }
+      function stop() { clearInterval(timer); timer = null; }
+      put(states[0]);
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (en) {
+          en[0].isIntersecting ? start() : stop();
+        }, { threshold: 0.3 }).observe(sg);
+      } else { start(); }
+    })();
+
     /* ---------- ship: conflict-resolution modes ---------- */
     (function () {
       var demo = document.querySelector('[data-cf]');
@@ -1719,7 +1922,7 @@ JS = """
         resors: 'Your system is the source of truth. The catalog is rewritten to match Resors and the sync moves on.',
         xcode: 'The project wins. Whatever is committed in Xcode comes back into Resors, so a hand edit is never lost.',
         newest: 'The most recent edit wins, whichever side made it. Here that is Resors, at 14:22.',
-        ask: 'Held for review. Both values are kept until you choose, and every other asset still syncs.'
+        ask: 'Coming in v1.4. Both values are held until you choose, and every other asset still syncs.'
       };
       btns.forEach(function (b) {
         b.addEventListener('click', function () {
@@ -1760,6 +1963,8 @@ JS = (JS.replace("__C__", PV_C).replace("__S__", PV_S).replace("__I__", PV_I))
 _unused = JS.replace("__ASSETS__", assets_js).replace("__GLYPHS__", PREVIEW_GLYPHS.replace("'", "\\'"))
 
 BODY = (BODY.replace("__STORE__", STORE)
+            .replace("__SHOTS__", shots_all())
+            .replace("__SYMGUIDES__", sym_guides())
             .replace("__FOLDER__", side_icon("folder"))
             .replace("__CHECK__", CHECK)
             .replace("__HERO_STRIP__", hero_strip())
