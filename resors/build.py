@@ -447,21 +447,14 @@ SHOTS = [
 
 
 def shots_all():
-    """Each screenshot on a lit stage, seated in a laptop rather than the drawn
-    window the page used before."""
+    """Each screenshot on a lit stage, its own window and shadow, no frame."""
     out = []
     for i, (src, alt, title, body) in enumerate(SHOTS, 1):
         out.append(
             '<figure class="shot" style="margin:0">\n'
             '            <div class="shot-stage">\n'
-            '              <div class="mb">\n'
-            '                <div class="mb-lid"><span class="mb-cam"></span>\n'
-            '                  <div class="mb-screen"><div class="mb-win">'
-            '<img src="images/shots/%s" alt="%s" loading="lazy" '
-            'width="1600" height="1000" /></div></div>\n'
-            '                </div>\n'
-            '                <div class="mb-foot"><i></i></div>\n'
-            '              </div>\n'
+            '              <div class="shot-win"><img src="images/shots/%s" alt="%s" '
+            'loading="lazy" width="1600" height="1000" /></div>\n'
             '            </div>\n'
             '            <figcaption class="shot-cap"><span class="n">/ %02d</span>'
             '<div><h3>%s</h3><p>%s</p></div></figcaption>\n'
@@ -999,7 +992,8 @@ CSS = r"""
     .pv-switch::after { content: ""; position: absolute; top: 3px; right: 3px;
                         width: 20px; height: 20px; border-radius: 50%; background: #fff; }
 
-    .pv-shapes { display: grid; grid-template-columns: 54px 54px 54px minmax(0, 1fr); gap: 11px; }
+    /* the capsule is about twice the square's width in the app, not the whole row */
+    .pv-shapes { display: grid; grid-template-columns: 54px 54px 54px minmax(0, 100px); gap: 11px; }
     .pv-shape { height: 54px; background: var(--pv); }
     .pv-shape--sq { border-radius: 0; }
     .pv-shape--rs { border-radius: 14px; }
@@ -1302,7 +1296,7 @@ CSS = r"""
     .shot.in { opacity: 1; transform: none; }
     /* each shot sits on a lit stage, in a machine rather than a fake window */
     .shot-stage { position: relative; overflow: hidden; border-radius: 16px;
-                  border: 1px solid var(--rule-2); padding: 5% 6% 4%;
+                  border: 1px solid var(--rule-2); padding: 6% 6.5%;
                   background:
                     radial-gradient(88% 120% at 10% -12%, rgba(224,138,44,0.24), transparent 62%),
                     radial-gradient(78% 110% at 93% 6%, rgba(62,142,155,0.26), transparent 58%),
@@ -1312,40 +1306,20 @@ CSS = r"""
                       radial-gradient(88% 120% at 10% -12%, rgba(224,138,44,0.23), transparent 62%),
                       radial-gradient(78% 110% at 93% 6%, rgba(62,142,155,0.27), transparent 58%),
                       linear-gradient(165deg, #1c1c24, #0d0d11); }
-      /* the lid is nearly the colour of the stage in dark, so give it a rim */
-      .mb-lid { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16); }
     }
-    .mb { filter: drop-shadow(0 26px 40px rgba(0,0,0,0.30)); }
-    .mb-lid { position: relative; padding: 0.85%; border-radius: 13px;
-              background: linear-gradient(180deg, #2c2c33, #1c1c21);
-              box-shadow: inset 0 0 0 1px rgba(255,255,255,0.11); }
-    .mb-cam { position: absolute; top: 0.3%; left: 50%; transform: translateX(-50%);
-              width: 4px; height: 4px; border-radius: 50%; background: #3d3d46; }
-    .mb-screen { position: relative; aspect-ratio: 16 / 10; overflow: hidden;
-                 border-radius: 6px; line-height: 0;
-                 background:
-                   radial-gradient(120% 95% at 16% 6%, rgba(224,138,44,0.34), transparent 60%),
-                   radial-gradient(110% 95% at 90% 94%, rgba(62,142,155,0.36), transparent 62%),
-                   linear-gradient(158deg, #241a2c, #101823); }
-    /* the app window floats on that desktop rather than filling the display */
-    .mb-win { position: absolute; left: 8.5%; right: 8.5%; top: 10%; aspect-ratio: 1495 / 896;
-              overflow: hidden; border-radius: 6px;
-              box-shadow: 0 14px 30px rgba(0,0,0,0.55); }
+    /* the shot itself on the stage: no frame, just the window and its shadow */
+    .shot-win { position: relative; aspect-ratio: 1495 / 896; overflow: hidden;
+                border-radius: 10px; line-height: 0;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.10), 0 26px 54px rgba(0,0,0,0.26); }
+    @media (prefers-color-scheme: dark) {
+      .shot-win { box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 26px 60px rgba(0,0,0,0.6); }
+    }
     /* The sources are the window on a white desktop. Measured window bounds are
        x 48..1551, y 34..936 of 1600x1000; the image is scaled a little past that
        and centred, so the window bleeds off every edge and no desktop shows. */
-    .mb-win img { position: absolute; display: block; width: 107.6%; height: auto;
-                  left: -3.77%; top: -4.43%; }
-    .mb-foot { position: relative; width: 112%; margin: 0 -6%; padding-bottom: 1.15%;
-               border-radius: 0 0 11px 11px;
-               background: linear-gradient(180deg, #d2d2d9 0%, #a8a8b1 42%, #85858e 100%); }
-    .mb-foot::before { content: ""; position: absolute; top: 0; left: 5.4%; right: 5.4%;
-                       height: 1px; background: rgba(0,0,0,0.38); }
-    .mb-foot i { position: absolute; top: 0; bottom: 52%; left: 50%; transform: translateX(-50%);
-                 width: 11.5%; border-radius: 0 0 7px 7px; background: rgba(0,0,0,0.20); }
-    @media (prefers-color-scheme: dark) {
-      .mb-foot { background: linear-gradient(180deg, #9d9da6 0%, #70707a 42%, #4f4f58 100%); }
-    }
+    .shot-win img { position: absolute; display: block; width: 107.6%; height: auto;
+                    left: -3.77%; top: -4.43%; }
+
     .shot-cap { display: flex; gap: 18px; align-items: baseline; margin-top: 1.2rem; }
     .shot-cap .n { font-family: var(--mono); font-size: 0.68rem; color: var(--ink3); letter-spacing: 0.1em; flex-shrink: 0; }
     .shot-cap p { margin: 0.3rem 0 0; color: var(--ink2); font-size: 0.94rem; max-width: 62ch; }
