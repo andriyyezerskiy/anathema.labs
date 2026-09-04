@@ -451,6 +451,7 @@ def shots_all():
     window the page used before."""
     out = []
     for i, (src, alt, title, body) in enumerate(SHOTS, 1):
+        out.append(
             '<figure class="shot" style="margin:0">\n'
             '            <div class="shot-stage">\n'
             '              <div class="mb">\n'
