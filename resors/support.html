@@ -9,8 +9,8 @@
 
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png" />
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-  <meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f2f0ea" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0c0c10" media="(prefers-color-scheme: dark)" />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Resors" />
@@ -24,149 +24,36 @@
   <meta name="twitter:title" content="Resors: Support" />
   <meta name="twitter:description" content="Answers to common questions about Resors, and a direct line if you need one." />
   <meta name="twitter:image" content="https://anathemalabs.com/resors/images/og-image.jpg" />
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #fbfbfd;
-      --bg-alt: #f5f5f7;
-      --text: #1d1d1f;
-      --muted: #6e6e73;
-      --accent: #0071e3;
-      --accent-2: #0071e3;
-      --card-bg: #ffffff;
-      --card-strong: #ffffff;
-      --border: rgba(0,0,0,0.10);
-      --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.07);
-      --code-bg: rgba(0,0,0,0.06);
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #000000;
-        --bg-alt: #0d0d0f;
-        --text: #f5f5f7;
-        --muted: #a1a1a6;
-        --accent: #2997ff;
-        --accent-2: #2997ff;
-        --card-bg: #1c1c1e;
-        --card-strong: #232325;
-        --border: rgba(255,255,255,0.12);
-        --shadow: 0 1px 2px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.55);
-        --code-bg: rgba(255,255,255,0.1);
-      }
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .wrap { max-width: 740px; margin: 0 auto; padding: 0 24px; }
-
-    header.page {
-      text-align: center;
-      padding: 5rem 0 2.5rem;
-    }
-    .eyebrow {
-      text-transform: uppercase; letter-spacing: 0.12em;
-      font-size: 0.78rem; font-weight: 700; color: var(--accent);
-      margin-bottom: 0.6rem;
-    }
-    h1 {
-      font-size: clamp(2.2rem, 6vw, 3rem);
-      font-weight: 800; letter-spacing: -0.03em; margin: 0 0 0.5rem;
-      background: linear-gradient(120deg, var(--text), var(--accent) 75%, var(--accent-2));
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    header.page p { color: var(--muted); font-size: 1.1rem; margin: 0; }
-
-    h2 {
-      font-size: 1.4rem; font-weight: 800; letter-spacing: -0.01em;
-      margin: 2.5rem 0 1.2rem;
-    }
-
-    .faq { display: grid; gap: 14px; }
-    .faq details {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 0 1.4rem;
-      
-      transition: box-shadow 0.25s ease, background 0.25s ease;
-    }
-    .faq details[open] { background: var(--card-strong); box-shadow: var(--shadow); }
-    .faq summary {
-      list-style: none; cursor: pointer;
-      font-weight: 700; font-size: 1.02rem;
-      padding: 1.1rem 0;
-      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    }
-    .faq summary::-webkit-details-marker { display: none; }
-    .faq summary::after {
-      content: "+"; color: var(--accent); font-weight: 600; font-size: 1.4rem;
-      transition: transform 0.25s ease; line-height: 1;
-    }
-    .faq details[open] summary::after { transform: rotate(45deg); }
-    .faq .body { padding: 0 0 1.2rem; color: var(--muted); }
-    .faq .body p { margin: 0 0 0.7rem; }
-    .faq .body p:last-child { margin-bottom: 0; }
-
-    code {
-      font-family: "SF Mono", ui-monospace, Menlo, monospace;
-      font-size: 0.88em;
-      background: var(--code-bg);
-      padding: 0.12em 0.4em;
-      border-radius: 6px;
-    }
-    .plus { color: var(--accent); font-weight: 600; }
-
-    .contact-card {
-      text-align: center;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 2.5rem 2rem;
-      margin: 2.5rem 0;
-      
-      box-shadow: var(--shadow);
-    }
-    .contact-card p { color: var(--muted); margin: 0 0 1.4rem; }
-    a.button {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      text-decoration: none; color: #fff;
-      background: var(--accent);
-      font-weight: 600; padding: 0.85rem 1.6rem; border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0,122,255,0.35);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    }
-    a.button:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 16px 40px rgba(0,122,255,0.45); }
-
-    footer { text-align: center; padding: 2rem 0 4rem; font-size: 0.88rem; color: var(--muted); }
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-  </style>
+  <link rel="stylesheet" href="css/pages.css" />
 </head>
 <body>
 
-  <div class="wrap">
-    <header class="page">
-      <div class="eyebrow">Support</div>
+  <nav class="nav" id="nav">
+    <div class="nav-in">
+      <a class="nav-brand" href="index.html"><img src="images/resors-icon.png" alt="" /> Resors</a>
+      <span class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="support.html">Support</a>
+        <a href="index.html#pricing">Pricing</a>
+      </span>
+      <a class="nav-cta" href="https://apps.apple.com/app/resors/id6748361802">Download</a>
+    </div>
+  </nav>
+
+  <main class="wrap wrap--narrow">
+    <header class="page-head">
+      <div class="stage-head"><span class="num">&mdash;</span><span>Support</span><span class="line"></span></div>
       <h1>Resors Support</h1>
-      <p>Answers to common questions, and a direct line if you need one.</p>
+      <p class="lede">Answers to common questions, and a direct line if you need one.</p>
     </header>
 
-    <h2>Common questions</h2>
+    <div class="stage-head sec-head"><span>Common questions</span><span class="line"></span></div>
     <div class="faq">
       <details open>
-        <summary>How do I import my Xcode colors?</summary>
+        <summary>How do I import my Xcode assets?</summary>
         <div class="body">
-          <p>Drag one or more <code>.colorset</code> folders into Resors. The app validates them on arrival and shows their color values for every appearance, so problems surface before the assets reach your project.</p>
+          <p>Drag one or more <code>.colorset</code>, <code>.symbolset</code> or <code>.imageset</code> folders into Resors, or drop a whole catalog. The app validates them on arrival and shows every appearance with its exact values, so problems surface before the assets reach your project.</p>
           <p>You can also use the Import button in the command bar to open a file picker.</p>
         </div>
       </details>
@@ -174,71 +61,88 @@
       <details>
         <summary>Is Resors free? What is Resors+?</summary>
         <div class="body">
-          <p>Resors is free to download and use. Creating, importing, validating, organizing, and previewing colors, symbols, and images all come at no cost.</p>
-          <p><span class="plus">Resors+</span> is an optional subscription that adds exporting and two-way Xcode sync. You can subscribe at any time from inside the app.</p>
+          <p>Resors is free to download and use. Creating, importing, validating, grouping and previewing colours, symbols and images all come at no cost.</p>
+          <p><span class="tag tag--plus">Resors<b>+</b></span> is an optional subscription that adds export and two-way Xcode sync, including conflict resolution. You can subscribe at any time from inside the app.</p>
         </div>
       </details>
 
       <details>
         <summary>How does syncing with Xcode work?</summary>
         <div class="body">
-          <p>Two-way Xcode sync is part of <span class="plus">Resors+</span>. Connect your project and choose a catalog. Edits made in Resors reach Xcode, and changes made in Xcode come back to Resors.</p>
-          <p>Conflict-resolution modes, which let you choose which version wins when both sides have changed, are coming in a future update.</p>
+          <p>Two-way Xcode sync is part of <span class="tag tag--plus">Resors<b>+</b></span>. A group is paired with one asset catalog and stays paired with it. Sync runs when you launch it, never in the background, and a single pass covers everything: whatever landed in Xcode comes in, your edits go out, and anything that changed on both sides is settled by your rule.</p>
+          <p>Three conflict modes work today: keep Resors, keep Xcode, or keep the newest edit. A fourth, which holds both values so you can choose per asset, is expected in v1.4.</p>
         </div>
       </details>
 
       <details>
         <summary>What does “auto-detect” mean?</summary>
         <div class="body">
-          <p>Resors automatically identifies color variants (Light, Dark, High Contrast) within your <code>.colorset</code> folders and previews them side by side with their exact color values.</p>
+          <p>Resors automatically identifies colour variants (Light, Dark, High Contrast) within your <code>.colorset</code> folders and previews them side by side with their exact values.</p>
         </div>
       </details>
 
       <details>
-        <summary>Can I export colors back to Xcode?</summary>
+        <summary>Can I export assets back to Xcode?</summary>
         <div class="body">
-          <p>Exporting is a <span class="plus">Resors+</span> feature. Resors generates <code>.colorset</code> files Xcode reads directly, so you can export a single asset or an entire group. A connected project can also stay current through sync.</p>
+          <p>Export is a <span class="tag tag--plus">Resors<b>+</b></span> feature. Resors writes <code>.colorset</code>, <code>.symbolset</code> and <code>.imageset</code> files Xcode reads directly, in one pass, for a single asset or an entire group. Every appearance, colour space and symbol margin comes with them. A paired group can also stay current through sync.</p>
         </div>
       </details>
 
       <details>
-        <summary>Can I reuse colors across multiple apps?</summary>
+        <summary>Can I reuse assets across multiple apps?</summary>
         <div class="body">
-          <p>Yes. Organize colors into groups, then define a palette once and use it across your apps.</p>
+          <p>Yes. That is what groups are for: save a set of assets once and it becomes the starting point for the next project, instead of copied folders that slowly drift apart.</p>
         </div>
       </details>
 
       <details>
-        <summary>Does Resors support multiple colorsets at once?</summary>
+        <summary>Can I work on many assets at once?</summary>
         <div class="body">
-          <p>Yes. You can import and manage multiple <code>.colorset</code> files at once, which makes reviewing a whole group practical.</p>
+          <p>Yes. Import, preview, duplicate, export or delete a whole selection in one go, which makes reviewing a whole group practical.</p>
         </div>
       </details>
 
       <details>
-        <summary>What color data does Resors show?</summary>
+        <summary>What colour data does Resors show?</summary>
         <div class="body">
-          <p>Each appearance includes HEX, RGB, and Float RGB values, and each color value can define a color space. That lets you check consistency across Light, Dark, and High Contrast.</p>
+          <p>Each appearance includes HEX, RGB and Float RGB values, and each value carries an explicit colour space. That lets you check consistency across Light, Dark and High Contrast, and it is what gets written on export.</p>
         </div>
       </details>
 
       <details>
-        <summary>Why do my colors look different in Xcode?</summary>
+        <summary>Why do my colours look different in Xcode?</summary>
         <div class="body">
-          <p>Ensure your exported assets use the same color space as your Xcode project (sRGB is recommended). Resors previews colors using accurate color profiles to minimize discrepancies.</p>
+          <p>Check that your exported assets use the same colour space as your Xcode project; sRGB is the usual choice. Resors previews with accurate colour profiles, and shows the colour space on every value, so a mismatch is visible before you export.</p>
         </div>
       </details>
     </div>
 
-    <h2>Still stuck?</h2>
-    <div class="contact-card">
-      <p>If you’re experiencing an issue or have feedback, we’d love to hear from you.</p>
+    <div class="stage-head sec-head"><span>Still stuck?</span><span class="line"></span></div>
+    <div class="panel" style="text-align:center">
+      <p style="color:var(--ink2);margin:0 0 1.3rem">If you&rsquo;re experiencing an issue or have feedback, we&rsquo;d love to hear from you.</p>
       <a class="button" href="mailto:support@anathemalabs.com">Email Support</a>
     </div>
+  </main>
 
+  <div class="wrap">
     <footer>
-      © 2025–2026 <a href="index.html">Resors</a> · <a href="roadmap.html">Roadmap</a> · <a href="privacy.html">Privacy Policy</a>
+      <span>&copy; 2025&ndash;2026 RESORS</span>
+      <a href="index.html">OVERVIEW</a>
+      <a href="roadmap.html">ROADMAP</a>
+      <a href="support.html">SUPPORT</a>
+      <a href="privacy.html">PRIVACY</a>
+      <a href="https://anathemalabs.com">ANATHEMA LABS</a>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      var nav = document.getElementById('nav');
+      if (!nav) return;
+      var f = function () { nav.classList.toggle('stuck', window.scrollY > 8); };
+      window.addEventListener('scroll', f, { passive: true });
+      f();
+    })();
+  </script>
 </body>
 </html>

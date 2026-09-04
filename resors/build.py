@@ -1928,6 +1928,114 @@ JS = """
     })();
 """
 
+
+PAGES_EXTRA = r"""
+    /* ---------- furniture for the other pages (support, roadmap, privacy, 404) ---------- */
+    .wrap--narrow { max-width: 820px; }
+    .page-head { padding: 4.4rem 0 2.4rem; }
+    .page-head h1 { font-size: clamp(2.2rem, 5.4vw, 3.4rem); }
+    .page-head .lede { margin: 1.1rem 0 0; }
+    .sec-head { margin: 3.4rem 0 1.2rem; }
+    .panel { border: 1px solid var(--rule-2); border-radius: 14px;
+             background: var(--panel); padding: 1.7rem 1.8rem; }
+
+    /* prose */
+    .doc h2 { font-size: 1.12rem; margin: 2.5rem 0 0.7rem; }
+    .doc p { margin: 0 0 1rem; color: var(--ink2); font-size: 0.98rem; line-height: 1.68; }
+    .doc a { color: var(--accent); text-decoration: none; }
+    .doc a:hover { text-decoration: underline; }
+
+    /* questions */
+    .faq { display: grid; gap: 10px; }
+    .faq details { border: 1px solid var(--rule-2); border-radius: 12px;
+                   background: var(--panel); padding: 0 1.2rem; }
+    .faq details[open] { border-color: var(--rule); }
+    .faq summary { list-style: none; cursor: pointer; display: flex; align-items: center;
+                   justify-content: space-between; gap: 1rem; padding: 0.95rem 0;
+                   font-size: 0.98rem; font-weight: 600; letter-spacing: -0.012em; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: ""; flex: none; width: 8px; height: 8px;
+                          border-right: 1.5px solid var(--ink3); border-bottom: 1.5px solid var(--ink3);
+                          transform: rotate(45deg); transition: transform 0.2s ease; }
+    .faq details[open] summary::after { transform: rotate(225deg); }
+    .faq .body { padding: 0 0 1.15rem; color: var(--ink2); font-size: 0.94rem; line-height: 1.62; }
+    .faq .body p { margin: 0 0 0.7rem; }
+    .faq .body p:last-child { margin-bottom: 0; }
+    code { background: var(--rule-2); padding: 0.12em 0.4em; border-radius: 5px; }
+
+    /* the roadmap board */
+    .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
+    @media (max-width: 860px) { .board { grid-template-columns: 1fr; gap: 26px; } }
+    .col { display: flex; flex-direction: column; gap: 10px; }
+    .col-head { display: flex; align-items: center; gap: 9px; margin-bottom: 0.5rem;
+                font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+                text-transform: uppercase; color: var(--ink3); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+    .s-done { background: #35935a; }
+    .s-prog { background: var(--accent); }
+    .s-plan { background: #e0a82c; }
+    .col-head .count { margin-left: auto; }
+    .rm-card { border: 1px solid var(--rule-2); border-radius: 12px;
+               background: var(--panel); padding: 1rem 1.1rem; }
+    .rm-card h3 { font-size: 0.95rem; }
+    .rm-card p { margin: 0.4rem 0 0; color: var(--ink2); font-size: 0.87rem; line-height: 1.55; }
+    .rm-card .tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 0.8rem; }
+    .tag--ok { font-family: var(--mono); font-size: 0.58rem; font-weight: 500; letter-spacing: 0.08em;
+               text-transform: uppercase; color: #2f7f4c; background: rgba(53,147,90,0.13); }
+    @media (prefers-color-scheme: dark) {
+      .tag--ok { color: #62cd8b; background: rgba(98,205,139,0.14); }
+    }
+    .legend { display: flex; align-items: center; justify-content: center; gap: 9px; flex-wrap: wrap;
+              margin: 2.2rem auto 0; color: var(--ink2); font-size: 0.9rem; }
+
+    /* the request form */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1.1rem; }
+    .field label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+                   text-transform: uppercase; color: var(--ink3); }
+    input, select, textarea { font: inherit; font-size: 0.94rem; width: 100%;
+                              padding: 0.65rem 0.8rem; border-radius: 10px;
+                              border: 1px solid var(--rule); background: var(--paper);
+                              color: var(--ink); outline: none;
+                              transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+    textarea { min-height: 132px; resize: vertical; line-height: 1.55; }
+    button.button { cursor: pointer; font: inherit; font-weight: 500; font-size: 0.96rem;
+                    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+                    width: 100%; padding: 0.8rem 1.5rem; border-radius: 980px;
+                    border: 1px solid transparent; background: var(--ink); color: var(--paper);
+                    transition: opacity 0.18s ease; }
+    button.button:hover { opacity: 0.85; }
+    .hint { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.05em;
+            color: var(--ink3); text-align: center; margin: 1rem 0 0; }
+
+    /* the page that is not there */
+    body.center { min-height: 100vh; display: flex; flex-direction: column;
+                  align-items: center; justify-content: center; text-align: center; padding: 2rem; }
+    .code404 { font-family: var(--mono); font-size: clamp(3rem, 13vw, 5.5rem); font-weight: 400;
+               letter-spacing: 0.02em; color: var(--ink3); margin: 0 0 0.6rem; }
+    body.center p { color: var(--ink2); max-width: 44ch; margin: 0.8rem auto 2rem; }
+"""
+
+
+def write_pages_css():
+    """The other Resors pages share this page's tokens, type, nav, buttons, tags
+    and footer. Those slices are lifted out of CSS itself rather than copied, so
+    the pages cannot drift from the design they belong to."""
+    shell = CSS[:CSS.index("    /* ---------- hero ---------- */")]
+    tags = CSS[CSS.index("    /* card header:"):CSS.index("    /* export: one action")]
+    close = CSS[CSS.index("    /* ---------- close ---------- */"):]
+    out = ("/* Generated by resors/build.py from the same CSS as index.html.\n"
+           "   Edit build.py, not this file. */\n"
+           + shell + tags + close + PAGES_EXTRA)
+    path = os.path.join(HERE, "css")
+    os.makedirs(path, exist_ok=True)
+    open(os.path.join(path, "pages.css"), "w", encoding="utf-8").write(out)
+    return len(out)
+
+
 assets_js = "[" + ",".join(
     '["%s","%s","%s","%s"]' % (n, l, d, h) for n, l, d, h in COLORS[:5]) + "]"
 PV_C = "[" + ",".join('["%s","%s","%s","%s"]' % (n, l, d, h) for n, l, d, h in PV_COLORS) + "]"
@@ -1971,3 +2079,4 @@ out = (head + "  <style>\n" + CSS + "\n" + DEMO_CSS + "\n  </style>\n</head>\n"
 
 open(SRC, "w", encoding="utf-8").write(out)
 print("wrote", len(out), "bytes")
+print("wrote css/pages.css,", write_pages_css(), "bytes")
