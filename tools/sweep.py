@@ -37,7 +37,6 @@ TARGETS = [
     ("resors/support.html", ["resors/support.html"], ["resors/support.html"], ["resors/support.html"]),
     ("resors/roadmap.html", ["resors/roadmap.html"], ["resors/roadmap.html"], ["resors/roadmap.html"]),
     ("resors/privacy.html", ["resors/privacy.html"], ["resors/privacy.html"], ["resors/privacy.html"]),
-    ("resors/404.html", ["resors/404.html"], ["resors/404.html"], ["resors/404.html"]),
 ]
 
 

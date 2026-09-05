@@ -427,38 +427,94 @@ def fanout_groups():
     return "\n                  ".join(out)
 
 
+# Each shot is (source, dark source or None, alt, caption title, caption body).
+# A dark source means the capture ships light and dark variants; those are the
+# transparent PNGs that carry their own shadow, so they need no crop or frame.
 SHOTS = [
-    ("shot-organize.jpg",
-     "Resors showing colour assets in a grid with groups in the sidebar",
+    ("appoverview.png", "appoverview@dark.png",
+     "The Resors window showing colour, image and symbol assets in one grid, "
+     "with system and custom groups in the sidebar",
+     "Every asset, one grid",
+     "Colours, images and SF&nbsp;Symbols from every project in one place, at a "
+     "size you can actually judge, with system and custom groups down the side."),
+    ("appassetcustomization.png", "appassetcustomization@dark.png",
+     "The Resors inspector open beside the asset grid, showing appearances, the "
+     "template behind a symbol, margin guides with a text preview, and its layers",
+     "Nothing here is read-only",
+     "Every part of an asset is editable in place: its appearances, its exact "
+     "values, the artwork behind it and the way it renders, with the result on "
+     "screen as you go."),
+    ("appgroups.png", "appgroups@dark.png",
+     "A custom group of eight assets selected in Resors, with a menu offering "
+     "export, duplicate, delete and group membership for the whole selection",
      "Reusable groups",
-     "Sort assets into system and custom groups, then export, duplicate or "
-     "manage a whole selection at once."),
-    ("shot-editor.jpg",
-     "The Resors colour editor showing appearances, colour space, hex value and opacity",
-     "Exact values",
-     "Each appearance with HEX, RGB and Float components plus an explicit colour "
-     "space, so what you set is what renders."),
-    ("shot-preview.jpg",
-     "Resors previewing a colour applied to real buttons, text, toggles and shapes",
+     "Sort assets into system and custom groups, and let one asset belong to "
+     "several. Select a whole run and export, duplicate or change what it belongs "
+     "to in one go."),
+    ("appsync.png", "appsync@dark.png",
+     "The Synchronize Group sheet in Resors, reporting a finished run with the "
+     "assets it exported, the number of operations and how long it took",
+     "Every run reports back",
+     "Launch a sync on a paired group and it tells you what it did: the assets it "
+     "moved, how many operations that took and how long it ran."),
+    ("apppreview.png", "apppreview@dark.png",
+     "The Resors preview panel showing a colour on live text, buttons, toggles, "
+     "shapes and symbols",
      "Preview on real UI",
-     "See every asset on live buttons, text, toggles and shapes before it reaches "
-     "your project."),
+     "See an asset on live text, buttons, toggles, shapes and symbols before it "
+     "reaches your project."),
 ]
+
+
+# Where the app window sits inside each capture, measured off the alpha channel:
+# file -> (image width, height, left, right, top, bottom).
+SHOT_BOUNDS = {
+    "appoverview.png": (3680, 2214, 112, 3567, 76, 2065),
+    "appassetcustomization.png": (3680, 2214, 112, 3567, 76, 2065),
+    "appgroups.png": (3680, 2214, 112, 3567, 76, 2065),
+    "apppreview.png": (3680, 2214, 112, 3567, 76, 2065),
+    "appsync.png": (3592, 2126, 68, 3523, 52, 2041),
+}
+
+
+def shot_geom(src):
+    """Crop a capture to its own window. The bounds are pulled in by 3px and the
+    image scaled a little past them, so the window bleeds off every edge of the
+    frame and nothing it was captured against can show."""
+    W, H, x0, x1, y0, y1 = SHOT_BOUNDS[src]
+    x0, x1, y0, y1 = x0 + 3, x1 - 3, y0 + 3, y1 - 3
+    w, h = x1 - x0 + 1, y1 - y0 + 1
+    base = W / float(w)
+    scale = base * 1.005
+    left = -(x0 / float(W) * scale + (scale - base) / 2) * 100
+    img_h = scale * (H / float(W))
+    box_h = h / float(w)
+    over = (h / float(H)) * img_h - box_h
+    top = -((y0 / float(H)) * img_h + over / 2) / box_h * 100
+    style = (' style="--ar:%d/%d;--iw:%.2f%%;--ix:%.3f%%;--iy:%.3f%%"'
+             % (w, h, scale * 100, left, top))
+    return style, W, H
 
 
 def shots_all():
     """Each screenshot on a lit stage, its own window and shadow, no frame."""
     out = []
-    for i, (src, alt, title, body) in enumerate(SHOTS, 1):
+    for i, (src, dark, alt, title, body) in enumerate(SHOTS, 1):
+        style, W, H = shot_geom(src)
+        img = ('<img src="images/shots/%s" alt="%s" loading="lazy" width="%d" height="%d" />'
+               % (src, alt, W, H))
+        if dark:
+            img = ('<picture><source srcset="images/shots/%s" '
+                   'media="(prefers-color-scheme: dark)" />%s</picture>' % (dark, img))
+        shot = '<div class="shot-win"%s>%s</div>' % (style, img)
         out.append(
             '<figure class="shot" style="margin:0">\n'
             '            <div class="shot-stage">\n'
-            '              <div class="shot-win"><img src="images/shots/%s" alt="%s" '
-            'loading="lazy" width="1600" height="1000" /></div>\n'
+            '              %s\n'
             '            </div>\n'
             '            <figcaption class="shot-cap"><span class="n">/ %02d</span>'
             '<div><h3>%s</h3><p>%s</p></div></figcaption>\n'
-            '          </figure>' % (src, alt, i, title, body))
+            '          </figure>' % (shot, i, title, body))
     return "\n          ".join(out)
 
 
@@ -1307,18 +1363,20 @@ CSS = r"""
                       radial-gradient(78% 110% at 93% 6%, rgba(62,142,155,0.27), transparent 58%),
                       linear-gradient(165deg, #1c1c24, #0d0d11); }
     }
-    /* the shot itself on the stage: no frame, just the window and its shadow */
-    .shot-win { position: relative; aspect-ratio: 1495 / 896; overflow: hidden;
-                border-radius: 10px; line-height: 0;
+    /* The shot on the stage: no frame, the window cropped to its own bounds and
+       given one shadow here. The captures disagree about their own shadow (some
+       bake one into the alpha, some have none), so none of them is used. */
+    .shot-win { position: relative; overflow: hidden; border-radius: 10px; line-height: 0;
+                aspect-ratio: var(--ar, 1495 / 896);
                 box-shadow: 0 2px 6px rgba(0,0,0,0.10), 0 26px 54px rgba(0,0,0,0.26); }
     @media (prefers-color-scheme: dark) {
       .shot-win { box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 26px 60px rgba(0,0,0,0.6); }
     }
-    /* The sources are the window on a white desktop. Measured window bounds are
-       x 48..1551, y 34..936 of 1600x1000; the image is scaled a little past that
-       and centred, so the window bleeds off every edge and no desktop shows. */
-    .shot-win img { position: absolute; display: block; width: 107.6%; height: auto;
-                    left: -3.77%; top: -4.43%; }
+    /* Defaults are the JPEG captures, whose window sits at x 48..1551, y 34..936
+       of 1600x1000. Each image is scaled a little past its own bounds and centred,
+       so the window bleeds off every edge and nothing around it can show. */
+    .shot-win img { position: absolute; display: block; height: auto;
+                    width: var(--iw, 107.6%); left: var(--ix, -3.77%); top: var(--iy, -4.43%); }
 
     .shot-cap { display: flex; gap: 18px; align-items: baseline; margin-top: 1.2rem; }
     .shot-cap .n { font-family: var(--mono); font-size: 0.68rem; color: var(--ink3); letter-spacing: 0.1em; flex-shrink: 0; }
@@ -1930,7 +1988,7 @@ JS = """
 
 
 PAGES_EXTRA = r"""
-    /* ---------- furniture for the other pages (support, roadmap, privacy, 404) ---------- */
+    /* ---------- furniture for the other pages (support, roadmap, privacy) ---------- */
     .wrap--narrow { max-width: 820px; }
     .page-head { padding: 4.4rem 0 2.4rem; }
     .page-head h1 { font-size: clamp(2.2rem, 5.4vw, 3.4rem); }
@@ -2010,13 +2068,6 @@ PAGES_EXTRA = r"""
     button.button:hover { opacity: 0.85; }
     .hint { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.05em;
             color: var(--ink3); text-align: center; margin: 1rem 0 0; }
-
-    /* the page that is not there */
-    body.center { min-height: 100vh; display: flex; flex-direction: column;
-                  align-items: center; justify-content: center; text-align: center; padding: 2rem; }
-    .code404 { font-family: var(--mono); font-size: clamp(3rem, 13vw, 5.5rem); font-weight: 400;
-               letter-spacing: 0.02em; color: var(--ink3); margin: 0 0 0.6rem; }
-    body.center p { color: var(--ink2); max-width: 44ch; margin: 0.8rem auto 2rem; }
 """
 
 

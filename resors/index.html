@@ -713,18 +713,20 @@
                       radial-gradient(78% 110% at 93% 6%, rgba(62,142,155,0.27), transparent 58%),
                       linear-gradient(165deg, #1c1c24, #0d0d11); }
     }
-    /* the shot itself on the stage: no frame, just the window and its shadow */
-    .shot-win { position: relative; aspect-ratio: 1495 / 896; overflow: hidden;
-                border-radius: 10px; line-height: 0;
+    /* The shot on the stage: no frame, the window cropped to its own bounds and
+       given one shadow here. The captures disagree about their own shadow (some
+       bake one into the alpha, some have none), so none of them is used. */
+    .shot-win { position: relative; overflow: hidden; border-radius: 10px; line-height: 0;
+                aspect-ratio: var(--ar, 1495 / 896);
                 box-shadow: 0 2px 6px rgba(0,0,0,0.10), 0 26px 54px rgba(0,0,0,0.26); }
     @media (prefers-color-scheme: dark) {
       .shot-win { box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 26px 60px rgba(0,0,0,0.6); }
     }
-    /* The sources are the window on a white desktop. Measured window bounds are
-       x 48..1551, y 34..936 of 1600x1000; the image is scaled a little past that
-       and centred, so the window bleeds off every edge and no desktop shows. */
-    .shot-win img { position: absolute; display: block; width: 107.6%; height: auto;
-                    left: -3.77%; top: -4.43%; }
+    /* Defaults are the JPEG captures, whose window sits at x 48..1551, y 34..936
+       of 1600x1000. Each image is scaled a little past its own bounds and centred,
+       so the window bleeds off every edge and nothing around it can show. */
+    .shot-win img { position: absolute; display: block; height: auto;
+                    width: var(--iw, 107.6%); left: var(--ix, -3.77%); top: var(--iy, -4.43%); }
 
     .shot-cap { display: flex; gap: 18px; align-items: baseline; margin-top: 1.2rem; }
     .shot-cap .n { font-family: var(--mono); font-size: 0.68rem; color: var(--ink3); letter-spacing: 0.1em; flex-shrink: 0; }
@@ -1201,21 +1203,33 @@
         <div class="shots">
           <figure class="shot" style="margin:0">
             <div class="shot-stage">
-              <div class="shot-win"><img src="images/shots/shot-organize.jpg" alt="Resors showing colour assets in a grid with groups in the sidebar" loading="lazy" width="1600" height="1000" /></div>
+              <div class="shot-win" style="--ar:3450/1984;--iw:107.20%;--ix:-3.617%;--iy:-4.252%"><picture><source srcset="images/shots/appoverview@dark.png" media="(prefers-color-scheme: dark)" /><img src="images/shots/appoverview.png" alt="The Resors window showing colour, image and symbol assets in one grid, with system and custom groups in the sidebar" loading="lazy" width="3680" height="2214" /></picture></div>
             </div>
-            <figcaption class="shot-cap"><span class="n">/ 01</span><div><h3>Reusable groups</h3><p>Sort assets into system and custom groups, then export, duplicate or manage a whole selection at once.</p></div></figcaption>
+            <figcaption class="shot-cap"><span class="n">/ 01</span><div><h3>Every asset, one grid</h3><p>Colours, images and SF&nbsp;Symbols from every project in one place, at a size you can actually judge, with system and custom groups down the side.</p></div></figcaption>
           </figure>
           <figure class="shot" style="margin:0">
             <div class="shot-stage">
-              <div class="shot-win"><img src="images/shots/shot-editor.jpg" alt="The Resors colour editor showing appearances, colour space, hex value and opacity" loading="lazy" width="1600" height="1000" /></div>
+              <div class="shot-win" style="--ar:3450/1984;--iw:107.20%;--ix:-3.617%;--iy:-4.252%"><picture><source srcset="images/shots/appassetcustomization@dark.png" media="(prefers-color-scheme: dark)" /><img src="images/shots/appassetcustomization.png" alt="The Resors inspector open beside the asset grid, showing appearances, the template behind a symbol, margin guides with a text preview, and its layers" loading="lazy" width="3680" height="2214" /></picture></div>
             </div>
-            <figcaption class="shot-cap"><span class="n">/ 02</span><div><h3>Exact values</h3><p>Each appearance with HEX, RGB and Float components plus an explicit colour space, so what you set is what renders.</p></div></figcaption>
+            <figcaption class="shot-cap"><span class="n">/ 02</span><div><h3>Nothing here is read-only</h3><p>Every part of an asset is editable in place: its appearances, its exact values, the artwork behind it and the way it renders, with the result on screen as you go.</p></div></figcaption>
           </figure>
           <figure class="shot" style="margin:0">
             <div class="shot-stage">
-              <div class="shot-win"><img src="images/shots/shot-preview.jpg" alt="Resors previewing a colour applied to real buttons, text, toggles and shapes" loading="lazy" width="1600" height="1000" /></div>
+              <div class="shot-win" style="--ar:3450/1984;--iw:107.20%;--ix:-3.617%;--iy:-4.252%"><picture><source srcset="images/shots/appgroups@dark.png" media="(prefers-color-scheme: dark)" /><img src="images/shots/appgroups.png" alt="A custom group of eight assets selected in Resors, with a menu offering export, duplicate, delete and group membership for the whole selection" loading="lazy" width="3680" height="2214" /></picture></div>
             </div>
-            <figcaption class="shot-cap"><span class="n">/ 03</span><div><h3>Preview on real UI</h3><p>See every asset on live buttons, text, toggles and shapes before it reaches your project.</p></div></figcaption>
+            <figcaption class="shot-cap"><span class="n">/ 03</span><div><h3>Reusable groups</h3><p>Sort assets into system and custom groups, and let one asset belong to several. Select a whole run and export, duplicate or change what it belongs to in one go.</p></div></figcaption>
+          </figure>
+          <figure class="shot" style="margin:0">
+            <div class="shot-stage">
+              <div class="shot-win" style="--ar:3450/1984;--iw:104.64%;--ix:-2.329%;--iy:-3.036%"><picture><source srcset="images/shots/appsync@dark.png" media="(prefers-color-scheme: dark)" /><img src="images/shots/appsync.png" alt="The Synchronize Group sheet in Resors, reporting a finished run with the assets it exported, the number of operations and how long it took" loading="lazy" width="3592" height="2126" /></picture></div>
+            </div>
+            <figcaption class="shot-cap"><span class="n">/ 04</span><div><h3>Every run reports back</h3><p>Launch a sync on a paired group and it tells you what it did: the assets it moved, how many operations that took and how long it ran.</p></div></figcaption>
+          </figure>
+          <figure class="shot" style="margin:0">
+            <div class="shot-stage">
+              <div class="shot-win" style="--ar:3450/1984;--iw:107.20%;--ix:-3.617%;--iy:-4.252%"><picture><source srcset="images/shots/apppreview@dark.png" media="(prefers-color-scheme: dark)" /><img src="images/shots/apppreview.png" alt="The Resors preview panel showing a colour on live text, buttons, toggles, shapes and symbols" loading="lazy" width="3680" height="2214" /></picture></div>
+            </div>
+            <figcaption class="shot-cap"><span class="n">/ 05</span><div><h3>Preview on real UI</h3><p>See an asset on live text, buttons, toggles, shapes and symbols before it reaches your project.</p></div></figcaption>
           </figure>
         </div>
       </div>
